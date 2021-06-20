@@ -41,11 +41,11 @@ const HomeDachboad = () => {
             <h1>256</h1>
             </div>
           </div>
-          <div className="contentDach" style={{opacity:'0.7',position:'relative'}}>
+          <div className="contentDach" style={{position:'relative'}}>
             <h1 style={{position:'absolute',left:'10px'}}>This content</h1>
           </div>
         </div>
-        <div className="container2" style={{opacity:'0.7'}}>
+        <div className="container2" >
           <h1>Hi</h1>
         </div>
 
