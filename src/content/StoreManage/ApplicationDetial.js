@@ -10,6 +10,7 @@ import { useHistory, useLocation } from 'react-router';
 import { animated, useTransition } from '@react-spring/web';
 import { useState } from 'react';
 import './ApplicationDetial.css'
+import psuLogo from './../../img/Prince_of_Songkla_University_Emblem.png'
 import axios from 'axios';
 import { set } from 'date-fns';
 import swal from 'sweetalert';
@@ -166,7 +167,7 @@ function getStepContent(step) {
       return transitions(
             (styles, item) => item && <animated.div  className="container" style={styles}> 
               <div className="head">
-              <h1>Audi</h1> 
+              <img width="auto" height="120" src={psuLogo}/> 
               <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
               โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
               </p>                

@@ -10,6 +10,7 @@ import {Link,useHistory,useLocation,useRouteMatch} from 'react-router-dom'
 import { useTransition,animated } from 'react-spring'
 import { AuthContext } from '../App';
 import {userSchema} from './Validation'
+import psuLogo from './../img/Prince_of_Songkla_University_Emblem.png'
 //---------------------------------------------------------------Steper-----------------------------------------
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -17,6 +18,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Addicon from '@material-ui/icons/AddRounded'
 import Removeicon from '@material-ui/icons/RemoveRounded'
+
 import { Checkbox, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
  //-------------------------------------------------------------------------------------------------------------- 
 export default function RegisStore() {
   
+
   const [activeStep, setActiveStep] = React.useState(0);
   const location = useLocation()
   const {url} = useRouteMatch();
@@ -279,12 +282,7 @@ export default function RegisStore() {
     enter: { opacity: 1},
     leave:  { opacity: 0}
   })
-/*       const transitions2 = useTransition(activeStep, {
-        from: { opacity: 0 },
-        enter: { opacity: 1},
-        leave:  { opacity: 0,x: 800},
-        delay: 2
-      }) */
+
 
 //--------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------Step Func--------------------------------------   
@@ -297,7 +295,7 @@ function getStepContent(step) {
         return transitions(
               (styles, item) => item && <animated.div  className="container" style={styles}> 
                 <div className="head">
-                <h1>Audi</h1> 
+                <img width="auto" height="120" src={psuLogo}/> 
                 <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
                 โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
                 </p>                

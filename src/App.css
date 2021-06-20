@@ -28,7 +28,6 @@
 }
 
 .condiv {
-  border-style: solid;
   display: flex;
   flex-direction: column; 
   width: 100vw;
@@ -50,9 +49,8 @@
   top: -12px;
   z-index: 1;
   box-shadow: 10px 30px 20px 5px #8d8c8c;
-  overflow: scroll;
+  overflow: auto;
   
-
 }
 .connave{
   display: flex;
@@ -152,6 +150,7 @@ nav ul li a{
 }
 .text{
   width: 70%;
+  text-decoration: none;
 }
 .it{
   display: flex;
@@ -160,45 +159,10 @@ nav ul li a{
   height: 50px;
  
 }
-
-
-
-.Social{
-  margin-top: 20px;
-  display: flex;
-  bottom: 30px;
-
-}
-.Social i{
-  padding-right:30px;
-  font-size: 25px;
-  color: rgb(0, 73, 138);
-
-}
-.Social i:hover{
-  color: rgb(19, 179, 214);
-}
-
-.profilepic{
-  width: 400px;
-  margin: 30px;
-}
 .typingeffect{
   font-size: var(--typing-font);
   margin-bottom: 30px;
 }
-.Education a{
-  text-decoration-line:none;
-  color: rgb(0, 0, 0);
-}
-.Education ul{
-  padding-left: 17px;
-  margin-top: 10px;
-}
-.Education hr{
-  margin-top: 10px;
-}
-
 .me{
   display: flex;
    justify-content: center;
@@ -207,6 +171,7 @@ nav ul li a{
   display: block;
   margin-top: 40px;
   width: 90%;
+  
 }
 .header{
   margin-left:10px;

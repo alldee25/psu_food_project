@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import Navbar from './component/Navbar'
+import Navbar from './AdminNavbar/Navbar'
 import "./App.css";
 import { BrowserRouter as Router, Route,Link, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import { IconName } from "react-icons/fa";

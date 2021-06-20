@@ -100,15 +100,13 @@ function StoreInfornationDetial(props) {
       case 0:
         return transitions(
               (styles, item) => item && <animated.div  className="containerInfo" style={styles}> 
-                <div className="head">
-                <h1>Audi</h1> 
-                <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
-                โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
-                </p>                
+                <div className="head"> 
+                <h4> &nbsp;&nbsp;ข้อมูลร้านค้าประจำโรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
+                </h4>                
                 </div>                
                 <div className="form">
                   <div className="Title" style={{marginLeft:'10px'}}>
-                    <h3>ข้อเจ้าของร้าน</h3>
+                    <h3>ข้อมูลเจ้าของร้าน</h3>
                     <hr />
                 </div>
                 <div style={{marginLeft:'10px'}}>
@@ -193,9 +191,7 @@ function StoreInfornationDetial(props) {
         return 'Unknown step';
     }
   }
-  
     return transitions1(
-  
     (styles, item) =>item && <animated.div className="containAppInfo" style={styles}>
       {save===true &&<div className="save" ></div> }
     <div className={classes.root}  style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100vw',height:'100vh'}}>
