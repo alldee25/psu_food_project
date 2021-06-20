@@ -1,0 +1,163 @@
+.containForm{
+    position: relative;
+    margin-top: 20px;
+    height: 110vh;
+    width: 65.8vw;
+    background-color: cyan;
+    margin-bottom: 10px;
+}
+
+.containForm h5{
+    margin-top: 15px;
+    margin-left: 10px;
+    font-weight: 300;
+    margin-top: 20px;
+    text-decoration: underline; 
+}
+.dataUser{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+.titleForm{
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    width: 270px;
+}
+.titleForm h6{
+    margin-top: 1.5px;
+}
+.headerForm{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+}
+.itemUser1Name{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    font-size: 18px;
+    width: 500px;
+    height: 50px; 
+}
+.inpit1Name{
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    width: 450px;
+    top: 0%;
+    left: 14%;
+    right: 0%;
+}
+.itemUser2Age{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 18px;
+    width: 150px;
+    height: 50px;    
+     
+}
+.inpit2Age{
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: flex-start;
+    width: 350px;
+}
+.itemUserNumer{
+    margin-left: 50px;
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 18px;
+    width: 250px;
+    height: 50px;
+    align-items: center; 
+}
+.inpitNumer{
+    position: absolute;   
+    display: flex;
+    top: 0%;
+    right: 0%;
+    justify-content: center;
+}
+.itemUser1StoreName{
+    position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    font-size: 18px;
+    width: 500px;
+    height: 50px;
+    align-items: center;
+}
+.inpit1StoreName{
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    top: 0%;
+    right: 0%;
+    width: 520px;
+}
+.itemUser2Type{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    width: 600px;
+    height: 50px;
+    align-items: center;   
+}
+.inpit2Type{
+    top: 0%;
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    right: 0%;
+    width: 300px;
+}
+.itemUserLocation{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 18px;
+    width: 350px;
+    height: 50px;
+    align-items: center;
+}
+
+.inpitLocation{
+    top: 0%;
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    right: 0%;
+    width: 200px;
+} 
+.containForm button{
+    position: absolute;
+    right: 3%;
+    bottom: 3%;
+}
+
+
+
+
+
+
+
+
