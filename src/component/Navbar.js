@@ -1,5 +1,4 @@
 import React, {Component, useEffect, useState} from 'react';
-import NavItem from './NavItem';
 import Profile from "../content/ProfileManage/Profile"
 import StoreRoundedIcon from '@material-ui/icons/StoreRounded';
 import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';

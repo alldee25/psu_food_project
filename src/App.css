@@ -91,8 +91,6 @@
   background-color: #CFFDFF;
   border-radius: 15px 15px 0px 0px;
   width: 220px;
-  
-  
 }
 
 nav{
@@ -109,9 +107,6 @@ nav ul{
   text-align: center;
   list-style: none;
   width: 250px;
- 
-  
-
 }
 
 nav ul li{
@@ -124,6 +119,7 @@ nav ul li{
   margin: 10px 0px 35px 25px;
   border-radius: 15px;
   border-style: solid;
+  border-color: transparent;
   box-shadow:   5px 5px 20px #909090,
     0px 0px 0px ;
 }
@@ -134,8 +130,9 @@ nav ul li{
   padding-right: 5%;
   margin: 10px 0px 35px 25px;
   height: 50px;
-  background: linear-gradient(to right, rgb(135, 159, 255, 0.241), rgb(0, 0, 0)); /*Standard*/
-  
+  border-style: solid;
+  border-color:cadetblue;
+  background: linear-gradient(to right, rgb(135, 159, 255, 0.241), rgba(55, 218, 243)); 
 }
 nav ul li a{
   display: flex;
@@ -164,13 +161,7 @@ nav ul li a{
  
 }
 
-nav ul li:hover{
-  color: rgb(255, 255, 255);
-  text-decoration:none ;
-  background: linear-gradient(to right, rgb(135, 159, 255, 0.241), rgba(55, 218, 243)); /*Standard*/
-  
 
-}
 
 .Social{
   margin-top: 20px;
