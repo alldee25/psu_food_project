@@ -18,6 +18,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import Grow from '@material-ui/core/Grow';
+import CleanlinessLevel from "./CleanlinessLevel";
 //for MUI---------------------------------------------------------functons out----------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,7 +117,7 @@ useEffect(() => {
           </div>
 
           <div className={togle === 3 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(3)} to={`${url}/InterView`}>ตรวจสอบความสะอาด</Link>
+            <Link onClick={() => togleTab(3)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
           </div>
 
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
@@ -138,6 +139,7 @@ useEffect(() => {
           <Route      path={`${path}/InterView`} component={InterView} />
           <Route      path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
           <Route      path={`${path}/StoreInformation`} component={StoreInformation} />
+          <Route      path={`${path}/CleanlinessLevel`} component={CleanlinessLevel} />
         </div>
       </div>
     </Router>

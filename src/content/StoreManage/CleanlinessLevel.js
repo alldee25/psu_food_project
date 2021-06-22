@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import swal from 'sweetalert';
@@ -27,6 +28,8 @@ import InterViewForm from './interViewForm';
 import BeenhereRoundedIcon from '@material-ui/icons/BeenhereRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 
+
+
 const StyledTableCell = withStyles((theme) => ({
     head: {
       backgroundColor: theme.palette.common.black,
@@ -51,70 +54,37 @@ const StyledTableCell = withStyles((theme) => ({
       minWidth: 700,
     },
   });
-  const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-export default function InterView() {
-    const [dataApplicationList, setDataApplicationList] = useState([])
-    const [date,setDate] = useState('')
+function CleanlinessLevel() {
+    const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
     const classes = useStyles();
-    const [dataYears, setDataYears] = useState([])
-    const [year, setYear] = useState('')
     const [open, setOpen] = React.useState(false);
-    const [id, setIid] = useState()
-    const {auth,setIsload} = useContext(AuthContext);
+    const [id,setId] = useState('')
 
     const handleClickOpen = (e) => {
-        setIid(e)
+        
         setOpen(true);
       };
     
       const handleClose = () => {
         setOpen(false);
       };
-      var forYear = new Date();
-      var ThisYears = forYear.getFullYear()
-      useEffect(()=>{
-          axios.post("http://localhost:3001/getStoreInterViewList",{
-              date:ThisYears
-          }).then((res)=>{
-            setDataApplicationList(res.data)   
-          }).then(
-              axios.get("http://localhost:3001/getYears").then((response)=>{
-  
-                  const data = []
-                  response.data.forEach(element => {
-                  data.push(element.Year)   
-                  });
-                  setDataYears([...new Set(data)]);
-                  
-              })
-              )
-      },[])
 
-      const selectInterviewListByYear =(e)=>{
-          setYear(e.target.value)
-          axios.post("http://localhost:3001/getStoreInterViewList",{
-              date:e.target.value
-          }).then((res)=>{
-            console.log(res.data);
-              setDataApplicationList(res.data)
-          })
-      }
     return (
-        <div className="subcon">
+            
+                <div className="subcon">
             <div className="header">
                 <h1>
-                ข้อมูลการสัมภาษณ์
+                รายการกสรตรวจสอบความสะอาดร้านค้า
                 </h1>
             </div>       
             <div style={{position:'absolute',right:"5%",top:'30px'}}>
             <InputLabel  id="demo-simple-select-outlined-label" >ปี</InputLabel>
-            <Select onChange={selectInterviewListByYear} value={year} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
-                {dataYears.map((years,index)=>( 
-                <MenuItem key={index} value={years}>{years}</MenuItem > 
-             ))}
+            <Select  labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+              
             </Select>
             </div>
                 <div style={{marginTop:'20px'}}>
@@ -131,7 +101,7 @@ export default function InterView() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dataApplicationList.map((dataList) => (
+          {dataCleanlinessLevelList.map((dataList) => (
             <StyledTableRow key={dataList.id}>
               <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
               <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
@@ -159,7 +129,9 @@ export default function InterView() {
         <div style={{marginTop:'50px'}}>
           <InterViewForm active={id} open={open}/>
           </div> 
-      </Dialog>
-        </div>
+      </Dialog>  
+            </div>
     )
 }
+
+export default CleanlinessLevel
