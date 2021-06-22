@@ -46,7 +46,6 @@
   width: 97.2%;
   height: 90vh; 
   position: relative;
-  top: -12px;
   z-index: 1;
   box-shadow: 10px 30px 20px 5px #8d8c8c;
   overflow: auto;

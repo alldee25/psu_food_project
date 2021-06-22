@@ -247,7 +247,7 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
     }))    
 })
 adminRouter.post("/getStoreList",(req,res)=>{
-    db.query(`SELECT store.*, store_owner.* 
+    db.query(`SELECT store.*,store.id AS s_id, store_owner.* 
                 FROM store 
                 INNER JOIN store_owner ON store_owner.store_id = store.id`,((err,result)=>{
         if(err){
@@ -310,4 +310,5 @@ adminRouter.post("/getStoreMenuList",(req, res) => {//ดึงข้อมู�
         }
     }))
 })
+
 module.exports = adminRouter

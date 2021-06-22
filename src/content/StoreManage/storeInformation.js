@@ -99,7 +99,7 @@ function StoreInformation() {
                     <TableBody>
                     {storeDataList.map((dataList) => (
                         <StyledTableRow key={dataList.id}>
-                        <StyledTableCell  align="left" width="100px">{dataList.id}</StyledTableCell>
+                        <StyledTableCell  align="left" width="100px">{dataList.s_id}</StyledTableCell>
                         <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
                         <StyledTableCell align="left" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
