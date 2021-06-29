@@ -78,7 +78,7 @@ export default function RegisStore() {
   const [morToday,setMorToday] = useState('')
   const [inId, setInId] = useState([])
 //---------------------------------------------------------------------
-
+  
   const calculate_age = (dob) => {
       setDOB(dob);
       const today = new Date();
@@ -164,6 +164,7 @@ export default function RegisStore() {
       setInpufiled(values);
     }
   const steps = getSteps();
+  
   const handleChangeInput = (id, e) => {
     const newInputFieles = inputfild.map(inputfild => {
       if(id === inputfild.id){
@@ -172,6 +173,7 @@ export default function RegisStore() {
       return inputfild;
     })
     setInpufiled(newInputFieles);
+
   }
   let formData = {
         name:name,

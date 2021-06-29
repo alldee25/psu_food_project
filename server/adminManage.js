@@ -310,5 +310,14 @@ adminRouter.post("/getStoreMenuList",(req, res) => {//ดึงข้อมู�
         }
     }))
 })
+adminRouter.get("/getDetialList",(req, res) => {//ดึงข้อมูลเงื่อนไขการให้คะแนน
+    db.query(`SELECT * FROM cleanliness_topic`,((err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result);
+        }
+    }))
+})
 
 module.exports = adminRouter

@@ -2,7 +2,7 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import React, { useContext, useEffect, useState } from 'react'
-import './InterViewForm.css'
+import './CleanlinessLevelForm.css'
 import axios from 'axios';
 import {adminSchema} from '../../users/Validation'
 import { Button } from '@material-ui/core';
@@ -19,6 +19,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { animated, useTransition } from 'react-spring';
 import { useLocation } from 'react-router-dom';
 
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
 function CleanlinessLevelStore(props) {
   const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
   const [typeList,setTypeList] = useState([])
@@ -27,6 +36,10 @@ function CleanlinessLevelStore(props) {
   const [bLocation,setBLocation] = useState('')
   const [date,setDate] = useState('')
   const {auth,setIsload} = useContext(AuthContext)
+  const [dataLevel,setDataLevel] = useState([])
+  const [scores, setScore] = useState([
+    {id: '',score: ''}
+  ]);
   
 
   const transitions = useTransition(props.open, {
@@ -34,7 +47,21 @@ function CleanlinessLevelStore(props) {
     enter: { opacity: 1, y: 0 },
     leave:  { opacity: 0,y: 800}
   })
+
+  const handleChangeInput = (id, e) => {
+    console.log(scores);
+    const newInputFieles = scores.map(inputfild => {
+      
+      if(id === inputfild.id){
+        inputfild[e.target.name] = e.target.value
+      }
+      return inputfild;
+    })
+    
+  }
+
   useEffect(()=>{
+    setIsload(true)
     const today = new Date();
     const yeartoday = today.getFullYear() 
     const month = today.getMonth() +1
@@ -54,9 +81,9 @@ function CleanlinessLevelStore(props) {
      const forday = `${yeartoday}-${month}-${date}`
      setDate(forday) 
     } 
-  axios.post("http://localhost:3001/getStoreAndStoreOwnerDetial",{
+    axios.post("http://localhost:3001/getStoreAndStoreOwnerDetial",{
          id:props.active 
-  }).then((res)=>{
+    }).then((res)=>{
     setDataCleanlinessLevelList(res.data)
     const [{dob}] = res.data
     const today = new Date();
@@ -74,68 +101,82 @@ function CleanlinessLevelStore(props) {
     }).then((res)=>{
       setLocationList(res.data)
     })
+  ).then(
+    axios.get("http://localhost:3001/getDetialList").then((res)=>{
+        setDataLevel(res.data)
+        res.data.map(element => {
+          scores.push({id:element.id,score:''}) 
+          });
+        
+    })
   ).then(setIsload(false))
 },[])
-  
     return transitions(
       (styles, item) =>item && <animated.div style={styles}>
         <div style={{display:'flex',justifyContent:'center'}}>
-         <div className="containForm">
-          <div className="headerForm">
+         <div className="containFormClean">
+          <div className="headerFormClean">
           <h5>แบบฟอร์มการตรวจร้านค้าจำหน่ายอาหาร โรงอาหารมหาวทยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี</h5>
+          </div>
           {dataCleanlinessLevelList.map((dataCleanlinessLevelList)=>(
-            <div className="dataUser" key={dataCleanlinessLevelList.id}>
+            <div className="dataUserClean" key={dataCleanlinessLevelList.id}>
             <div style={{display:'flex',flexDirection:'row',width:'100%',height:'50px'}}>
-              <div className="itemUser1Name">
-                <span>ชื่อผู้สมัค </span>                                                       
-                <div className="inpit1Name" >
+              <div className="itemUser1NameClean">
+                <span>วันที่ </span>                                                       
+                <div className="inpit1NameClean" >
                   <FormControl disabled >
+                
                     <Input id="name" value={dataCleanlinessLevelList.name} inputProps={{ style: { textAlign: 'center', width:'500px'}}}  />
                   </FormControl> 
                 </div>               
               </div> 
-              <div className="itemUser2Age">
-                <span>อายุ </span>                             
-                <div className="inpit2Age" >
-                  <FormControl disabled style={{marginLeft:'30px'}}>
-                    <Input id="age" value='#' inputProps={{min: 0, style: { textAlign: 'center',width:'100%' }}}  />
+              <div className="itemUser2AgeClean">
+                <span>เดือน </span>                             
+                <div className="inpit2AgeClean" >
+                  <FormControl disabled >
+                    <Input id="age" value='#' inputProps={{min: 0, style: { textAlign: 'center',width:'100px' }}}  />
                   </FormControl>
-                </div>                 
-                <div style={{width:'50px',display:'flex',justifyContent:'flex-start'}}>
-                  ปี
-                </div>
+                </div>                             
               </div>
-              <div className="itemUserNumer">
-                <span>เลชที่ผู้สมัคร </span>             
-                <div className="inpitNumer" >
-                  <FormControl disabled style={{marginLeft:'30px'}}>
+              <div className="itemUserNumerClean">
+                <span>พ.ศ</span>             
+                <div className="inpitNumerClean" >
+                  <FormControl disabled >
+                    <Input id="id" value={dataCleanlinessLevelList.id} inputProps={{min: 0, style: { textAlign: 'center',width:'160px' }}}  />
+                  </FormControl>
+                </div>               
+              </div>
+              <div className="itemUserNumerClean">
+                <span>เวลา</span>             
+                <div className="inpitNumerClean" >
+                  <FormControl disabled >
                     <Input id="id" value={dataCleanlinessLevelList.id} inputProps={{min: 0, style: { textAlign: 'center',width:'160px' }}}  />
                   </FormControl>
                 </div>               
               </div>
             </div>             
             <div style={{display:'flex',flexDirection:'row',width:'100%',height:'80px',marginTop:'20px'}}>
-              <div className="itemUser1StoreName">
+              <div className="itemUser1StoreNameClean">
                 <span>ชื่อร้าน</span>               
-                <div className="inpit1StoreName">
+                <div className="inpit1StoreNameClean">
                   <FormControl disabled >
                     <Input id="storeName" value={dataCleanlinessLevelList.store_name} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
                   </FormControl>
                 </div>        
               </div>
-              <div className="itemUser2Type">
+              <div className="itemUser2TypeClean">
                 ประเภทร้านค้าที่สมัคร
-                <div className="inpit2Type">
+                <div className="inpit2TypeClean">
                   <FormControl disabled style={{marginLeft:'30px'}}>
                     <Input id="type" value={dataCleanlinessLevelList.type} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
                   </FormControl>
                 </div>              
               </div>
-              <div className="itemUserLocation">
+              <div className="itemUserLocationClean">
                 <span>
                   โรงอาหาร
                 </span>             
-                <div className="inpitLocation" >
+                <div className="inpitLocationClean" >
                   <FormControl disabled style={{marginLeft:'30px'}}>
                     <Input id="location" value={dataCleanlinessLevelList.location} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
                   </FormControl>
@@ -144,7 +185,55 @@ function CleanlinessLevelStore(props) {
             </div>  
           </div>
           ))}
-          </div>
+            <div className="table">
+              <TableContainer style={{width:'1100px'}} component={Paper}>
+              <Table size="small" aria-label="a dense table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">ข้อ</TableCell>
+                    <TableCell align="left">หัวข้อตรวจสอบ</TableCell>
+                    <TableCell align="center" width="250">ผลการตรวจ(ระดับ)</TableCell>
+                    <TableCell align="center">รายละเอียด</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dataLevel.map((row) => (
+                    <TableRow key={row.name}>
+                      <TableCell align="center">{row.id}</TableCell>
+                      <TableCell align="left" width="500">{row.detial}</TableCell>
+                      <TableCell align="left" >
+                        <RadioGroup row aria-label="position" name="position" value={scores.score} onChange={value => handleChangeInput(row.id,value)} defaultValue="top">
+                          <FormControlLabel
+                            value="1"
+                            name="score"
+                            control={<Radio color="primary" />}
+                            label='1'
+                            labelPlacement="top"
+                          />
+                          <FormControlLabel
+                            value="2"
+                            name="score"
+                            control={<Radio color="primary" />}
+                            label="2"
+                            labelPlacement="top"
+                          />
+                          <FormControlLabel
+                            value="3"
+                            name="score"
+                            control={<Radio color="primary" />}
+                            label="3"
+                            labelPlacement="top"
+                          />
+                          </RadioGroup>
+                      </TableCell>
+                      <TableCell align="center"><TextField id="outlined-basic" multiline rows="4" variant="outlined" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            </div>
+    
          </div>
         </div>
       </animated.div>

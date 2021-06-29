@@ -1,0 +1,160 @@
+.containFormClean{
+    position: relative;
+    margin-top: 20px;
+    height: 110vh;
+    width: 65.8vw;
+    background-color: cyan;
+    margin-bottom: 10px;
+}
+
+.containFormClean h5{
+    margin-top: 15px;
+    margin-left: 10px;
+    font-weight: 300;
+    margin-top: 20px;
+    text-decoration: underline; 
+}
+.dataUserClean{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+.titleFormClean{
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    width: 270px;
+}
+.titleFormClean h6{
+    margin-top: 1.5px;
+}
+.headerFormClean{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+}
+.itemUser1NameClean{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    font-size: 18px;
+    width: 120px;
+    height: 50px; 
+    
+}
+.inpit1NameClean{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 90px;
+    top: 0px;
+    left: 30px;
+    right: 0px;
+}
+.itemUser2AgeClean{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 18px;
+    width: 150px;
+    height: 50px;   
+     
+}
+.inpit2AgeClean{
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: flex-start;
+    width: 200px;
+    
+}
+.itemUserNumerClean{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 18px;
+    width: 200px;
+    height: 50px;
+    align-items: center; 
+}
+.inpitNumerClean{
+    position: absolute;   
+    display: flex;
+    top: 0%;
+    left: 0%;
+    justify-content: center;
+}
+.itemUser1StoreNameClean{
+    position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    font-size: 18px;
+    width: 500px;
+    height: 50px;
+    align-items: center;
+}
+.inpit1StoreNameClean{
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    top: 0%;
+    right: 0%;
+    width: 520px;
+}
+.itemUser2TypeClean{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    width: 600px;
+    height: 50px;
+    align-items: center;   
+}
+.inpit2TypeClean{
+    top: 0%;
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    right: 0%;
+    width: 300px;
+}
+.itemUserLocationClean{
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 18px;
+    width: 350px;
+    height: 50px;
+    align-items: center;
+}
+.inpitLocationClean{
+    top: 0%;
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    right: 0%;
+    width: 200px;
+} 
+.containFormClean button{
+    position: absolute;
+    right: 3%;
+    bottom: 3%;
+}
+.table{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
