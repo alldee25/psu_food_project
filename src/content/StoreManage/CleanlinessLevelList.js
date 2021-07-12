@@ -2,7 +2,6 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import swal from 'sweetalert';
-import {BrowserRouter as Router,Link,Route,useParams,useRouteMatch,useHistory,} from "react-router-dom";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -25,6 +24,7 @@ import { AuthContext } from '../../App';
 import BeenhereRoundedIcon from '@material-ui/icons/BeenhereRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import CleanlinessLevelForm from './CleanlinessLevelForm';
+import { MenuItem } from '@material-ui/core';
 
 
 
@@ -61,20 +61,73 @@ function CleanlinessLevel() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [id,setId] = useState()
+    const [dateYears,setDataYears] = useState([])
+    const [yearToday,setYeartoday] = useState('')
+    const [month,setMonth] = useState('')
+    const [monthT,setMonthT] = useState('')
+    const [monthToday,setMonthToday] = useState('')
+    const [yeartodayForcheck,setYeartodayForcheck] = useState('')
 
+    const SelectByMonth =(e)=>{
+      setDataCleanlinessLevelList([])
+      setMonth(e)
+      axios.post("http://localhost:3001/getCleanListByYearAndMonth",{
+        month:e,
+        yearToday:yearToday
+      }).then((res)=>{
+        setDataCleanlinessLevelList(res.data)
+      })
+    }
+
+    const SelectByYear =(e)=>{
+      setDataCleanlinessLevelList([])
+      setYeartoday(e)
+      axios.post("http://localhost:3001/getCleanListByYearAndMonth",{
+        yearToday:e,
+        month:month
+      }).then((res)=>{
+        setDataCleanlinessLevelList(res.data)
+      })
+    }
 
     const handleClickOpen = (e) => {
+      
         setId(e)
         setOpen(true);
+        if(month < 10){
+          setMonthT('0'+month)         
+        }
+        else{
+          setMonthT(month)
+        }  
       };
     
       const handleClose = () => {
         setOpen(false);
       };
+
       useEffect(()=>{
-        axios.post("http://localhost:3001/getStoreList").then((res)=>{
+          const today = new Date();
+          const yeartoday = today.getFullYear() 
+          const month = today.getMonth() +1
+          setMonth(month)
+          setMonthToday(month)
+          setYeartoday(yeartoday)
+          setYeartodayForcheck(yeartoday)
+        axios.post("http://localhost:3001/getCleanListByYearAndMonth",{
+          yeartoday:yeartoday,
+          month:month
+        }).then((res)=>{
           setDataCleanlinessLevelList(res.data)
-        })
+        }).then(
+          axios.get("http://localhost:3001/getYearsOfClean").then((response)=>{
+              const data = []
+              response.data.forEach(element => {
+              data.push(element.Year)   
+              });
+              setDataYears([...new Set(data)]);     
+          })
+          )
       },[])
 
     return (   
@@ -84,31 +137,51 @@ function CleanlinessLevel() {
                 รายการกสรตรวจสอบความสะอาดร้านค้า
                 </h1>
             </div>       
-            <div style={{position:'absolute',right:"5%",top:'30px'}}>
-            <InputLabel  id="demo-simple-select-outlined-label" >ปี</InputLabel>
-            <Select  labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
-              
+            <div style={{display:'flex',position:'absolute',right:"75px",top:'30px'}}>
+              <div style={{marginLeft:'10px'}}>
+                <InputLabel  id="demo-simple-select-outlined-label" >เดือน</InputLabel>
+                <Select value={month} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByMonth(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+                  <MenuItem value={1}>มกราคม</MenuItem>
+                  <MenuItem value={2}>กุมภาพันธ์</MenuItem>
+                  <MenuItem value={3}>มีนาคม</MenuItem>
+                  <MenuItem value={4}>เมษายน</MenuItem>
+                  <MenuItem value={5}>พฤษภาคม</MenuItem>
+                  <MenuItem value={6}>มิถุนายน</MenuItem>
+                  <MenuItem value={7}>กรกฎาคม</MenuItem>
+                  <MenuItem value={8}>สิงหาคม</MenuItem>
+                  <MenuItem value={9}>กันยายน</MenuItem>
+                  <MenuItem value={10}>ตุลาคม</MenuItem>
+                  <MenuItem value={11}>พฤศจิกายน</MenuItem>
+                  <MenuItem value={12}>ธันวาคม</MenuItem>
+              </Select> 
+            </div>
+          <div style={{marginLeft:'10px'}}>
+            <InputLabel style={{marginLeft:'10px'}} id="demo-simple-select-outlined-label" >ปี</InputLabel>
+            <Select value={yearToday} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByYear(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+              {dateYears.map((year,index)=>(
+                <MenuItem key={index} value={year}>{year}</MenuItem>
+              ))}
             </Select>
+          </div>    
+                   
             </div>
             <div style={{marginTop:'20px'}}>
               <TableContainer component={Paper} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
-                      <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
                       <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
                       <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>
+                      <StyledTableCell align="center">ตรวจสอบโดย</StyledTableCell>
                       <StyledTableCell align="center">สถานะ</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {dataCleanlinessLevelList.map((dataList) => (
-                      <StyledTableRow key={dataList.id}>
-                        <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
-                        <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
+                    {dataCleanlinessLevelList.map((dataList,index) => (
+                      <StyledTableRow key={index}>                       
                         <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)} variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -128,7 +201,7 @@ function CleanlinessLevel() {
           </Toolbar>
         </AppBar>
         <div style={{marginTop:'50px'}}>
-          <CleanlinessLevelForm active={id} open={open}/>
+          <CleanlinessLevelForm active={id} forDate={yearToday+'-'+monthT+'-'+'01'} open={open}/>
           </div> 
       </Dialog>  
     </div>

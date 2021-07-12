@@ -319,5 +319,57 @@ adminRouter.get("/getDetialList",(req, res) => {//ดึงข้อมูลเ
         }
     }))
 })
-
+adminRouter.get("/getYearsOfClean",(req, res) => {
+    db.query(`SELECT year(date) AS Year FROM cleanliness_level`,((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getCleanListByYearAndMonth",(req, res) => {
+    const year = req.body.yearToday
+    const month = req.body.month
+    db.query(`SELECT store.store_name,store.id AS s_id,cleanliness_level.*,admin.name 
+            FROM ((store 
+            LEFT JOIN cleanliness_level ON cleanliness_level.store_id = store.id AND year(cleanliness_level.date) = ? AND month(cleanliness_level.date) = ?)
+            LEFT JOIN admin ON admin.id = cleanliness_level.admin_id)`,[year,month],((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/InsertStoreCleanLevel",(req, res)=>{
+    const scores = req.body.scores
+    const date = req.body.date
+    const adminid = req.body.adminId
+    const time = req.body.time
+    const storeId = req.body.storeId
+    const status = req.body.status
+    const feedback  = req.body.feedback 
+    db.query(`INSERT INTO cleanliness_level (admin_id,store_id,status,time,date,feedback ) VALUE(?,?,?,?,?,?)`,[adminid,storeId,status,time,date,feedback],((err)=>{
+        if (err) {
+            console.log(err);
+        }
+        else{
+            db.query(`SELECT id FROM cleanliness_level WHERE store_id = ? AND date = ?`,[storeId,date],((err,result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    result[0].id
+                    scores.forEach(element => {
+                       db.query(`INSERT INTO cleanliness_level_detial (cleanliness_level_id,topic_id,point,detial) VALUE(?,?,?,?)`,
+                       [result[0].id,element.id,element.score,element.detial]) 
+                    });
+                    
+                }
+            }))
+        }
+    }))
+})
 module.exports = adminRouter

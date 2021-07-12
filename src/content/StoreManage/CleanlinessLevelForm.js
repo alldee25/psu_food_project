@@ -30,17 +30,15 @@ import Paper from '@material-ui/core/Paper';
 
 function CleanlinessLevelStore(props) {
   const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
-  const [typeList,setTypeList] = useState([])
-  const [locationList,setLocationList] = useState([])
-  const [bType,setBType] = useState('')
-  const [bLocation,setBLocation] = useState('')
+  const history = useHistory()
   const [date,setDate] = useState('')
+  const [time,setTime] = useState('')
   const {auth,setIsload} = useContext(AuthContext)
   const [dataLevel,setDataLevel] = useState([])
-  const [scores, setScore] = useState([
-    {id: '',score: ''}
-  ]);
-  
+  const [scores, setScore] = useState([]);
+  const [feedback, setFeedback ] = useState('')
+  const [dateLast, setDateLast] = useState('')
+  const [dateInput, setDateInput] = useState('')
 
   const transitions = useTransition(props.open, {
     from: { opacity: 0, y: 800 },
@@ -49,65 +47,123 @@ function CleanlinessLevelStore(props) {
   })
 
   const handleChangeInput = (id, e) => {
-    console.log(scores);
-    const newInputFieles = scores.map(inputfild => {
-      
+    scores.map(inputfild => {
       if(id === inputfild.id){
         inputfild[e.target.name] = e.target.value
       }
       return inputfild;
     })
-    
+  }
+  const InsertData = (e) =>{
+    e.preventDefault(e.target.value)
+    const id = scores.every((score)=>{
+        return score.score !== ''
+      })
+     const sum =  scores.reduce((result,score)=>{
+        return result + Number(score.score)
+      },0)
+      if (id && time !== '') {
+        if (sum>=36 && scores[4].score > 0) {
+          swal("กด ok เพื่อยืนยันการบันทึก",{
+        })
+        .then((value) => {
+          if (value) {
+            axios.post("http://localhost:3001/InsertStoreCleanLevel",{
+          scores:scores,
+          date:dateInput,
+          time:time,
+          storeId:dataCleanlinessLevelList[0].store_id,
+          adminId:auth.usersData[0].id,
+          status:'ผ่าน',
+          feedback:feedback 
+          }).then(swal({
+            title: "บันทึกเรียบร้อย",
+            text: "กดปุ่มเพื่อไปต่อ",
+            icon: "success",
+            button: "OK",
+          }).then((value) =>{
+            history.push('/HomeStore/CleanlinessLevel')
+            history.go() 
+            }))
+          }
+          })
+        } else {
+          swal("กด ok เพื่อยืนยันการบันทึก",{
+          })
+          .then((value) => {
+            if (value) {
+              axios.post("http://localhost:3001/InsertStoreCleanLevel",{
+            scores:scores,
+            date:dateInput,
+            time:time,
+            storeId:dataCleanlinessLevelList[0].store_id,
+            adminId:auth.usersData[0].id,
+            status:'ไม่ผ่าน',
+            feedback:feedback 
+            }).then(swal({
+              title: "บันทึกเรียบร้อย",
+              text: "กดปุ่มเพื่อไปต่อ",
+              icon: "success",
+              button: "OK",
+            }).then((value) =>{
+              history.push('/HomeStore/CleanlinessLevel')
+              history.go() 
+              }))
+            }
+            })
+        }
+      } else {
+        swal('ข้อมูลไม่ครบถ้วน','โปรดป้อรข้อมูลให้ครบถ้วน','warning')
+      }
   }
 
   useEffect(()=>{
     setIsload(true)
-    const today = new Date();
+    const today = new Date(props.forDate);
+    const todayDate = new Date();
+    const todayMonth = todayDate.getMonth() +1
+    const lastDayToday = todayDate.getDate()
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDate();
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
     const yeartoday = today.getFullYear() 
     const month = today.getMonth() +1
-    const date = today.getDate()
-    if(month < 10 && date > 9){
-      const forday = `${yeartoday}-0${month}-${date}`
-      setDate(forday) 
+    setTime(time)
+    if(month < 10){
+      if (todayMonth == month) {
+        const fordayFirst = `${yeartoday}-0${month}-0${firstDay}`
+        const fordayLast = `${yeartoday}-0${month}-${lastDayToday}`
+        setDate(fordayFirst)
+        setDateLast(fordayLast)
+      } else {
+      const fordayFirst = `${yeartoday}-0${month}-0${firstDay}`
+      const fordayLast = `${yeartoday}-0${month}-${lastDay}`
+      setDate(fordayFirst)
+      setDateLast(fordayLast)
+      }
+       
     }
-    else if(date < 10 && month > 9){
-      const forday = `${yeartoday}-${month}-0${date}`
-      setDate(forday)     
+    else if( month > 9){
+      const fordayFirst = `${yeartoday}-${month}-0${firstDay}`
+      const fordayLast = `${yeartoday}-${month}-${lastDay}`
+      setDate(fordayFirst)
+      setDateLast(fordayLast)      
     }
-    else if(date < 10 && month < 10){       
-      const forday = `${yeartoday}-0${month}-0${date}`
-      setDate(forday)      
-    }else{
-     const forday = `${yeartoday}-${month}-${date}`
-     setDate(forday) 
+    else{
+     const fordayFirst = `${yeartoday}-${month}-0${firstDay}`
+     const fordayLast = `${yeartoday}-${month}-${lastDay}`
+     setDate(fordayFirst)
+     setDateLast(fordayLast)  
     } 
     axios.post("http://localhost:3001/getStoreAndStoreOwnerDetial",{
          id:props.active 
     }).then((res)=>{
     setDataCleanlinessLevelList(res.data)
-    const [{dob}] = res.data
-    const today = new Date();
-    const birthDate = new Date(dob);  
-    const m = today.getMonth() - birthDate.getMonth();
   }).then(
-    axios.post("http://localhost:3001/getTypeList",{
-      id:props.active
-    }).then((res)=>{
-        setTypeList(res.data)
-    })
-  ).then(
-    axios.post("http://localhost:3001/getLocationList",{
-      id:props.active
-    }).then((res)=>{
-      setLocationList(res.data)
-    })
-  ).then(
     axios.get("http://localhost:3001/getDetialList").then((res)=>{
         setDataLevel(res.data)
         res.data.map(element => {
-          scores.push({id:element.id,score:''}) 
+          scores.push({id:element.id,score:'',detial:''}) 
           });
-        
     })
   ).then(setIsload(false))
 },[])
@@ -121,70 +177,31 @@ function CleanlinessLevelStore(props) {
           {dataCleanlinessLevelList.map((dataCleanlinessLevelList)=>(
             <div className="dataUserClean" key={dataCleanlinessLevelList.id}>
             <div style={{display:'flex',flexDirection:'row',width:'100%',height:'50px'}}>
-              <div className="itemUser1NameClean">
-                <span>วันที่ </span>                                                       
-                <div className="inpit1NameClean" >
-                  <FormControl disabled >
-                
-                    <Input id="name" value={dataCleanlinessLevelList.name} inputProps={{ style: { textAlign: 'center', width:'500px'}}}  />
-                  </FormControl> 
-                </div>               
-              </div> 
-              <div className="itemUser2AgeClean">
-                <span>เดือน </span>                             
-                <div className="inpit2AgeClean" >
-                  <FormControl disabled >
-                    <Input id="age" value='#' inputProps={{min: 0, style: { textAlign: 'center',width:'100px' }}}  />
-                  </FormControl>
-                </div>                             
-              </div>
-              <div className="itemUserNumerClean">
-                <span>พ.ศ</span>             
+            <div className="itemUserNumerClean">             
                 <div className="inpitNumerClean" >
-                  <FormControl disabled >
-                    <Input id="id" value={dataCleanlinessLevelList.id} inputProps={{min: 0, style: { textAlign: 'center',width:'160px' }}}  />
-                  </FormControl>
+                <TextField type="date" value={dateInput} onChange={(e) => setDateInput(e.target.value)} id="date" inputProps={{ min:(date),max:(dateLast) }} label="วันที่" InputLabelProps={{ shrink: true, }}  style={{width:'100%'}} />
                 </div>               
               </div>
-              <div className="itemUserNumerClean">
-                <span>เวลา</span>             
+              <div className="itemUserNumerClean">             
                 <div className="inpitNumerClean" >
-                  <FormControl disabled >
-                    <Input id="id" value={dataCleanlinessLevelList.id} inputProps={{min: 0, style: { textAlign: 'center',width:'160px' }}}  />
-                  </FormControl>
+                  <TextField type="time" id="time" label="เวลา"  onChange={(e)=>{setTime(e.target.value)}} InputLabelProps={{shrink: true}} />
                 </div>               
               </div>
             </div>             
             <div style={{display:'flex',flexDirection:'row',width:'100%',height:'80px',marginTop:'20px'}}>
-              <div className="itemUser1StoreNameClean">
-                <span>ชื่อร้าน</span>               
-                <div className="inpit1StoreNameClean">
-                  <FormControl disabled >
-                    <Input id="storeName" value={dataCleanlinessLevelList.store_name} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
-                  </FormControl>
-                </div>        
+              <div className="itemUser1StoreNameClean">                             
+                <TextField disabled id="dstoreNameate" label="ชื่อร้าน" defaultValue={dataCleanlinessLevelList.store_name} />                     
               </div>
-              <div className="itemUser2TypeClean">
-                ประเภทร้านค้าที่สมัคร
-                <div className="inpit2TypeClean">
-                  <FormControl disabled style={{marginLeft:'30px'}}>
-                    <Input id="type" value={dataCleanlinessLevelList.type} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
-                  </FormControl>
-                </div>              
+              <div className="itemUser2TypeClean">                              
+                <TextField disabled style={{marginLeft:'30px'}} disabled id="type" label="ประเภทร้านค้าที่สมัคร" defaultValue={dataCleanlinessLevelList.type} />                            
               </div>
-              <div className="itemUserLocationClean">
-                <span>
-                  โรงอาหาร
-                </span>             
-                <div className="inpitLocationClean" >
-                  <FormControl disabled style={{marginLeft:'30px'}}>
-                    <Input id="location" value={dataCleanlinessLevelList.location} inputProps={{min: 0, style: { textAlign: 'center',width:'300px' }}}  />
-                  </FormControl>
-                </div>
+              <div className="itemUserLocationClean">                                                    
+                <TextField disabled style={{marginLeft:'30px'}} disabled id="type" label="โรงอาหาร" defaultValue={dataCleanlinessLevelList.location} />              
               </div>
             </div>  
           </div>
           ))}
+          <form onSubmit={InsertData}>
             <div className="table">
               <TableContainer style={{width:'1100px'}} component={Paper}>
               <Table size="small" aria-label="a dense table">
@@ -192,17 +209,25 @@ function CleanlinessLevelStore(props) {
                   <TableRow>
                     <TableCell align="center">ข้อ</TableCell>
                     <TableCell align="left">หัวข้อตรวจสอบ</TableCell>
-                    <TableCell align="center" width="250">ผลการตรวจ(ระดับ)</TableCell>
+                    <TableCell align="center" >ผลการตรวจ(ระดับ)</TableCell>
                     <TableCell align="center">รายละเอียด</TableCell>
                   </TableRow>
-                </TableHead>
+                </TableHead>               
                 <TableBody>
                   {dataLevel.map((row) => (
-                    <TableRow key={row.name}>
+                    <TableRow key={row.id}>
                       <TableCell align="center">{row.id}</TableCell>
-                      <TableCell align="left" width="500">{row.detial}</TableCell>
-                      <TableCell align="left" >
+                      <TableCell align="left" >{row.detial}</TableCell>
+                      <TableCell align="left" width="400">
                         <RadioGroup row aria-label="position" name="position" value={scores.score} onChange={value => handleChangeInput(row.id,value)} defaultValue="top">
+                        <FormControlLabel
+                            value="0"
+                            name="score"
+                            control={<Radio color="primary" />}
+                            label='0'
+                            labelPlacement="top"
+                            width="10"
+                          />
                           <FormControlLabel
                             value="1"
                             name="score"
@@ -226,15 +251,19 @@ function CleanlinessLevelStore(props) {
                           />
                           </RadioGroup>
                       </TableCell>
-                      <TableCell align="center"><TextField id="outlined-basic" multiline rows="4" variant="outlined" /></TableCell>
+                      <TableCell align="center" width="200"><TextField name="detial" onChange={value => handleChangeInput(row.id,value)} id={row.index} multiline rows="4" variant="outlined" /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
             </div>
-    
-         </div>
+            <div className="detial" style={{width:'100%',display:'flex',justifyContent:'center'}}>
+            <TextField onChange={(e)=>setFeedback(e.target.value)} label="ข้อเสนอแนะอื่นๆ" style={{width:'1100px'}} id="detial" multiline rows="4" variant="outlined" />
+            </div>         
+            <Button type="submit" variant="contained" color="primary" style={{position:'absolute',right:'20px',bottom:'20px'}}>บันทึก</Button>
+        </form>
+         </div>              
         </div>
       </animated.div>
     )

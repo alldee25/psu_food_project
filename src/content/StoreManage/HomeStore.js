@@ -113,13 +113,13 @@ useEffect(() => {
             </div> 
           </div>
           <div className={togle === 2 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(2)} to={`${url}/CheckApplication`}>ตรวจสอบการชำระ</Link>
+            <Link onClick={() => togleTab(2)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
           </div>
 
           <div className={togle === 3 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(3)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
+            <Link onClick={() => togleTab(3)} to={`${url}/CheckApplication`}>ตรวจสอบการชำระ</Link>
           </div>
-
+       
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(4)} to={`${url}/education`}>ตรวรวสอบการลา</Link>
           </div>

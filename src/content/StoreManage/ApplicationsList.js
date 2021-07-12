@@ -71,7 +71,6 @@ export default function CheckApplication(props) {
     
 
     const handleClickOpen = (e) => {
-      console.log(typeof(e));
       setIid(e)
       setOpen(true);
     };
