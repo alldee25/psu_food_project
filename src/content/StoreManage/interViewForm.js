@@ -55,7 +55,6 @@ function InterViewForm(props) {
     const history = useHistory()
     const [dataInterViewList,setDataInterViewList] = useState([])
     const sum = ((Number(score1)+Number(score2)+Number(score3))*100)/100
-    const location = useLocation()
 
     const transitions = useTransition(props.open, {
       from: { opacity: 0, y: 800 },
@@ -67,18 +66,17 @@ function InterViewForm(props) {
       score1:score1,
       score2:score2,
       score3:score3,
+      bordOpenion:bordOpenion
     }
     const handleChange =(e)=>{
       setBoreOpenion(e.target.value) 
     }
-
     const Insert = async (e) =>{
       e.preventDefault(e.target.value)
       setIsload(true)
-      
       const isValid = await adminSchema.isValid(formScore)
       if (isValid) {
-        if ((bordOpenion!='ไม่ผ่านการคัดเลือก')&& sum<80) {
+        if ((bordOpenion==='ไม่ผ่านการคัดเลือก') && (sum<80)) {       
           axios.post("http://localhost:3001/insertInterview",{
             dataInterViewList:dataInterViewList,
             score1:score1,
@@ -102,7 +100,7 @@ function InterViewForm(props) {
           }) 
           })
         }
-        else if((bordOpenion==='ผ่านการคัดเลือก')&& sum>=80){
+        else if((bordOpenion==='ผ่านการคัดเลือก') && (sum>=80)){        
           axios.post("http://localhost:3001/insertInterview",{
             dataInterViewList:dataInterViewList,
             score1:score1,
@@ -126,7 +124,7 @@ function InterViewForm(props) {
           }) 
           })
         }
-        else if((bordOpenion==='ผ่านการคัดเลือกแบบมีเงื่อนไข')&&((bType!='')&&(bLocation!=''))){
+        else if((bordOpenion==='ผ่านการคัดเลือกแบบมีเงื่อนไข')&&((bType!='')&&(bLocation!=''))&&(sum>=80)){
           axios.post("http://localhost:3001/insertInterview",{
             dataInterViewList:dataInterViewList,
             score1:score1,
@@ -208,6 +206,7 @@ function InterViewForm(props) {
       })
     ).then(setIsload(false))
   },[])
+
     return transitions(
       (styles, item) =>item && <animated.div style={styles}>
       <div style={{display:'flex',justifyContent:'center'}}>
@@ -276,10 +275,11 @@ function InterViewForm(props) {
               </div>
             </div>  
           </div>
-          ))}
-          
+          ))}         
           <hr/> 
-          <h5>ผลการพิจารณา</h5>
+          <div style={{marginLeft:'15px'}}>
+            <h5>ผลการพิจารณา</h5>
+          </div>          
           <form className={classes.root} autoComplete="off" onSubmit={Insert}>
             <div style={{display:'flex',flexDirection:'row'}}>
               <div className="titleForm">
@@ -331,13 +331,13 @@ function InterViewForm(props) {
                 <TextField multiline rows={5} type="text" style={{width:'815px'}} label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} onChange={(e)=>{setFeedback (e.target.value)}} />
               </div>  
             </div>     
-              <div style={{display:'flex',flexDirection:'row' }}>
+              <div style={{display:'flex',flexDirection:'row',marginLeft:'20px' }}>
               <FormControl component="fieldset" >
                 <FormLabel component="legend">ความเห็นของคณะกรรมการ</FormLabel>
                 <RadioGroup aria-label="gender" name="gender1" value={bordOpenion} onChange={handleChange}>
-                  <FormControlLabel value="ไม่ผ่านการคัดเลือก" control={<Radio />} label="ไม่ผ่านการคัดเลือก" />
-                  <FormControlLabel value="ผ่านการคัดเลือก" control={<Radio />} label="ผ่านการคัดเลือก" />
-                  <FormControlLabel value="ผ่านการคัดเลือกแบบมีเงื่อนไข" control={<Radio />} label="ผ่านการคัดเลือกแบบมีเงื่อนไข" />
+                  <FormControlLabel  value="ไม่ผ่านการคัดเลือก" control={<Radio />} label="ไม่ผ่านการคัดเลือก" />
+                  <FormControlLabel  value="ผ่านการคัดเลือก" control={<Radio />} label="ผ่านการคัดเลือก" />
+                  <FormControlLabel  value="ผ่านการคัดเลือกแบบมีเงื่อนไข" control={<Radio />} label="ผ่านการคัดเลือกแบบมีเงื่อนไข" />
                 </RadioGroup>
               </FormControl>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px'}}>
@@ -360,8 +360,7 @@ function InterViewForm(props) {
               </div>
               </div>  
             <Button variant="contained" type="submit" color="primary">บันทึก</Button>
-          </form>
-          
+          </form>          
         </div> 
       </div>
      </animated.div>   

@@ -1,0 +1,15 @@
+.containComplaintForm{
+    position: relative;
+    margin-top: 20px;
+    height: 110vh;
+    width: 65.8vw;
+    background-color: cyan;
+    margin-bottom: 10px;
+}
+.headerComplaintForm{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+}

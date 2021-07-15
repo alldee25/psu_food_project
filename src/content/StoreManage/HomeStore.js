@@ -7,6 +7,8 @@ import CheckApplication from "./ApplicationsList";
 import InterView from "./InterView";
 import DataListAnnounce from "./DataListAnnounce";
 import StoreInformation from "./storeInformation";
+import LeaveList from "./LeaveList";
+import ComplaintList from "./ComplaintList";
 //for ---------------------------------------------------------Import ----------------------------------------------------------------------------------------
 
 //for MUI---------------------------------------------------------Import----------------------------------------------------------------------------------------
@@ -19,6 +21,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import Grow from '@material-ui/core/Grow';
 import CleanlinessLevel from "./CleanlinessLevelList";
+
 //for MUI---------------------------------------------------------functons out----------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -121,11 +124,11 @@ useEffect(() => {
           </div>
        
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(4)} to={`${url}/education`}>ตรวรวสอบการลา</Link>
+            <Link onClick={() => togleTab(4)} to={`${url}/LeaveList`}>ตรวรวสอบการลา</Link>
           </div>
 
           <div className={togle === 5 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(5)} to={`${url}/education`}>ข้อร้องเรียน</Link>
+            <Link onClick={() => togleTab(5)} to={`${url}/ComplaintList`}>ข้อร้องเรียน</Link>
           </div>
 
           <div className={togle === 6 ? "itemNaveactive-nave" : "itemNave"}>
@@ -140,6 +143,8 @@ useEffect(() => {
           <Route      path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
           <Route      path={`${path}/StoreInformation`} component={StoreInformation} />
           <Route      path={`${path}/CleanlinessLevel`} component={CleanlinessLevel} />
+          <Route      path={`${path}/LeaveList`} component={LeaveList} />
+          <Route      path={`${path}/ComplaintList`} component={ComplaintList} />
         </div>
       </div>
     </Router>

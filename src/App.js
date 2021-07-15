@@ -82,7 +82,7 @@ const transitions1 = useTransition(isload,{
 
   if((auth!=null) && (userType === 'Admin')){
     return (
-    <AuthContext.Provider value={{ auth, setIsload }}>
+    <AuthContext.Provider value={{ auth, setIsload,isload }}>
         {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'black',zIndex:'4',borderRadius:'10px'}}/>}
         {isload === true && <div  className="blurAdmin"/>}
       {transitionsAdmin((styles, item) => item && ( <animated.div  style={styles}>

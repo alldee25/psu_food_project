@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import swal from 'sweetalert';
+import './RegisStore.css'
 
  //-------------------------------------------------------------------------------------------------------------- 
 
@@ -200,13 +201,11 @@ export default function RegisStore() {
   }
 
   const handleNext = async () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    if (activeStep === 0) { 
-    } 
-    if (activeStep === 1) {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1); 
+    if (activeStep === 2) {
       setArgee(true)
     }
-    if(activeStep === 2){
+    if(activeStep === 3){
       const isValid = await userSchema.isValid(formData)
      if (isValid) {
         if (inId.every(checkId)) {
@@ -285,19 +284,18 @@ export default function RegisStore() {
     leave:  { opacity: 0}
   })
 
-
 //--------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------Step Func--------------------------------------   
  function getSteps() {
-    return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+    return ['หน้า 1', 'หน้า 2', 'หน้า 3','หน้า 4'];
   } 
 function getStepContent(step) {
     switch (step) {
       case 0:
         return transitions(
-              (styles, item) => item && <animated.div  className="container" style={styles}> 
+              (styles, item) => item && <animated.div className="container" style={styles}> 
                 <div className="head">
-                <img width="auto" height="120" src={psuLogo}/> 
+                <img  width="auto" height="120" src={psuLogo}/> 
                 <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
                 โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
                 </p>                
@@ -321,47 +319,50 @@ function getStepContent(step) {
                 <TextField onChange={(e) => setPhone(e.target.value)} required value={phone} id="โทรศัท์" label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
                 <TextField onChange={(e) => setEmail(e.target.value)} required value={email} id="email" label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
                 <h1></h1>
-                  </div>
-                  
-                        <div className="Title">
-                            <h3>ข้อมูลร้านค้า</h3>
-                            <hr />
-                        </div>
-                        <TextField onChange={(e) => setStoreName(e.target.value)} required value={storeName} id="ชื่อร้าน" label="ชื่อร้าน" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
-                  <div style={{marginLeft:'10px'}}>
-                <div className="radio1">
-                <FormLabel component="legend">ประเภทร้านค้า</FormLabel>
-                <RadioGroup aria-label="gender" name="gender1" value={type} onChange={selectType} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr'}}>
-                   {typeList.map((data,index)=>(
-                     <FormControlLabel key={data.id} value={data.store_type} name={String(data.id)} control={<Radio />} label={data.store_type} />
-                   )  
-                   )}
-                </RadioGroup>
-                <hr></hr>
-                <FormLabel component="legend"></FormLabel>
-                <RadioGroup aria-label="gender" name="gender1"  value={type1} onChange={selectType1} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr '}}>
-                {type1List.map((data,index)=>(
-                     <FormControlLabel key={data.id} value={data.religion} name={String(data.id)} control={<Radio />} label={data.religion} />
-                   )  
-                   )} 
-                </RadioGroup> 
-                </div>
-                <div className="radio1">
-                    <hr></hr>
-                <FormLabel component="legend">โรงอาหาร</FormLabel>
-                <RadioGroup aria-label="gender" name="gender1" value={locations} onChange={selectLocation} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr '}}>
-                {locationList.map((data,index)=>(
-                     <FormControlLabel key={data.id} value={data.location} name={String(data.id)} control={<Radio />} label={data.location} />
-                   )  
-                   )} 
-                </RadioGroup>
-                </div>
-                </div>       
+                  </div>                                            
                 </div>                                  
                 </animated.div>
         
         )
       case 1:
+        return (
+          <div className="container" >
+            <div style={{marginTop:"20px"}}>
+              <div className="Title">
+                <h3>ข้อมูลร้านค้า</h3>
+                <hr />
+              </div>
+              <TextField onChange={(e) => setStoreName(e.target.value)} required value={storeName} id="ชื่อร้าน" label="ชื่อร้าน" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
+                <div style={{marginLeft:'10px'}}>
+                  <div className="radio1">
+                    <FormLabel component="legend">ประเภทร้านค้า</FormLabel>
+                    <RadioGroup aria-label="gender" name="gender1" value={type} onChange={selectType} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr'}}>
+                      {typeList.map((data,index)=>(
+                        <FormControlLabel key={data.id} value={data.store_type} name={String(data.id)} control={<Radio />} label={data.store_type} />
+                      ))}
+                    </RadioGroup>
+                    <hr></hr>
+                    <FormLabel component="legend"></FormLabel>
+                    <RadioGroup aria-label="gender" name="gender1"  value={type1} onChange={selectType1} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr '}}>
+                      {type1List.map((data,index)=>(
+                        <FormControlLabel key={data.id} value={data.religion} name={String(data.id)} control={<Radio />} label={data.religion} />
+                      ))} 
+                    </RadioGroup> 
+                </div>
+                <div className="radio1">
+                  <hr></hr>
+                  <FormLabel component="legend">โรงอาหาร</FormLabel>
+                  <RadioGroup aria-label="gender" name="gender1" value={locations} onChange={selectLocation} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr 1fr '}}>
+                    {locationList.map((data,index)=>(
+                      <FormControlLabel key={data.id} value={data.location} name={String(data.id)} control={<Radio />} label={data.location} />
+                    ))} 
+                  </RadioGroup>
+                </div>
+              </div>
+            </div>
+          </div>      
+        );
+      case 2:
         return (
           <div className="container" >
             <div className="form2" >
@@ -370,51 +371,47 @@ function getStepContent(step) {
                 <hr />
               </div>
               <div style={{marginLeft:'10px'}}>                 
-                <div style={{width:'100%',borderStyle:"solid",borderColor:"yellow",display:'flex',flexDirection:'column'}}>                                                    
+                <div style={{width:'100%',display:'flex',flexDirection:'column'}}>                                                    
                   { inputfild.map((inputfilds) => (                       
-                    <div key={inputfilds.id} style={{width:'100%',borderStyle:"solid",}}>
+                    <div key={inputfilds.id} style={{width:'100%',}}>
                       <TextField name="menu" onChange={e => handleChangeInput(inputfilds.id,e)} type="text" variant="outlined" value={inputfilds.menu} label="เมนู"  id="menu"  InputLabelProps={{shrink: true,}}  style={{width:'50%'}} />                                                                                                                                     
                       <TextField name="price" onChange={e => handleChangeInput(inputfilds.id,e)} type="number"variant="outlined" value={inputfilds.price} label="ราคา" id="price" InputLabelProps={{shrink: true,}}  style={{width:'30%'}}  />
-                      <Button disabled={inputfild.length === 1} onClick={() => handleRemoveFields(inputfilds.id)} style={{marginTop:'20px'}}><Removeicon /></Button>
-                                                                                                 
+                      <Button disabled={inputfild.length === 1} onClick={() => handleRemoveFields(inputfilds.id)} style={{marginTop:'20px'}}><Removeicon /></Button>                                                                                             
                     </div>                                                                                                                                                                                                   
                   ))}
                 </div>
-                    <div style={{display:'flex',justifyContent:'center',position:"relative"}}>
-                      <Button style={{position:'absolute',right:'50%',color:'#288700'}} onClick={()=>{setInpufiled([...inputfild,{id: uuidv4(),textField:''}])}} >
-                        <Addicon style={{fontSize:"2rem"}} />
-                      </Button>
-                    </div>
-                    <hr/>                                             
+                  <div style={{display:'flex',justifyContent:'center',position:"relative"}}>
+                    <Button style={{position:'absolute',right:'50%',color:'#288700',marginTop:'20px'}} onClick={()=>{setInpufiled([...inputfild,{id: uuidv4(),textField:''}])}} >
+                      <Addicon style={{fontSize:"2rem"}} />
+                    </Button>
+                  </div>
+                  <hr/>                                             
               </div>
             </div>
-        </div>
-        
-        );
-      case 2:
-        return (
-          <div className="container" >
-            <div className="form2" >
+          </div>
+        ) ;
+        case 3:
+          return(
+            <div className="container" >
+              <div className="form2" >
               <div className="Title2">
                 <h3>รายการโปรโมชั่นต่าง ๆ ที่นำเสนอ</h3>
-                  <hr />
+                <hr />
               </div>
-
               <div style={{marginLeft:'10px'}}>                 
-                <div style={{width:'100%',borderStyle:"solid",borderColor:"yellow",display:'flex',flexDirection:'column'}}>                                                                                      
-                  <div  style={{width:'100%',borderStyle:"solid",display:'flex',justifyContent:'center'}}>
+                <div style={{width:'100%',display:'flex',flexDirection:'column'}}>                                                                                      
+                  <div  style={{width:'100%',display:'flex',justifyContent:'center'}}>
                     <TextField onChange={(e)=>{setPromosion(e.target.value)}} multiline rows={5}  type="text" variant="outlined" id="promosion"  InputLabelProps={{shrink: true,}}  style={{width:'100%'}} />                                                                                                                                                                                                  
-                  </div>
-                                                                                                                                                                                                                                    
+                  </div>                                                                                                                                                                                                                                  
                 </div>
-                  <hr/>                                             
+                <hr/>                                             
               </div>
               <div className="Title2">
                 <h3>สำหรับเจ้าหน้าที่</h3>              
               </div>
               <div style={{marginLeft:'10px'}}>                 
-                <div style={{width:'100%',borderStyle:"solid",borderColor:"yellow",display:'flex',flexDirection:'column'}}>                                                                                                 
-                  <div  style={{width:'100%',borderStyle:"solid",display:'flex',alignItems:"flex-start",flexDirection:'column'}}>
+                <div style={{width:'100%',display:'flex',flexDirection:'column'}}>                                                                                                 
+                  <div  style={{width:'100%',display:'flex',alignItems:"flex-start",flexDirection:'column'}}>
                     <h5 style={{fontWeight:'normal'}}>หลักฐานที่ต้องเตรียม</h5> 
                     <div style={{marginLeft:"10px"}}>
                       <p>1.รูปถ่าย หน้าตรง ไม่สวมหมวก/แว่นตาดำ</p>                  
@@ -423,23 +420,21 @@ function getStepContent(step) {
                       <p>4.ใบรับรองแพทย์จาก รพ. ระบุว่าไม่เป็นโรคติดต่อ โรคสังคมรังเกียจ หรือโรคที่แพร่เชื้อแกผู้บริโภคได้</p>
                       <p>5.ใบรับรองอื่นๆ(ถ้ามี)</p>
                       <p>6.ค่าสมัคสอบคัดเลือกเข้าเป็นผู้ประกอบการจำหน่ายอาหาร 100 บาท</p>
-                    </div>
-                                                                                                                                                                                                                                                                                             
+                    </div>                                                                                                                                                                                                                                                                                          
                   </div>
                   <hr/>                  
-                    <p style={{textAlign:"justify"}}>
+                  <p style={{textAlign:"justify"}}>
                     <Checkbox onChange={()=>{setArgee(!agree)}} style={{marginBottom:'3px'}} color="primary" inputProps={{ 'aria-label': 'secondary checkbox' }} />
-                     ข้าพเจ้าขอรับรองว่า ข้อความที่กรอกในใบสมัคนี้เป็นความจริงและสมบูรณ์ครบถ้วน<br/>
+                    ข้าพเจ้าขอรับรองว่า ข้อความที่กรอกในใบสมัคนี้เป็นความจริงและสมบูรณ์ครบถ้วน<br/>
                     ซึ่งเป็นส่วนหนึ่งของสัญญา หากมีการบิดเบือนความจริง แจ้งเท็จ หรือปิดบังข้อเท็จจริง จะเป็นสาเหตุอัน<br/>
                     เพียงพอที่ยกเลิกสัญญาประกอบการหากได้รับคัดเลือกเป็นผู้ประกอบการร้านค้าโรงอาหาร<br/>
                     มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
-                    </p>                                                                                                                                                                                                                               
+                  </p>                                                                                                                                                                                                                               
                 </div>                                                          
               </div>
             </div>
           </div>
-          
-        ) ;
+          )
       default:
         return 'Unknown step';
     }
@@ -447,7 +442,6 @@ function getStepContent(step) {
     return transitions1(
   
     (styles, item) =>item && <animated.div className="contain" style={styles}>
-      
     <div className={classes.root}  style={{display:'flex',flexDirection:'column' ,justifyContent:'center'}}>
       <Stepper activeStep={activeStep} alternativeLabel style={{width:'100%',borderRadius:'30px',marginTop:'50px',height:'100px',backgroundColor:'transparent'}}>
         {steps.map((label) => (
@@ -466,9 +460,9 @@ function getStepContent(step) {
           <div >
             <div>{getStepContent(activeStep)}</div>
             <div style={{position:'relative',display:'flex',flexDirection:'row'}}>
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton} style={{position:'absolute',left:'320px',bottom:'30px'}}>Back</Button>
+              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton} style={{position:'absolute',left:'320px',bottom:'30px'}}>กลับ</Button>
               <Button variant="contained" disabled={agree} color="primary" onClick={handleNext} style={{position:'absolute',right:'320px',bottom:'30px'}}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? 'บันทึก' : 'ถัดไป'}
               </Button>
             </div>
           </div>

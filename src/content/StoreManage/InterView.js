@@ -110,56 +110,56 @@ export default function InterView() {
                 </h1>
             </div>       
             <div style={{position:'absolute',right:"5%",top:'30px'}}>
-            <InputLabel  id="demo-simple-select-outlined-label" >ปี</InputLabel>
-            <Select onChange={selectInterviewListByYear} value={year} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+              <InputLabel  id="demo-simple-select-outlined-label" >ปี</InputLabel>
+              <Select onChange={selectInterviewListByYear} value={year} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
                 {dataYears.map((years,index)=>( 
-                <MenuItem key={index} value={years}>{years}</MenuItem > 
-             ))}
-            </Select>
+                  <MenuItem key={index} value={years}>{years}</MenuItem > 
+                ))}
+              </Select>
             </div>
-                <div style={{marginTop:'20px'}}>
-    <TableContainer component={Paper} >
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
-            <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
-            <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
-            <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
-            <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
-            <StyledTableCell align="left">สถานะ</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dataApplicationList.map((dataList) => (
-            <StyledTableRow key={dataList.id}>
-              <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
-              <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
-              <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-              <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ลงคะแนน</Button></StyledTableCell>
-              <StyledTableCell align="center" width="100px">{dataList.admin_name}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
-              <StyledTableCell align="left" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-                </div>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              รายละเอียดการสมัค
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <div style={{marginTop:'50px'}}>
-          <InterViewForm active={id} open={open}/>
-          </div> 
-      </Dialog>
+            <div style={{marginTop:'20px'}}>
+              <TableContainer component={Paper} >
+                <Table className={classes.table} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
+                      <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
+                      <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
+                      <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
+                      <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
+                      <StyledTableCell align="left">สถานะ</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {dataApplicationList.map((dataList) => (
+                      <StyledTableRow key={dataList.id}>
+                        <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
+                        <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
+                        <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
+                        <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ลงคะแนน</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.admin_name}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
+                        <StyledTableCell align="left" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    รายละเอียดการสมัค
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <div style={{marginTop:'50px'}}>
+                <InterViewForm active={id} open={open}/>
+              </div> 
+            </Dialog>
         </div>
     )
 }

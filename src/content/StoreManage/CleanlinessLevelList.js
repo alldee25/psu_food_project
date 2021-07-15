@@ -91,7 +91,6 @@ function CleanlinessLevel() {
     }
 
     const handleClickOpen = (e) => {
-      
         setId(e)
         setOpen(true);
         if(month < 10){
@@ -101,12 +100,11 @@ function CleanlinessLevel() {
           setMonthT(month)
         }  
       };
-    
       const handleClose = () => {
         setOpen(false);
       };
 
-      useEffect(()=>{
+      useEffect(()=>{       
           const today = new Date();
           const yeartoday = today.getFullYear() 
           const month = today.getMonth() +1
@@ -115,7 +113,7 @@ function CleanlinessLevel() {
           setYeartoday(yeartoday)
           setYeartodayForcheck(yeartoday)
         axios.post("http://localhost:3001/getCleanListByYearAndMonth",{
-          yeartoday:yeartoday,
+          yearToday:yeartoday,
           month:month
         }).then((res)=>{
           setDataCleanlinessLevelList(res.data)
@@ -129,7 +127,6 @@ function CleanlinessLevel() {
           })
           )
       },[])
-
     return (   
           <div className="subcon">
             <div className="header">
@@ -162,8 +159,7 @@ function CleanlinessLevel() {
                 <MenuItem key={index} value={year}>{year}</MenuItem>
               ))}
             </Select>
-          </div>    
-                   
+          </div>                   
             </div>
             <div style={{marginTop:'20px'}}>
               <TableContainer component={Paper} >
@@ -174,15 +170,17 @@ function CleanlinessLevel() {
                       <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="center">ตรวจสอบโดย</StyledTableCell>
                       <StyledTableCell align="center">สถานะ</StyledTableCell>
+                      <StyledTableCell align="center">ผลการตรวจ</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {dataCleanlinessLevelList.map((dataList,index) => (
                       <StyledTableRow key={index}>                       
                         <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)} variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)|| dataList.admin_id!==null } variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
+                        <StyledTableCell align="center" width="10px">{dataList.status!==null ? dataList.status  : (<RemoveRoundedIcon />) }</StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>

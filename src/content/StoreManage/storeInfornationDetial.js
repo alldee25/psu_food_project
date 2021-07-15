@@ -55,14 +55,13 @@ function StoreInfornationDetial(props) {
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-    if (activeStep === 1) {
+    if (activeStep === 2) {
     setArgee(true)
     }       
   }
 
   function getSteps() {
-    return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+    return ['หน้าที่ 1', 'หน้าที่ 2', 'หน้าที่ 3'];
   }
 
   useEffect(()=>{
@@ -71,8 +70,7 @@ function StoreInfornationDetial(props) {
       id:props.active
     }).then(
       (res)=>{ 
-        const [{dob}] = res.data 
-        console.log();     
+        const [{dob}] = res.data      
         setData(res.data)
     const today = new Date();
     const birthDate = new Date(dob);  
@@ -100,7 +98,7 @@ function StoreInfornationDetial(props) {
       case 0:
         return transitions(
               (styles, item) => item && <animated.div  className="containerInfo" style={styles}> 
-                <div className="head"> 
+                <div className="headInfo"> 
                 <h4> &nbsp;&nbsp;ข้อมูลร้านค้าประจำโรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
                 </h4>                
                 </div>                
@@ -123,14 +121,11 @@ function StoreInfornationDetial(props) {
                 <TextField id="บัตรหมดอายุ"        disabled value={datas.idend} label="บัตรหมดอายุ" type="text"  style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
                 <TextField id="ที่อยู่ที่สามารถติดต่อได้" disabled value={datas.adress} label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'95%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
                 <TextField id="โทรศัท์"            disabled value={datas.phone} label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                <TextField id="email"            disabled value={datas.email} label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />                                             
-                        
-                        
+                <TextField id="email"            disabled value={datas.email} label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />                                                                                          
                   <div className="Title">
                             <h3>ข้อมูลร้านค้า</h3>
                             <hr />
-                        </div>
-                        
+                        </div>                   
                 <div style={{marginLeft:'10px'}}>
                    <TextField disabled value={datas.store_name} id="ชื่อร้าน" label="ชื่อร้าน" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
                     <TextField disabled value={datas.type+","+datas.type1} id="ประเภทร้าน"   label="ประเภทร้าน" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
@@ -152,9 +147,9 @@ function StoreInfornationDetial(props) {
                 <hr />
               </div>
               <div style={{marginLeft:'10px'}}>                 
-              <div style={{width:'100%',borderStyle:"solid",borderColor:"yellow",display:'flex',flexDirection:'column'}}>
+              <div style={{width:'100%',display:'flex',flexDirection:'column'}}>
               { menuList.map((inputfilds) => (                       
-                      <div key={inputfilds.id} style={{width:'100%',borderStyle:"solid",}}>
+                      <div key={inputfilds.id} style={{width:'100%'}}>
                         <TextField disabled name="menu"  type="text" variant="outlined" value={inputfilds.menu} label="เมนู"  id="menu"  InputLabelProps={{shrink: true,}}  style={{width:'50%'}} />                                                                                                                                     
                         <TextField disabled name="price"  type="number"variant="outlined" value={inputfilds.price} label="ราคา" id="price" InputLabelProps={{shrink: true,}}  style={{width:'30%'}}  />                                                                                                       
                       </div>                                                                                                                                                                                                   
@@ -169,13 +164,13 @@ function StoreInfornationDetial(props) {
         return (
           <div className="containerInfo" >
             <div className="form2" >
-              <div className="Title2">
+              <div style={{marginLeft:'20px'}}>
                 <h3>รายการโปรโมชั่นต่าง ๆ ที่นำเสนอ</h3>
                   <hr />
               </div>
               <div style={{marginLeft:'10px'}}>                 
-                <div style={{width:'100%',borderStyle:"solid",borderColor:"yellow",display:'flex',flexDirection:'column'}}>                                                                                      
-                  <div  style={{width:'100%',borderStyle:"solid",display:'flex',justifyContent:'center'}}>
+                <div style={{width:'100%',display:'flex',flexDirection:'column'}}>                                                                                      
+                  <div  style={{width:'100%',display:'flex',justifyContent:'center'}}>
                     {data.map((datas,index)=>(
                       <TextField key={index} disabled multiline rows={5} value={datas.promosion} type="text" variant="outlined" id="promosion"  InputLabelProps={{shrink: true,}}  style={{width:'100%'}} />                                                                                                                                                                                                  
                     ))}
@@ -193,7 +188,7 @@ function StoreInfornationDetial(props) {
   }
     return transitions1(
     (styles, item) =>item && <animated.div className="containAppInfo" style={styles}>
-      {save===true &&<div className="save" ></div> }
+      {save===true && <div className="save" ></div> }
     <div className={classes.root}  style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100vw',height:'100vh'}}>
       <Stepper activeStep={activeStep} alternativeLabel style={{width:'100%',height:'100px',backgroundColor:'transparent'}}>
         {steps.map((label) => (
@@ -211,9 +206,9 @@ function StoreInfornationDetial(props) {
           <div >
             <div>{getStepContent(activeStep)}</div>
             <div style={{position:'relative',display:'flex',flexDirection:'row'}}>
-              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton} style={{position:'absolute',left:'55px',bottom:'30px'}}>Back</Button>
-              <Button variant="contained" disabled={agree} color="primary" onClick={handleNext} style={{position:'absolute',right:'55px',bottom:'30px'}}>
-                {activeStep === steps.length - 1 ? 'บันทึก' : 'Next'}
+              <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton} style={{position:'absolute',left:'55px',bottom:'30px'}}>กลับ</Button>
+              <Button variant="contained" disabled={activeStep === steps.length - 1} color="primary" onClick={handleNext} style={{position:'absolute',right:'55px',bottom:'30px'}}>
+                ถัดไป
               </Button>
             </div>
           </div>

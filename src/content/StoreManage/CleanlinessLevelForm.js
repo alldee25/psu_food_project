@@ -33,17 +33,17 @@ function CleanlinessLevelStore(props) {
   const history = useHistory()
   const [date,setDate] = useState('')
   const [time,setTime] = useState('')
-  const {auth,setIsload} = useContext(AuthContext)
+  const {auth,setIsload,isload} = useContext(AuthContext)
   const [dataLevel,setDataLevel] = useState([])
   const [scores, setScore] = useState([]);
   const [feedback, setFeedback ] = useState('')
   const [dateLast, setDateLast] = useState('')
   const [dateInput, setDateInput] = useState('')
 
-  const transitions = useTransition(props.open, {
+  const transitions = useTransition(!isload, {
     from: { opacity: 0, y: 800 },
-    enter: { opacity: 1, y: 0 },
-    leave:  { opacity: 0,y: 800}
+    enter: { opacity: 1, y: 0,delay:150 },
+    leave:  { opacity: 0,y: 800},
   })
 
   const handleChangeInput = (id, e) => {
@@ -184,7 +184,7 @@ function CleanlinessLevelStore(props) {
               </div>
               <div className="itemUserNumerClean">             
                 <div className="inpitNumerClean" >
-                  <TextField type="time" id="time" label="เวลา"  onChange={(e)=>{setTime(e.target.value)}} InputLabelProps={{shrink: true}} />
+                  <TextField type="time" id="time" label="เวลา" onChange={(e)=>{setTime(e.target.value)}} InputLabelProps={{shrink: true}} />
                 </div>               
               </div>
             </div>             

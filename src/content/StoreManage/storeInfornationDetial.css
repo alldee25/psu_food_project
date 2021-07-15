@@ -47,3 +47,6 @@
     display: flex;
     justify-content: center;
 }
+.headInfo{
+   margin-top: 20px; 
+}

@@ -49,8 +49,7 @@ const StyledTableCell = withStyles((theme) => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-
-function StoreInformation() {
+function LeaveList() {
 
     const [storeDataList,setStoreDataList] = useState([])
     var forYear = new Date();
@@ -77,6 +76,7 @@ function StoreInformation() {
             }
         )
     },[])
+
     return (
         <div className="subcon">
            <div className="header">
@@ -127,4 +127,4 @@ function StoreInformation() {
     )
 }
 
-export default StoreInformation
+export default LeaveList

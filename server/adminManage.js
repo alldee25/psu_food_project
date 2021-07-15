@@ -201,9 +201,9 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                     if (err) {
                         console.log(err);
                     } else {
-                     db.query(`INSERT INTO store_owner (store_id,name,dob,nationality,religion,idcard,idstart,idend,adress,phone,email) 
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-                                [result[0].id,dataInterViewList[0].name,dataInterViewList[0].dob,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
+                     db.query(`INSERT INTO store_owner (store_id,name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+                                [result[0].id,dataInterViewList[0].name,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
                                 ((err)=>{
                                     if (err) {
                                         console.log(err);
@@ -237,10 +237,7 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                                 }
                             }))
                         }
-                    }))
-                        
-                    
-                    
+                    }))                                                        
                 }
             }))
         }
@@ -371,5 +368,31 @@ adminRouter.post("/InsertStoreCleanLevel",(req, res)=>{
             }))
         }
     }))
+})
+adminRouter.get('/getStoreOwnerList',(req,res)=>{
+    db.query(`SELECT store_owner.name,store.store_name,store.id 
+            FROM (store 
+            INNER JOIN store_owner ON store_owner.store_id = store.id)`,((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/geStoreDetialBynameList',(req, res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT complaint.*,store_owner.name,store.store_name,store.id,admin.name AS ad_name 
+            FROM (((complaint 
+            INNER JOIN store)
+            INNER JOIN store_owner ON store_owner.store_id = store.id)
+            INNER JOIN admin ON admin.id = complaint.admin_id)
+            WHERE complaint.store_id = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
 })
 module.exports = adminRouter
