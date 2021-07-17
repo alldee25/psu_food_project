@@ -60,6 +60,10 @@ function ComplaintForm(props) {
         leave:  { opacity: 0,y: 800}
       })
       
+      const handleChange =(e)=>{
+        setBoreOpenion(e.target.value) 
+      }
+
     useEffect(()=>{
         const today = new Date();
         const yeartoday = today.getFullYear() 
@@ -91,18 +95,104 @@ function ComplaintForm(props) {
       ).then(setIsload(false))
     },[])
     return transitions(
-        (styles, item) =>item && <animated.div style={styles}>
+          (styles, item) =>item && <animated.div style={styles}>
             <div style={{display:'flex',justifyContent:'center'}}>
-               <div className="containComplaintForm">
-                    <div className="headerComplaintForm">
-                        <h3>แบบฟอร์มแจ้งความผิด</h3>
-                    </div>  
+              <div className="containComplaintForm">
+                 <div className="headerComplaintForm">
+                  <h3>แบบฟอร์มแจ้งความผิด ครั้งที่ </h3>
+                </div>
+                <div style={{width:'95%',display:'flex',justifyContent:'flex-end'}}>
+                  <TextField label="วันที่" type="date" variant="standard" disabled value={date}></TextField>
+                </div>              
+                <div style={{display:'flex',flexDirection:'row',marginLeft:'30px',position:'relative'}}>
+                  <FormControl component="fieldset" >
+                    <FormLabel component="legend">เรื่อง</FormLabel>
+                    <RadioGroup style={{marginLeft:'60px'}} aria-label="gender" name="gender1" value={bordOpenion} onChange={handleChange}>
+                      <FormControlLabel  value="การค้างชำระค่าเช่า/ค่าไฟฟ้า/ค่าน้ำประปา/ค่าบริหารจัดการ" control={<Radio />} label="การค้างชำระค่าเช่า/ค่าไฟฟ้า/ค่าน้ำประปา/ค่าบริหารจัดการ" />
+                      <FormControlLabel  value="ข้อร้องเรียนจากผู้ใช้บริการ" control={<Radio />} label="ข้อร้องเรียนจากผู้ใช้บริการ" />
+                      <FormControlLabel  value="การกระทำผิดมาตรฐานการสุขาภ้บาลอาการ" control={<Radio />} label="การกระทำผิดมาตรฐานการสุขาภ้บาลอาการ" />
+                      <FormControlLabel  value="การกระทำผิดข้อบังคับโรงอาหาร" control={<Radio />} label="การกระทำผิดข้อบังคับโรงอาหาร" />
+                      <FormControlLabel  value="การกระทำผิดสัญญาเช่า" control={<Radio />} label="การกระทำผิดสัญญาเช่า" />
+                      <FormControlLabel  value="อื่นๆ" control={<Radio />} label="อื่นๆ" />
+                    </RadioGroup>
+                  </FormControl>                           
+                  <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',position:'absolute',top:'270px',left:'130px'}}>
+                    <TextField variant="standard" style={{width:'400px'}} disabled={bordOpenion!=="อื่นๆ"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bType} /* onChange={(e)=>{setBType(e.target.value)}} */ />                                                 
+                  </div>
+                </div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px'}}>
+                  <span>
+                    ด้วยพบว่า เมื่อวันที่
+                  </span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="date"></TextField>
+                  </div>                                             
+                  <span style={{marginLeft:'10px'}}>
+                    เวลา
+                  </span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="time" ></TextField>
+                  </div>
+                  <span style={{marginLeft:'10px'}}>
+                    นาง/นาย
+                  </span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
+                  </div>                               
+                </div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>
+                  <span>ผู้ประกอบการร้านจำหน่ายอาหารที่ ร้านที่</span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
+                  </div>
+                  <span style={{marginLeft:'10px'}}>ในพื้นที่</span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
+                  </div>
+                  <span style={{marginLeft:'10px'}}>
+                    ประจำโรงอาหาร
+                  </span>
+                  <div style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
+                  </div>                
+                </div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>         
+                  <span>
+                    ได้กระทำผิดเรื่อง
+                  </span>
+                  <div style={{marginLeft:'10px',width:'925px'}}>
+                    <TextField fullWidth inputProps={{min: 0, style: { textAlign: 'center'}}} value="###" variant="standard" type="text" ></TextField>
+                  </div>                
                 </div> 
-            </div>
-            
-            
-        </animated.div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'60px',marginTop:'20px'}}>
+                  <span>
+                    ดังนั้นจึงขอให้ผู้ประกอบการดำเนินการดังนี้
+                  </span>
+                  <div style={{marginLeft:'10px',width:'720px'}}>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} value="#" variant="standard" type="text" ></TextField>
+                  </div>                                 
+                </div>
+                <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
+                    <div style={{marginLeft:'10px'}}>
+                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="#" variant="standard" type="text" ></TextField>
+                    </div>
+                    <div>
+                      <span>
+                        ผู้ดูแล
+                      </span>
+                    </div>                                                                   
+                </div>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'60px',marginTop:'20px'}}>
+                  <span>
+                    ความคิดเห็นผู้ควบคุมกำกับดูแล
+                  </span>
+                  <div style={{marginLeft:'10px',width:'800px'}}>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} value="#" variant="standard" type="text" ></TextField>
+                  </div>                                 
+                </div>
+              </div>            
+            </div>                      
+          </animated.div>
     )
 }
-
 export default ComplaintForm

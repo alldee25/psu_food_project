@@ -305,20 +305,20 @@ function getStepContent(step) {
                     <h3>ข้อมูลผู้สมัค</h3>
                     <hr />
                 </div>
-                <div style={{marginLeft:'10px'}}>
-                <TextField onChange={(e) => setName(e.target.value)} required value={name} id="ชื่อ-นามสกุล" label="ชื่อ-นามสกุล" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
-                <TextField onChange={(e) => calculate_age(e.target.value)} required value={dob} id="เดือน-วัน-ปี เกิด" label="เดือน-วัน-ปี เกิด" type="date" inputProps={{ max: (morYear)}} style={{width:'30%'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
-                <TextField onChange={(e) => setAge(e.target.value)} value={age} id="อายุ" label="อายุ" type="text" style={{width:'30%'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
-                <TextField onChange={(e) => setRace(e.target.value)} required value={race} id="เชื้อชาติ" label="เชื้อชาติ" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true}} variant="outlined" />
-                <TextField onChange={(e) => setNationality(e.target.value)} required value={nationality} id="สัญชาติ" label="สัญชาติ" type="text"  style={{width:'30%'}}InputLabelProps={{shrink: true}} variant="outlined" />
-                <TextField onChange={(e) => setReligion(e.target.value)} required value={religion} id="ศาสนา" label="ศาสนา" type="text" style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                <TextField onChange={(e) => setIDcard(e.target.value)} required value={idcard} id="หมายเลขบัตรประชาชน" label="หมายเลขบัตรประชาชน" type="number" style={{width:'30%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                <TextField onChange={(e) => setIDstart(e.target.value)} required value={idstart} id="วันที่ออกบัตร" label="วันที่ออกบัตร" type="date" inputProps={{ max: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                <TextField onChange={(e) => setIDend(e.target.value)} required value={idend} id="บัตรหมดอายุ" label="บัตรหมดอายุ" type="date" inputProps={{ min: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                <TextField onChange={(e) => setAdress(e.target.value)} required value={adress} id="ที่อยู่ที่สามารถติดต่อได้" label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'95%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                <TextField onChange={(e) => setPhone(e.target.value)} required value={phone} id="โทรศัท์" label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                <TextField onChange={(e) => setEmail(e.target.value)} required value={email} id="email" label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                <h1></h1>
+                    <div style={{marginLeft:'10px'}}>
+                      <TextField onChange={(e) => setName(e.target.value)} required value={name} id="ชื่อ-นามสกุล" label="ชื่อ-นามสกุล" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
+                      <TextField onChange={(e) => calculate_age(e.target.value)} required value={dob} id="เดือน-วัน-ปี เกิด" label="เดือน-วัน-ปี เกิด" type="date" inputProps={{ max: (morYear)}} style={{width:'30%'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
+                      <TextField onChange={(e) => setAge(e.target.value)} value={age} id="อายุ" label="อายุ" type="text" style={{width:'30%'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
+                      <TextField onChange={(e) => setRace(e.target.value)} required value={race} id="เชื้อชาติ" label="เชื้อชาติ" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setNationality(e.target.value)} required value={nationality} id="สัญชาติ" label="สัญชาติ" type="text"  style={{width:'30%'}}InputLabelProps={{shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setReligion(e.target.value)} required value={religion} id="ศาสนา" label="ศาสนา" type="text" style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setIDcard(e.target.value)} required value={idcard} id="หมายเลขบัตรประชาชน" label="หมายเลขบัตรประชาชน" type="number" style={{width:'30%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setIDstart(e.target.value)} required value={idstart} id="วันที่ออกบัตร" label="วันที่ออกบัตร" type="date" inputProps={{ max: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setIDend(e.target.value)} required value={idend} id="บัตรหมดอายุ" label="บัตรหมดอายุ" type="date" inputProps={{ min: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setAdress(e.target.value)} required value={adress} id="ที่อยู่ที่สามารถติดต่อได้" label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'95%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setPhone(e.target.value)} required value={phone} id="โทรศัท์" label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setEmail(e.target.value)} required value={email} id="email" label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <h1></h1>
                   </div>                                            
                 </div>                                  
                 </animated.div>
