@@ -1,14 +1,10 @@
 
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import React, { useContext, useEffect, useState } from 'react'
 import './ComplaintForm.css'
-import InteViewDialog from './InteViewDialog'
-import InteViewDialog1 from './InterViewDialog1';
-import InteViewDialog2 from './InterViewDialog2';
 import axios from 'axios';
-import {adminSchema} from '../../users/Validation'
+import {adminSchemaAttendant} from '../../users/Validation'
 import { Button } from '@material-ui/core';
 import swal from 'sweetalert';
 import {AuthContext} from '../../App'
@@ -19,7 +15,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import { animated, useTransition } from 'react-spring';
 import { useLocation } from 'react-router-dom';
 
@@ -36,23 +31,18 @@ const useStyles = makeStyles((theme) => ({
 function ComplaintForm(props) {
 
     const {auth,setIsload} = useContext(AuthContext)
-    const [age,setAge] = useState('')
     const [date,setDate] = useState('')
-    const classes = useStyles();
-    const [score1,setScore1] = useState('')
-    const [score2,setScore2] = useState('')
-    const [score3,setScore3] = useState('')
-    const [note1,setNote1] = useState('')
-    const [note2,setNote2] = useState('')
-    const [note3,setNote3] = useState('')
-    const [feedback,setFeedback] = useState('')
-    const [bordOpenion,setBoreOpenion] = useState('')
-    const [typeList,setTypeList] = useState([])
-    const [locationList,setLocationList] = useState([])
-    const [bType,setBType] = useState('')
-    const [bLocation,setBLocation] = useState('')
+    const [locationAndStoreList,setLocationAndStoreList] = useState([])
     const history = useHistory()
-    const [dataInterViewList,setDataInterViewList] = useState([])
+    const [topic,setTopic] = useState('')
+    const [topicDetial,setTopicDetial] = useState('')
+    const [dateACT,setDateAct] = useState('')
+    const [time,setTime] = useState('')
+    const [attendantComment,setAttendantComment] = useState('')
+    const [action,setAction] = useState('')
+    const [other,setOther] = useState('')
+    const [attendant,setAttendant] = useState('')
+    const [manager,setManager] = useState('')
 
     const transitions = useTransition(props.open, {
         from: { opacity: 0, y: 800 },
@@ -61,7 +51,63 @@ function ComplaintForm(props) {
       })
       
       const handleChange =(e)=>{
-        setBoreOpenion(e.target.value) 
+        setTopic(e.target.value) 
+      }
+
+      const form = {
+          topic:topic,
+          topicDetial:topicDetial,
+          dateACT:dateACT,
+          date:date,
+          time:time,
+          action:action,
+      }
+
+      const Insert = async()=>{
+        setIsload(true)
+        const isValid = await adminSchemaAttendant.isValid(form)
+        if (isValid) {
+          if ((topic=='อื่นๆ') && (other!='')) {
+              axios.post('http://localhost:3001/InsertDataofComplaint',{
+                adminId:auth.usersData[0].id,
+                storeId:props.active,
+                topic:other,
+                topicDetial:topicDetial,
+                dateACT:dateACT,
+                date:date,
+                time:time,
+                complaintNumber:props.count+1,
+                action:action,
+              }).then((res)=>{
+                swal("บันทึกเรียบร้อย","Click","success").then((value)=>{
+                  history.go('HomeStore/ComplaintList')
+                  setIsload(false)
+              }) 
+              })
+          } else if(topic!='อื่นๆ') {
+            axios.post('http://localhost:3001/InsertDataofComplaint',{
+              adminId:auth.usersData[0].id,
+                storeId:props.active,
+                topic:topic,
+                topicDetial:topicDetial,
+                dateACT:dateACT,
+                date:date,
+                time:time,
+                complaintNumber:props.count+1,
+                action:action,              
+            }).then((res)=>{
+              swal("บันทึกเรียบร้อย","Click","success").then((value)=>{
+                history.go('HomeStore/ComplaintList')
+                setIsload(false)
+            }) 
+            })
+          }
+          else{
+            swal('ข้อมูลไม่ถูกต้อง','ตรวจสอบข้อมูลอีกครั้ง','warning')
+          }
+        } else {
+          swal('ข้อมูลไม่ถูกต้อง','ตรวจสอบข้อมูลอีกครั้ง','warning')
+        } 
       }
 
     useEffect(()=>{
@@ -84,22 +130,30 @@ function ComplaintForm(props) {
          const forday = `${yeartoday}-${month}-${date}`
          setDate(forday) 
         } 
-      axios.post("http://localhost:3001/getInterViewDetial",{
+      axios.post("http://localhost:3001/getStoreInfo",{
              id:props.active 
-      }).then(
-        axios.post("http://localhost:3001/getLocationList",{
-          id:props.active
-        }).then((res)=>{
-          setLocationList(res.data)
-        })
-      ).then(setIsload(false))
+            }).then((res)=>{
+                    setLocationAndStoreList(res.data)
+             }).then(
+                    axios.get("http://localhost:3001/getAdminInfoManager",{ 
+                    }).then((res)=>{
+                      const [{name}] = res.data
+                    setManager(name)
+                  }   
+                    )).then(
+                    axios.get("http://localhost:3001/getAdminInfoAttendant",{ 
+                    }).then((res)=>{
+                      const [{name}] = res.data
+                    setAttendant(name) 
+    })).then(setIsload(false))
     },[])
+
     return transitions(
           (styles, item) =>item && <animated.div style={styles}>
             <div style={{display:'flex',justifyContent:'center'}}>
               <div className="containComplaintForm">
                  <div className="headerComplaintForm">
-                  <h3>แบบฟอร์มแจ้งความผิด ครั้งที่ </h3>
+                  <h3>แบบฟอร์มแจ้งความผิด ครั้งที่ {props.count+1}</h3>
                 </div>
                 <div style={{width:'95%',display:'flex',justifyContent:'flex-end'}}>
                   <TextField label="วันที่" type="date" variant="standard" disabled value={date}></TextField>
@@ -107,7 +161,7 @@ function ComplaintForm(props) {
                 <div style={{display:'flex',flexDirection:'row',marginLeft:'30px',position:'relative'}}>
                   <FormControl component="fieldset" >
                     <FormLabel component="legend">เรื่อง</FormLabel>
-                    <RadioGroup style={{marginLeft:'60px'}} aria-label="gender" name="gender1" value={bordOpenion} onChange={handleChange}>
+                    <RadioGroup style={{marginLeft:'60px'}} aria-label="gender" name="gender1" value={topic} onChange={handleChange}>
                       <FormControlLabel  value="การค้างชำระค่าเช่า/ค่าไฟฟ้า/ค่าน้ำประปา/ค่าบริหารจัดการ" control={<Radio />} label="การค้างชำระค่าเช่า/ค่าไฟฟ้า/ค่าน้ำประปา/ค่าบริหารจัดการ" />
                       <FormControlLabel  value="ข้อร้องเรียนจากผู้ใช้บริการ" control={<Radio />} label="ข้อร้องเรียนจากผู้ใช้บริการ" />
                       <FormControlLabel  value="การกระทำผิดมาตรฐานการสุขาภ้บาลอาการ" control={<Radio />} label="การกระทำผิดมาตรฐานการสุขาภ้บาลอาการ" />
@@ -117,51 +171,52 @@ function ComplaintForm(props) {
                     </RadioGroup>
                   </FormControl>                           
                   <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',position:'absolute',top:'270px',left:'130px'}}>
-                    <TextField variant="standard" style={{width:'400px'}} disabled={bordOpenion!=="อื่นๆ"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bType} /* onChange={(e)=>{setBType(e.target.value)}} */ />                                                 
+                    <TextField variant="standard" style={{width:'400px'}} disabled={topic!=="อื่นๆ"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" onChange={(e)=>{setOther(e.target.value)}} value={other} />                                                 
                   </div>
                 </div>
-                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px'}}>
+                
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'10px'}}>
                   <span>
                     ด้วยพบว่า เมื่อวันที่
                   </span>
                   <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="date"></TextField>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="date" value={dateACT} onChange={(e)=>{setDateAct(e.target.value)}}></TextField>
                   </div>                                             
                   <span style={{marginLeft:'10px'}}>
                     เวลา
                   </span>
                   <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="time" ></TextField>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="time" value={time} onChange={(e)=>{setTime(e.target.value)}}></TextField>
                   </div>
                   <span style={{marginLeft:'10px'}}>
                     นาง/นาย
                   </span>
-                  <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
-                  </div>                               
+                  {locationAndStoreList.map((data,index)=>(
+                    <div style={{marginLeft:'10px'}}>
+                      <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={data.name} variant="standard" type="text" ></TextField>
+                    </div>
+                  ))}                                                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>
-                  <span>ผู้ประกอบการร้านจำหน่ายอาหารที่ ร้านที่</span>
+                  <span>ผู้ประกอบการร้านจำหน่ายอาหาร ร้านที่</span>
                   <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
-                  </div>
-                  <span style={{marginLeft:'10px'}}>ในพื้นที่</span>
-                  <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={props.active} variant="standard" type="text" ></TextField>
                   </div>
                   <span style={{marginLeft:'10px'}}>
                     ประจำโรงอาหาร
                   </span>
+                  {locationAndStoreList.map((data,index)=>(
                   <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="###" variant="standard" type="text" ></TextField>
-                  </div>                
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={data.location} variant="standard" type="text" ></TextField>
+                  </div>
+                  ))}                                
                 </div>
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>         
                   <span>
                     ได้กระทำผิดเรื่อง
                   </span>
                   <div style={{marginLeft:'10px',width:'925px'}}>
-                    <TextField fullWidth inputProps={{min: 0, style: { textAlign: 'center'}}} value="###" variant="standard" type="text" ></TextField>
+                    <TextField fullWidth inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="text" onChange={(e)=>{setTopicDetial(e.target.value)}} value={topicDetial}></TextField>
                   </div>                
                 </div> 
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'60px',marginTop:'20px'}}>
@@ -169,14 +224,14 @@ function ComplaintForm(props) {
                     ดังนั้นจึงขอให้ผู้ประกอบการดำเนินการดังนี้
                   </span>
                   <div style={{marginLeft:'10px',width:'720px'}}>
-                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} value="#" variant="standard" type="text" ></TextField>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="text" onChange={(e)=>{setAction(e.target.value)}} value={action}></TextField>
                   </div>                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
                     <div style={{marginLeft:'10px'}}>
-                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value="#" variant="standard" type="text" ></TextField>
+                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={attendant} variant="standard" type="text" ></TextField>
                     </div>
-                    <div>
+                    <div style={{display:'flex',width:"175px",justifyContent:"center"}}>
                       <span>
                         ผู้ดูแล
                       </span>
@@ -187,9 +242,20 @@ function ComplaintForm(props) {
                     ความคิดเห็นผู้ควบคุมกำกับดูแล
                   </span>
                   <div style={{marginLeft:'10px',width:'800px'}}>
-                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} value="#" variant="standard" type="text" ></TextField>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
                   </div>                                 
                 </div>
+                <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
+                    <div style={{marginLeft:'10px'}}>
+                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={manager} variant="standard" type="text" ></TextField>
+                    </div>
+                    <div>
+                      <span>
+                        เจ้าหน้าที่บริหารงานทั่วไป
+                      </span>
+                    </div>                                                                   
+                </div>
+                <Button style={{position:'absolute',right:'50px',bottom:'10px'}} variant="contained" color="primary" onClick={Insert}>บันทึก</Button>
               </div>            
             </div>                      
           </animated.div>

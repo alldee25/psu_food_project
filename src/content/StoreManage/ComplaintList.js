@@ -125,9 +125,9 @@ function ComplaintList() {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>ครั้งที่</StyledTableCell>
-                                <StyledTableCell align="left">หัวข้อ</StyledTableCell>
-                                <StyledTableCell align="left">วันที่ตรวจ</StyledTableCell>
-                                <StyledTableCell align="left">ร้องเรียนโดย</StyledTableCell>
+                                <StyledTableCell align="center">หัวข้อ</StyledTableCell>
+                                <StyledTableCell align="center">วันที่ตรวจ</StyledTableCell>
+                                <StyledTableCell align="center">ร้องเรียนโดย</StyledTableCell>
                                 <StyledTableCell align="center">หัวข้อ</StyledTableCell>  
                             </TableRow>
                         </TableHead>
@@ -135,9 +135,9 @@ function ComplaintList() {
                             {complaintList.map((dataList,index) => (
                                 <StyledTableRow key={index}>
                                     <StyledTableCell align="left" width="100px">{dataList.complaint_number}</StyledTableCell>
-                                    <StyledTableCell align="left" width="100px">{dataList.topic}</StyledTableCell>
-                                    <StyledTableCell align="left" width="100px">{dataList.date}</StyledTableCell>
-                                    <StyledTableCell align="left" width="100px">{dataList.ad_name}</StyledTableCell>
+                                    <StyledTableCell align="center" width="100px">{dataList.topic}</StyledTableCell>
+                                    <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
+                                    <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
                                     <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
                                 </StyledTableRow>
                             ))}
@@ -172,7 +172,7 @@ function ComplaintList() {
                         </Toolbar>
                     </AppBar>
                     <div style={{marginTop:'50px'}}>
-                        <ComplaintForm open={openForm} active={id} />
+                        <ComplaintForm open={openForm} count={complaintList.length} active={id} />
                     </div> 
             </Dialog> 
         </div>

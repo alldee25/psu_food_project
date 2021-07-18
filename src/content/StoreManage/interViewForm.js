@@ -208,7 +208,7 @@ function InterViewForm(props) {
   },[])
 
     return transitions(
-      (styles, item) =>item && <animated.div style={styles}>
+    (styles, item) =>item && <animated.div style={styles}>
       <div style={{display:'flex',justifyContent:'center'}}>
         <div className="containForm">
           <div className="headerForm">

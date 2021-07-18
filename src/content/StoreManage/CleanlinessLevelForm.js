@@ -62,7 +62,7 @@ function CleanlinessLevelStore(props) {
      const sum =  scores.reduce((result,score)=>{
         return result + Number(score.score)
       },0)
-      if (id && time !== '') {
+      if (id && time !== '' && dateInput !== '') {
         if (sum>=36 && scores[4].score > 0) {
           swal("กด ok เพื่อยืนยันการบันทึก",{
         })

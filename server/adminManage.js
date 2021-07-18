@@ -382,12 +382,66 @@ adminRouter.get('/getStoreOwnerList',(req,res)=>{
 })
 adminRouter.post('/geStoreDetialBynameList',(req, res)=>{
     const storeId = req.body.storeId
-    db.query(`SELECT complaint.*,store_owner.name,store.store_name,store.id,admin.name AS ad_name 
-            FROM (((complaint 
-            INNER JOIN store)
+    db.query(`SELECT complaint.*,admin.name AS ad_name,store_owner.name
+                FROM (((complaint 
+                INNER JOIN store ON store.id = complaint.store_id)
+                INNER JOIN store_owner ON store_owner.store_id = store.id)
+                INNER JOIN admin ON admin.id = complaint.admin_id)
+                WHERE complaint.store_id = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/getStoreInfo',(req, res)=>{
+    const storeId = req.body.id
+    db.query(`SELECT store_owner.name,location.location
+            FROM ((store
             INNER JOIN store_owner ON store_owner.store_id = store.id)
-            INNER JOIN admin ON admin.id = complaint.admin_id)
-            WHERE complaint.store_id = ?`,[storeId],((err, result)=>{
+            INNER JOIN location ON location.id = store.location_id)
+            WHERE store.id = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.get('/getAdminInfoManager',(req, res)=>{
+    const storeId = 'manager'
+    db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.get('/getAdminInfoAttendant',(req, res)=>{
+    const storeId = 'attendant'
+    db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+
+adminRouter.post('/InsertDataofComplaint',(req, res)=>{
+    const storeId = req.body.storeId
+    const topic = req.body.topic
+    const adminId = req.body.adminId
+    const topicDetial = req.body.topicDetial
+    const dateACT = req.body.dateACT
+    const date = req.body.date
+    const time = req.body.time
+    const complaintNumber = req.body.complaintNumber
+    const action = req.body.action
+    db.query(`INSERT INTO complaint (topic,topic_detial,action,complaint_number,store_id,admin_id,date,time,date_write) VALUE(?,?,?,?,?,?,?,?,?)`
+    ,[topic,topicDetial,action,complaintNumber,storeId,adminId,dateACT,time,date],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
