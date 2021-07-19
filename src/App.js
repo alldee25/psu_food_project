@@ -25,7 +25,7 @@ import ProtectedRoute from "./users/ProtectedRoute";
 import axios from "axios";
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
-import ApplicationDetial from './content/StoreManage/ApplicationDetial'
+import ApplicationDetial from './content/StoreManage/ApplicationFormCheck'
 import swal from "sweetalert";
 
 const AuthContext = React.createContext();

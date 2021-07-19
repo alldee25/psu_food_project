@@ -57,13 +57,11 @@ function ForAdmin() {
               
               {transitions ((styles,item) => item && (<animated.div style={styles}>
               
-                <input type="text" autoComplete="on" placeholder="Username" onChange={(e)=>{setUsername(e.target.value)}}>
+                <input type="text" autoComplete='on' id="myInput" placeholder="Username" onChange={(e)=>{setUsername(e.target.value)}}>
               </input>
               </animated.div> ))}
-
               {transitions ((styles,item) => item && (<animated.div style={styles}>
-                <input variant="outlined" type="text" placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}}>
-
+                <input variant="outlined" type="text"  placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}}>
               </input>
               </animated.div> ))}
               

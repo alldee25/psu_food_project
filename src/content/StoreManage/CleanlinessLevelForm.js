@@ -203,7 +203,7 @@ function CleanlinessLevelStore(props) {
           ))}
           <form onSubmit={InsertData}>
             <div className="table">
-              <TableContainer style={{width:'1100px'}} component={Paper}>
+            <TableContainer style={{width:'1100px'}} component={Paper}>
               <Table size="small" aria-label="a dense table">
                 <TableHead>
                   <TableRow>

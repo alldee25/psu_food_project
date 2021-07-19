@@ -85,28 +85,35 @@ function StoreInformation() {
                 </h1>
             </div>
             <div>
-                <TableContainer component={Paper} >
+            {storeDataList == '' ? 
+            <div style={{position:'absolute',top:'50%',left:'40%'}}>
+              <h1>
+                ไม่พบข้อมูลร้านค้า
+              </h1>
+            </div> :
+            <TableContainer component={Paper} >
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                     <TableRow>
-                        <StyledTableCell>หมายเลขร้าน</StyledTableCell>
-                        <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
-                        <StyledTableCell align="left">ชื่อเจ้าของร้าน</StyledTableCell>
+                        <StyledTableCell align="left">หมายเลขร้าน</StyledTableCell>
+                        <StyledTableCell align="center" >ชื่อร้าน</StyledTableCell>
+                        <StyledTableCell align="center">ชื่อเจ้าของร้าน</StyledTableCell>
                         <StyledTableCell align="center">รายละเอียดร้าน</StyledTableCell>  
                     </TableRow>
                     </TableHead>
                     <TableBody>
                     {storeDataList.map((dataList) => (
                         <StyledTableRow key={dataList.id}>
-                        <StyledTableCell  align="left" width="100px">{dataList.s_id}</StyledTableCell>
-                        <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="left" width="100px">{dataList.name}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                        <StyledTableCell  align="left" >{dataList.s_id}</StyledTableCell>
+                        <StyledTableCell align="center" >{dataList.store_name}</StyledTableCell>
+                        <StyledTableCell align="center" >{dataList.name}</StyledTableCell>
+                        <StyledTableCell align="center" ><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>
                 </Table>
-                </TableContainer>    
+              </TableContainer> }
+                  
             </div>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>

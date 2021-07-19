@@ -10,7 +10,6 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import RemoveRedEyeRoundedIcon from '@material-ui/icons/RemoveRedEyeRounded';
-import StoreInfornationDetial from './storeInfornationDetial';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,8 +17,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
 import { AuthContext } from '../../App';
+import ComplaintFormCheck from './ComplaintFormCheck';
 import ComplaintForm from './ComplaintForm';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -73,7 +72,7 @@ function ComplaintList() {
         )
     }
 
-    const handleClickOpen = (e) => {
+    const handleClickOpenCheck = (e) => {
         setIid(e)
         setOpen(true);
       };
@@ -119,16 +118,20 @@ function ComplaintList() {
                     <Button variant="contained" disabled={storeName===''} color='primary' style={{fontWeight:'bold',width:'90px',height:'40px'}} onClick={(e)=>{handleClickOpenForm(storeName)}}>เพิ่ม</Button>
                 </div>                   
             </div>
+            
             <div style={{marginTop:'20px'}}>
-                <TableContainer component={Paper} >
+                {complaintList == '' ? <div style={{position:'absolute',top:'50%',left:'40%'}}>
+                <h1>โปรดเลือกร้านค้า</h1>
+            </div> : <TableContainer component={Paper} >
                     <Table className={classes.table} aria-label="customized table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>ครั้งที่</StyledTableCell>
                                 <StyledTableCell align="center">หัวข้อ</StyledTableCell>
-                                <StyledTableCell align="center">วันที่ตรวจ</StyledTableCell>
+                                <StyledTableCell align="center">วันที่ร้องเรียน</StyledTableCell>
                                 <StyledTableCell align="center">ร้องเรียนโดย</StyledTableCell>
-                                <StyledTableCell align="center">หัวข้อ</StyledTableCell>  
+                                <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
+                                <StyledTableCell align="center">สถานะ</StyledTableCell>  
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -138,12 +141,14 @@ function ComplaintList() {
                                     <StyledTableCell align="center" width="100px">{dataList.topic}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
-                                    <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                                    <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                                    <StyledTableCell align="center" width="100px">{dataList.attendant_comment !== '' ? <div>ตรวจสอบแล้ว</div> : <div>ยังไม่ตรวจสอบแล้ว</div>}</StyledTableCell>
+
                                 </StyledTableRow>
                             ))}
                         </TableBody>
                     </Table>
-                </TableContainer>    
+                </TableContainer>}     
             </div>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
                     <AppBar className={classes.appBar}>
@@ -151,13 +156,13 @@ function ComplaintList() {
                             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
-                            <Typography variant="h6" className={classes.title}>
-                                เพิ่มละเอียดข้อมูลแจ้งความผิด
+                            <Typography variant="h6" className={classes.title}>                          
+                                รายละเอียดข้อมูลแจ้งความผิด
                             </Typography>
                         </Toolbar>
                     </AppBar>
                     <div style={{marginTop:'50px'}}>
-                        <ComplaintForm active={id} />
+                        <ComplaintFormCheck open={open} count={complaintList.length} active={id} />
                     </div> 
             </Dialog>
             <Dialog fullScreen open={openForm} onClose={handleCloseForm} TransitionComponent={Transition}>
@@ -167,7 +172,7 @@ function ComplaintList() {
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                รายละเอียดข้อมูลแจ้งความผิด
+                                เพิ่มละเอียดข้อมูลแจ้งความผิด
                             </Typography>
                         </Toolbar>
                     </AppBar>

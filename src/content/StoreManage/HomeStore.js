@@ -2,11 +2,11 @@ import React, { useState,useRef, useEffect} from "react";
 import "./StoreRegis.css";
 import {BrowserRouter as Router,Link,Route,useRouteMatch} from "react-router-dom";
 //for Component---------------------------------------------------------Import----------------------------------------------------------------------------------------
-import ApplicationAnnouncement from "./ApplicationAnnouncement";
+import ApplicationAnnouncement from "./AnnouncementForm";
 import CheckApplication from "./ApplicationsList";
-import InterView from "./InterView";
-import DataListAnnounce from "./DataListAnnounce";
-import StoreInformation from "./storeInformation";
+import InterView from "./InterViewList";
+import DataListAnnounce from "./AnnounceList";
+import StoreInformation from "./StoreInformationList";
 import LeaveList from "./LeaveList";
 import ComplaintList from "./ComplaintList";
 //for ---------------------------------------------------------Import ----------------------------------------------------------------------------------------

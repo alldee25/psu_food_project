@@ -17,15 +17,6 @@ export default function Navbar(props) {
     const [navAc, setNavAc] = useState(1)
     const { setAnimation} = useContext(AnimaContext);
 
-    const  changBackground = () => {
-       if(window.scrollY >= 60){
-           setNavbar(false)
-       }
-       else{
-           setNavbar(true)
-       }
-    }
-
     const activeNav = (e) =>{
         setNavAc(e)
         if (e === 2) {
@@ -36,9 +27,7 @@ export default function Navbar(props) {
             setNavbar(true)
       }
     }
-    
-    window.addEventListener('scroll',changBackground)
-
+  
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
 

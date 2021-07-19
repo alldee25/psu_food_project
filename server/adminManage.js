@@ -31,7 +31,7 @@ adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลปร
 })
 
 adminRouter.get("/get",(req,res)=>{//ดึงข้อมูลประกาศ
-    db.query("SELECT * FROM announce ",((err, result)=>{
+    db.query("SELECT * FROM announce",((err, result)=>{
         if(err){
             console.log(err);
         }else{
@@ -409,6 +409,21 @@ adminRouter.post('/getStoreInfo',(req, res)=>{
                 }
             }))
 })
+adminRouter.post('/getStoreAndComplaintInfo',(req, res)=>{
+    const complaintId = req.body.id
+    db.query(`SELECT store_owner.name,location.location,complaint.*
+            FROM (((store
+            INNER JOIN store_owner ON store_owner.store_id = store.id)
+            INNER JOIN location ON location.id = store.location_id)
+            INNER JOIN complaint ON complaint.store_id = store.id)
+            WHERE complaint.id = ?`,[complaintId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
 adminRouter.get('/getAdminInfoManager',(req, res)=>{
     const storeId = 'manager'
     db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
@@ -422,6 +437,17 @@ adminRouter.get('/getAdminInfoManager',(req, res)=>{
 adminRouter.get('/getAdminInfoAttendant',(req, res)=>{
     const storeId = 'attendant'
     db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/UpdateDataofComplaint',(req, res)=>{
+    const attendantComment = req.body.attendantComment
+    const complaintId = req.body.id
+    db.query(`UPDATE complaint SET attendant_comment = ? WHERE complaint.id = ?`,[attendantComment,complaintId],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
