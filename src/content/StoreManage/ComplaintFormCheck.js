@@ -48,15 +48,24 @@ function ComplaintForm(props) {
       
       const update = async()=>{
         setIsload(true)
-        if (attendantComment !== '') {      
+        if (attendantComment !== '') {  
+          swal("กด ok เพื่อยืนยันการบันทึก",{
+          })
+          .then((value) => {
+            if (value) {    
               axios.post('http://localhost:3001/UpdateDataofComplaint',{
                 attendantComment:attendantComment,
                 id:props.active
-              }).then((res)=>{
-                swal("บันทึกเรียบร้อย","Click","success").then((value)=>{
-                  history.go('HomeStore/ComplaintList')
-                  setIsload(false)
-              }) 
+                }).then(swal({
+                  title: "บันทึกเรียบร้อย",
+                  text: "กดปุ่มเพื่อไปต่อ",
+                  icon: "success",
+                  button: "OK",
+                }).then((value) =>{
+                  history.push('/HomeStore/ComplaintList')
+                  history.go() 
+                  }))
+                }
               })      
         } else {
           swal('ข้อมูลไม่ถูกต้อง','ตรวจสอบข้อมูลอีกครั้ง','warning')

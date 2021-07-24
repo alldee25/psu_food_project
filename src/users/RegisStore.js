@@ -201,7 +201,9 @@ export default function RegisStore() {
   }
 
   const handleNext = async () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1); 
+    if (activeStep !== 3) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    } 
     if (activeStep === 2) {
       setArgee(true)
     }
@@ -209,6 +211,10 @@ export default function RegisStore() {
       const isValid = await userSchema.isValid(formData)
      if (isValid) {
         if (inId.every(checkId)) {
+          swal("กด ok เพื่อยืนยันการบันทึก",{
+          })
+          .then((value) => {
+            if (value) {
               setIsload(true);
               axios.post('http://localhost:3001/insertRegisStore',{
                 name:name,
@@ -230,23 +236,20 @@ export default function RegisStore() {
                 inputfild:inputfild,
                 date:morToday,
           }).then((res)=>{
-            if (res.data.message) {
-              swal(res.data.message).then((value) => {
-                setIsload(false)
-              });
-            }
-            else{
-              swal({
-              title: "สมัคเรียบร้อย",
-              text: "กดปุ่มเพื่อไปต่อ",
-              icon: "success",
-              button: "OK",
-            }).then((value) =>{
-              history.push('/')
-              history.go() 
-              })  
-            }
-    })
+                    if (res.data.message) {
+                    swal(res.data.message).then((value) => {setIsload(false)});
+                    }
+                    else{
+                      swal({ title: "สมัคเรียบร้อย",text: "กดปุ่มเพื่อไปต่อ",icon: "success", button: "OK",}).then((value) =>{
+                        history.push('/')
+                        history.go() 
+                      })  
+                    }
+            
+          })
+  }
+  
+})
         }else{
         swal("รหัสบัตรประชนซ้ำ!")
         setActiveStep((prevActiveStep) => prevActiveStep - 1);

@@ -34,27 +34,19 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
   
-function InterViewForm(props) {
+function InterViewDetial(props) {
     
     const {auth,setIsload} = useContext(AuthContext)
     const [age,setAge] = useState('')
     const [date,setDate] = useState('')
     const classes = useStyles();
-    const [score1,setScore1] = useState('')
-    const [score2,setScore2] = useState('')
-    const [score3,setScore3] = useState('')
-    const [note1,setNote1] = useState('')
-    const [note2,setNote2] = useState('')
-    const [note3,setNote3] = useState('')
-    const [feedback,setFeedback] = useState('')
-    const [bordOpenion,setBoreOpenion] = useState('')
+    const [boardLT,setboardLT] = useState([])
     const [typeList,setTypeList] = useState([])
     const [locationList,setLocationList] = useState([])
     const [bType,setBType] = useState('')
     const [bLocation,setBLocation] = useState('')
     const history = useHistory()
     const [dataInterViewList,setDataInterViewList] = useState([])
-    const sum = ((Number(score1)+Number(score2)+Number(score3))*100)/100
 
     const transitions = useTransition(props.open, {
       from: { opacity: 0, y: 800 },
@@ -62,119 +54,9 @@ function InterViewForm(props) {
       leave:  { opacity: 0,y: 800}
     })
 
-    let formScore = {
-      score1:score1,
-      score2:score2,
-      score3:score3,
-      bordOpenion:bordOpenion
-    }
-    const handleChange =(e)=>{
-      setBoreOpenion(e.target.value) 
-    }
-    const Insert = async (e) =>{
-      e.preventDefault(e.target.value)
-      setIsload(true)
-      const isValid = await adminSchema.isValid(formScore)
-      if (isValid) {
-        if ((bordOpenion==='ไม่ผ่านการคัดเลือก') && (sum<80)) {       
-          axios.post("http://localhost:3001/insertInterview",{
-            dataInterViewList:dataInterViewList,
-            score1:score1,
-            score2:score2,
-            score3:score3,
-            note1:note1,
-            note2:note2,
-            note3:note3,
-            feedback:feedback,
-            sum:sum,
-            regisId:dataInterViewList[0].id,
-            adminId:auth.usersData[0].id,
-            date:date,
-            bordOpenion:bordOpenion,
-            bType:dataInterViewList[0].id_type,
-            bLocation:dataInterViewList[0].id_locations
-          }).then((res)=>{
-            swal("Good","Click","success").then((value)=>{
-              history.go('HomeStore/InterView')
-              setIsload(false)
-          }) 
-          })
-        }
-        else if((bordOpenion==='ผ่านการคัดเลือก') && (sum>=80)){        
-          axios.post("http://localhost:3001/insertInterview",{
-            dataInterViewList:dataInterViewList,
-            score1:score1,
-            score2:score2,
-            score3:score3,
-            note1:note1,
-            note2:note2,
-            note3:note3,
-            feedback:feedback,
-            sum:sum,
-            regisId:dataInterViewList[0].id,
-            adminId:auth.usersData[0].id,
-            date:date,
-            bordOpenion:bordOpenion,
-            bType:dataInterViewList[0].id_type,
-            bLocation:dataInterViewList[0].id_locations
-          }).then((res)=>{
-            swal("Good","Click","success").then((value)=>{
-              history.go('HomeStore/InterView')
-              setIsload(false)
-          }) 
-          })
-        }
-        else if((bordOpenion==='ผ่านการคัดเลือกแบบมีเงื่อนไข')&&((bType!='')&&(bLocation!=''))&&(sum>=80)){
-          axios.post("http://localhost:3001/insertInterview",{
-            dataInterViewList:dataInterViewList,
-            score1:score1,
-            score2:score2,
-            score3:score3,
-            note1:note1,
-            note2:note2,
-            note3:note3,
-            feedback:feedback,
-            sum:sum,
-            regisId:dataInterViewList[0].id,
-            adminId:auth.usersData[0].id,
-            date:date,
-            bordOpenion:bordOpenion,
-          }).then((res)=>{
-            swal("Good","Click","success").then((value)=>{
-              history.go('HomeStore/InterView')
-              setIsload(false)
-          }) 
-          })
-        }  
-        else{
-          swal("ข้อมูลไม่ถูกต้อง","โปรดตรวจสอบข้อมูลอีกครั้ง","warning")
-        } 
-      } else {
-        swal('ข้อมูลไม่ถูกต้อง','โปรดตรวจสอบข้อมูลอีกครั้ง','warning')
-      }     
-    }
   
     useEffect(()=>{
-      const today = new Date();
-      const yeartoday = today.getFullYear() 
-      const month = today.getMonth() +1
-      const date = today.getDate()
-      if(month < 10 && date > 9){
-        const forday = `${yeartoday}-0${month}-${date}`
-        setDate(forday) 
-      }
-      else if(date < 10 && month > 9){
-        const forday = `${yeartoday}-${month}-0${date}`
-        setDate(forday)     
-      }
-      else if(date < 10 && month < 10){       
-        const forday = `${yeartoday}-0${month}-0${date}`
-        setDate(forday)      
-      }else{
-       const forday = `${yeartoday}-${month}-${date}`
-       setDate(forday) 
-      } 
-    axios.post("http://localhost:3001/getInterViewDetial",{
+    axios.post("http://localhost:3001/getInterViewDetialForSee",{
            id:props.active 
     }).then((res)=>{
       setDataInterViewList(res.data)
@@ -197,10 +79,16 @@ function InterViewForm(props) {
           setTypeList(res.data)
       })
     ).then(
-      axios.post("http://localhost:3001/getLocationList",{
+        axios.post("http://localhost:3001/getTypeList",{
+          id:props.active
+        }).then((res)=>{
+            setTypeList(res.data)
+        })
+      ).then(
+      axios.post("http://localhost:3001/getInterViewDetialForSeeBoardlocationAdnType",{
         id:props.active
       }).then((res)=>{
-        setLocationList(res.data)
+        setboardLT(res.data)
       })
     ).then(setIsload(false))
   },[])
@@ -278,7 +166,7 @@ function InterViewForm(props) {
           <div style={{marginLeft:'15px'}}>
             <h5>ผลการพิจารณา</h5>
           </div>          
-          <form className={classes.root} autoComplete="off" onSubmit={Insert}>
+          <form className={classes.root} autoComplete="off">
             <div style={{display:'flex',flexDirection:'row'}}>
               <div className="titleForm">
                 <h6>
@@ -287,10 +175,13 @@ function InterViewForm(props) {
                 </h6>
                 <InteViewDialog />
               </div>
-              <div style={{display:'flex',flexDirection:'row'}}>
-                <TextField id="number" type="number" variant="outlined" label="คะแนนที่ได้" InputLabelProps={{shrink: true}} onChange={(e)=>{setScore1(e.target.value)}} />
-                <TextField id="หมายเหตุ1" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} onChange={(e)=>{setNote1(e.target.value)}} />
-              </div> 
+              {dataInterViewList.map((data,index)=>(
+                <div key={index} style={{display:'flex',flexDirection:'row'}}>
+                    <TextField disabled id="number" type="number" variant="outlined" label="คะแนนที่ได้" InputLabelProps={{shrink: true}} value={data.score1} />
+                    <TextField disabled id="หมายเหตุ1" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} value={data.note1} />
+                </div>  
+              ))}
+               
             </div>
             <div style={{display:'flex',flexDirection:'row'}}>
               <div className="titleForm">
@@ -300,10 +191,13 @@ function InterViewForm(props) {
                 </h6>
                 <InteViewDialog1 />
               </div>
-              <div style={{display:'flex',flexDirection:'row'}}>
-                <TextField type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} onChange={(e)=>{setScore2(e.target.value)}} />
-                <TextField id="หมายเหตุ2" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} onChange={(e)=>{setNote2(e.target.value)}} />
-              </div> 
+              {dataInterViewList.map((data,index)=>(
+                <div key={index} style={{display:'flex',flexDirection:'row'}}>
+                    <TextField disabled type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} value={data.score2} />
+                    <TextField disabled id="หมายเหตุ2" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} value={data.note2} />
+                </div>
+                ))} 
+               
             </div>
             <div style={{display:'flex',flexDirection:'row'}}>
               <div className="titleForm">
@@ -313,10 +207,12 @@ function InterViewForm(props) {
                 </h6>
                 <InteViewDialog2 />
               </div>
-              <div style={{display:'flex',flexDirection:'row'}}>
-                <TextField  type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} onChange={(e)=>{setScore3(e.target.value)}} />
-                <TextField id="หมายเหตุ3" variant="outlined" InputLabelProps={{shrink: true}} label="หมายเหตุ" onChange={(e)=>{setNote3(e.target.value)}} />
-              </div>   
+              {dataInterViewList.map((data,index)=>(
+              <div key={index} style={{display:'flex',flexDirection:'row'}}>
+                <TextField disabled type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} value={data.score3} />
+                <TextField disabled id="หมายเหตุ3" variant="outlined" InputLabelProps={{shrink: true}} label="หมายเหตุ" value={data.note3} />
+              </div>
+              ))}   
             </div>
             <hr/>
             <div style={{display:'flex',flexDirection:'row'}}>
@@ -325,32 +221,34 @@ function InterViewForm(props) {
                   ข้อเสนอแนะ
                 </h6>
               </div>
-              <div style={{display:'flex',flexDirection:'row'}}>
-                <TextField multiline rows={5} type="text" style={{width:'815px'}} label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} onChange={(e)=>{setFeedback (e.target.value)}} />
-              </div>  
+              {dataInterViewList.map((data,index)=>(
+              <div key={index} style={{display:'flex',flexDirection:'row'}}>
+                <TextField disabled multiline rows={5} type="text" style={{width:'815px'}} label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} value={data.feedback} />
+              </div>
+              ))}  
             </div>     
               <div style={{display:'flex',flexDirection:'row',marginLeft:'20px' }}>
               <FormControl component="fieldset" >
                 <FormLabel component="legend">ความเห็นของคณะกรรมการ</FormLabel>
-                <RadioGroup aria-label="gender" name="gender1" value={bordOpenion} onChange={handleChange}>
-                  <FormControlLabel  value="ไม่ผ่านการคัดเลือก" control={<Radio />} label="ไม่ผ่านการคัดเลือก" />
-                  <FormControlLabel  value="ผ่านการคัดเลือก" control={<Radio />} label="ผ่านการคัดเลือก" />
-                  <FormControlLabel  value="ผ่านการคัดเลือกแบบมีเงื่อนไข" control={<Radio />} label="ผ่านการคัดเลือกแบบมีเงื่อนไข" />
+                {dataInterViewList.map((data,index)=>(
+                <RadioGroup key={index} aria-label="gender" name="gender1" value={data.bord_opinion_detial} >
+                  <FormControlLabel disabled value="ไม่ผ่านการคัดเลือก" control={<Radio />} label="ไม่ผ่านการคัดเลือก" />
+                  <FormControlLabel disabled value="ผ่านการคัดเลือก" control={<Radio />} label="ผ่านการคัดเลือก" />
+                  <FormControlLabel disabled value="ผ่านการคัดเลือกแบบมีเงื่อนไข" control={<Radio />} label="ผ่านการคัดเลือกแบบมีเงื่อนไข" />
                 </RadioGroup>
+                ))}
               </FormControl>
-              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px'}}>
-                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bLocation} onChange={(e)=>{setBLocation(e.target.value)}} >
-                  {typeList.map((datas,index)=>(
-                    <MenuItem key={index} value={datas.id}>{datas.store_type}</MenuItem>
+              
+                  {boardLT.map((data,index)=>(
+                    <div key={index} style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px'}}>
+                        <TextField id="demo-simple-select-helper" value={data.store_type}  />
+                    </div>   
                   ))}
-                  
-                </Select>
-              </div>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'20px',fontWeight:'bold'}}>
                 <span>ประจำโรงอาหาร</span>
               </div>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px'}}>
-                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bType} onChange={(e)=>{setBType(e.target.value)}} >
+                <Select disabled id="demo-simple-select-helper" value={bType} onChange={(e)=>{setBType(e.target.value)}} >
                   {locationList.map((datas,index)=>(
                     <MenuItem key={index} value={datas.id}>{datas.location}</MenuItem>
                   ))}                                
@@ -365,4 +263,4 @@ function InterViewForm(props) {
     )
 }
 
-export default InterViewForm
+export default InterViewDetial

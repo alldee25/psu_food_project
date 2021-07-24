@@ -65,7 +65,6 @@ function StoreInfornationDetial(props) {
   }
 
   useEffect(()=>{
-    console.log(props.regisStoreId);
     axios.post('http://localhost:3001/getStoreAndStoreOwnerDetial',{
       id:props.active
     }).then(

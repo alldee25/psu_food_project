@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useState } from "react";
 import {AuthContext} from '../../App'
-import kitten from '../../img/kitten.png'
+import S__2154499 from '../../img/S__2154499.png'
 import "./Profile.css";
 
 export default function Profile() {
@@ -10,7 +10,7 @@ export default function Profile() {
     <div className="frame">
        <div className="Profile">
         <div className="inProfile">
-          <img width="auto" height="120" src={kitten}/>
+          <img width="auto" height="120" src={S__2154499}/>
       </div>
       </div >
       <div className="name">

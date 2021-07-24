@@ -20,7 +20,8 @@ adminRouter.use(bodyParser.json());
 adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลประกาศ
     const title = req.body.title
     const content = req.body.content 
-    db.query("INSERT INTO announce (Title,Content) VALUE (?,?)",[title,content],
+    const date = req.body.Date 
+    db.query("INSERT INTO announce (Title,Content,date) VALUE (?,?,?)",[title,content,date],
     (err) => {
         if(err){
             console.log(err);
@@ -80,7 +81,7 @@ adminRouter.post("/getStoreInterViewList",(req, res) => {//ดึงข้อม
                 AND applicationcheck_detial.Applicationfee = 1) 
                 LEFT JOIN interview ON interview.regis_id = regisstore.id) 
                 LEFT JOIN admin ON admin.id = interview.admin_id) 
-                WHERE year(date_regis) = ? AND status = ?`,[date,'หลักฐานครบ'],((err,result)=>{
+                WHERE year(date_regis) = ? AND regisstore.status = ?`,[date,'หลักฐานครบ'],((err,result)=>{
         if(err){
             console.log(err);
         }else{
@@ -168,6 +169,39 @@ adminRouter.post("/getInterViewDetial",(req,res)=>{//ดึงรายละเ
                 FROM ((regisstore INNER JOIN type ON type.id = regisstore.id_type) 
                 INNER JOIN location ON location.id = regisstore.id_locations) 
                 WHERE regisstore.id = ?`,[id],((err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getInterViewDetialForSee",(req,res)=>{//ดึงรายละเอียดข้อมูลของร้านที่สมัคผ่าน
+    const id = req.body.id
+    db.query(`SELECT regisstore.*,type.store_type AS type,location.location AS location,
+                interview.status,
+                interview_detial.*,board_opinion.bord_opinion_detial
+                FROM (((((regisstore INNER JOIN type ON type.id = regisstore.id_type) 
+                INNER JOIN location ON location.id = regisstore.id_locations)
+                INNER JOIN interview ON interview.regis_id = regisstore.id)
+                INNER JOIN interview_detial ON interview_detial.interview_id = interview.id)
+                INNER JOIN board_opinion ON board_opinion.interview_id = interview.id)
+                WHERE regisstore.id = ?`,[id],((err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getInterViewDetialForSeeBoardlocationAdnType",(req,res)=>{//ดึงรายละเอียดข้อมูลของร้านที่สมัคผ่าน
+    const id = req.body.id
+    db.query(`SELECT type.store_type,location.location 
+            FROM (((type 
+                    INNER JOIN board_opinion ON board_opinion.type_id = type.id)
+                    INNER JOIN location ON location.id = board_opinion.location_id)
+                    INNER JOIN interview ON board_opinion.interview_id = interview.id)
+            WHERE interview.regis_id = ?`,[id],((err,result)=>{
         if(err){
             console.log(err);
         }else{
@@ -468,6 +502,16 @@ adminRouter.post('/InsertDataofComplaint',(req, res)=>{
     const action = req.body.action
     db.query(`INSERT INTO complaint (topic,topic_detial,action,complaint_number,store_id,admin_id,date,time,date_write) VALUE(?,?,?,?,?,?,?,?,?)`
     ,[topic,topicDetial,action,complaintNumber,storeId,adminId,dateACT,time,date],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/getDataAnnounList',(req, res)=>{
+    const yeartoday = req.body.yeartoday
+    db.query(`SELECT * FROM announce WHERE year(date) = ?`,[yeartoday],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {

@@ -26,6 +26,7 @@ import { AuthContext } from '../../App';
 import InterViewForm from './interViewForm';
 import BeenhereRoundedIcon from '@material-ui/icons/BeenhereRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
+import InterViewDetial from './interViewFormDetial';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -63,6 +64,7 @@ export default function InterView() {
     const [dataYears, setDataYears] = useState([])
     const [year, setYear] = useState('')
     const [open, setOpen] = React.useState(false);
+    const [openDetil, setOpenDetial] = React.useState(false);
     const [id, setIid] = useState()
     const {auth,setIsload} = useContext(AuthContext);
 
@@ -70,20 +72,30 @@ export default function InterView() {
         setIid(e)
         setOpen(true);
       };
-    
-      const handleClose = () => {
+
+    const handleClickOpenDetial =(e)=>{
+      setIid(e)
+      setOpenDetial(true);
+    }
+
+    const handleClose = () => {
         setOpen(false);
-      };
+    };
+
+    const handleCloseDetial = () => {
+        setOpenDetial(false);
+    };
+
       var forYear = new Date();
       var ThisYears = forYear.getFullYear()
       useEffect(()=>{
+        setYear(ThisYears)
           axios.post("http://localhost:3001/getStoreInterViewList",{
               date:ThisYears
           }).then((res)=>{
             setDataApplicationList(res.data)   
           }).then(
-              axios.get("http://localhost:3001/getYears").then((response)=>{
-  
+              axios.get("http://localhost:3001/getYears").then((response)=>{               
                   const data = []
                   response.data.forEach(element => {
                   data.push(element.Year)   
@@ -129,6 +141,7 @@ export default function InterView() {
                       <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="left">สถานะ</StyledTableCell>
+                      <StyledTableCell align="left">รายละเอียด</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -140,6 +153,7 @@ export default function InterView() {
                         <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ลงคะแนน</Button></StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.admin_name}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
                         <StyledTableCell align="left" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
+                        <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id==null} variant="contained" onClick={(e)=>handleClickOpenDetial(dataList.id)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -159,6 +173,21 @@ export default function InterView() {
               </AppBar>
               <div style={{marginTop:'50px'}}>
                 <InterViewForm active={id} open={open}/>
+              </div> 
+            </Dialog>
+            <Dialog fullScreen open={openDetil} onClose={handleCloseDetial} TransitionComponent={Transition}>
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleCloseDetial} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    รายละเอียด
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <div style={{marginTop:'50px'}}>
+                <InterViewDetial active={id} open={openDetil}/>
               </div> 
             </Dialog>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
@@ -22,25 +22,58 @@ const useStyles = makeStyles((theme) => ({
 export default function AnnouncementForm(props) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [date, setDate] = useState('')
   const history = useHistory();
 
   const insertData = (e) =>{
     e.preventDefault()
-    axios.post("http://192.168.1.101:3001/insert",{
+    swal("กด ok เพื่อยืนยันการบันทึก",{
+    })
+    .then((value) => {
+      if (value) {
+    axios.post("http://localhost:3001/insert",{
       title:title,
-      content:content
+      content:content,
+      Date:date
     }).then(
       setTitle(''),
       setContent(''),
-      swal("Good job!", "You clicked the button!", "success").then(history.push("/HomeStore")
-)
+      swal("Good job!", "You clicked the button!", "success").then(
+        history.push("/HomeStore"),
+        history.go()
     )
+    )
+  }
+  
+})
+    
   }
   const transitions = useTransition(props.open, {
     from: { opacity: 0, y: 800 },
     enter: { opacity: 1, y: 0 },
     leave:  { opacity: 0,y: 800}
   })
+  useEffect(() => {
+    const today = new Date();
+    const yeartoday = today.getFullYear() 
+    const month = today.getMonth() +1
+    const date = today.getDate() 
+    if(month < 10 && date > 9){
+      const forday = `${yeartoday}-0${month}-${date}`
+      setDate(forday) 
+    }
+    else if(date < 10 && month > 9){
+      const forday = `${yeartoday}-${month}-0${date}`
+      setDate(forday)     
+    }
+    else if(date < 10 && month < 10){
+      const forday = `${yeartoday}-0${month}-0${date}`
+      setDate(forday)      
+    }else{ 
+     const forday = `${yeartoday}-${month}-${date}`
+     setDate(forday) 
+    }
+  }, [])
 
   const classes = useStyles();
   return transitions(

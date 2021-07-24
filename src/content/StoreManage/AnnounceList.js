@@ -88,7 +88,9 @@ export default function DataListAnnounce() {
     .then((willDelete) => {
     
       if (willDelete) {
-        axios.post(`http://192.168.1.101:3001/delete/${id}`).then( res =>{
+        axios.post('http://localhost:3001/delete/',{
+          id:id
+        }).then( res =>{
           swal(res, {
           icon: "success",
         })

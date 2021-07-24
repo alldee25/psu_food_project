@@ -26,33 +26,21 @@ authRouter.use(
     })
 );
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโดย แอดมิน
+authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโดยแอดมิน
     const Username = req.body.Username;
     const Password = req.body.Password;
     const UserType = req.body.UserType;
-    db.query("SELECT * FROM admin WHERE USERNAME=? AND 	PASSWORD=? ;",[Username,Password],((err,result)=>{
+    db.query("SELECT * FROM admin WHERE USERNAME=? AND 	PASSWORD=?;",[Username,Password],((err,result)=>{
         if(err){
             console.log(err);
             
         }
         else if(result.length > 0){
-            bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
-                if (err) {
-                  console.log(err);
-                }else{
-                bcrypt.compare(Password, hash,(error, response)=>{  
-                    if(response){                                          
-                        req.session.UserType = UserType;
-                        req.session.user = result;
-                        res.send(result) 
-                    }else{
-                    res.send({ message: "Wrong username/password combination!" });
-                    }
-                })                    
-                }
-            })
-            }
-            else{
+                    req.session.UserType = UserType;
+                    req.session.user = result;
+                    res.send(result)                   
+                
+            }else{
            res.send({message:"User dossn't exist"}) 
         }
     }))
@@ -99,7 +87,6 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
         }
         else if(result.length > 0){           
             bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
-                console.log("hash "+ hash);
                 if (err) {
                   console.log(err);
                 }else{

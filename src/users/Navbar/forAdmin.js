@@ -6,7 +6,7 @@ import { animated } from '@react-spring/web';
 import { useSpring, useTransition } from '@react-spring/core';
 import Button from '@material-ui/core/Button';
 import {Link,useHistory,useLocation,useRouteMatch} from 'react-router-dom'
-import { TextField } from '@material-ui/core';
+import { ClickAwayListener, TextField } from '@material-ui/core';
 import { motion } from "framer-motion"
 import "./forAdmin.css"
 
@@ -48,31 +48,29 @@ function ForAdmin() {
       }
 
     return (
-
-        <div className="conforAd">
-         <animated.div  className="navAd" style={prop}><Link to="#"  onClick={() => setOpenLogin(!openLogin)} >
-          
-            
-              Admin</Link> 
-              
-              {transitions ((styles,item) => item && (<animated.div style={styles}>
-              
-                <input type="text" autoComplete='on' id="myInput" placeholder="Username" onChange={(e)=>{setUsername(e.target.value)}}>
-              </input>
+      <div className="conforAd">
+        <ClickAwayListener onClickAway={() => setOpenLogin(false)}>
+          <animated.div  className="navAd" style={prop}>
+            <Link to="#"  onClick={() => setOpenLogin(!openLogin)} >
+              Admin
+            </Link>       
+            {transitions ((styles,item) => item && (
+              <animated.div style={styles}>             
+                <input type="text" autoComplete='on' id="myInput" placeholder="Username" onChange={(e)=>{setUsername(e.target.value)}} />             
               </animated.div> ))}
-              {transitions ((styles,item) => item && (<animated.div style={styles}>
-                <input variant="outlined" type="text"  placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}}>
-              </input>
-              </animated.div> ))}
-              
-
-              {transitions ((styles,item) => item && (<animated.div style={styles}>
+            {transitions ((styles,item) => item && (
+              <animated.div style={styles}>
+                <input variant="outlined" type="text"  placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}} />              
+              </animated.div> ))}             
+            {transitions ((styles,item) => item && (
+              <animated.div style={styles}>
                 <Button variant="contained" onClick={LoginAdmin} color="primary" style={{marginLeft:'10px',borderRadius:'10px',height:'30px',marginBottom:'2px'}}>
-                Login
-              </Button>
-              </animated.div> ))} 
-            </animated.div>         
-          </div>
+                  Login
+                </Button>
+              </animated.div> ))}
+          </animated.div>
+        </ClickAwayListener>          
+      </div>
     )
 }
 

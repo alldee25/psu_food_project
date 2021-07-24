@@ -69,7 +69,6 @@ export default function Login() {
         leave:  { opacity: 0}
       })
 
-    console.log('location here '+ location.pathname);
  //for transition--------------------------------------------------------------------------------------------------------------------------------------------------------   
     return transitions1(
         (styles, item) => item && <animated.div className="conAnnoun" style={styles}>

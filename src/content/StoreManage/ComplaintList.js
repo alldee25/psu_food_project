@@ -141,7 +141,11 @@ function ComplaintList() {
                                     <StyledTableCell align="center" width="100px">{dataList.topic}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
-                                    <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                                    <StyledTableCell align="center" width="10px">
+                                        <Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold'}}>
+                                            {dataList.attendant_comment !== '' ? <div>แก้ไข</div> : <div>ตรวจสอบ</div>}
+                                        </Button>
+                                    </StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.attendant_comment !== '' ? <div>ตรวจสอบแล้ว</div> : <div>ยังไม่ตรวจสอบแล้ว</div>}</StyledTableCell>
 
                                 </StyledTableRow>
