@@ -1,0 +1,45 @@
+.subcon{
+    display: block;
+    margin-top: 40px;
+    width: 90%;
+    
+  }
+  .header{
+    margin-left:10px;
+  }
+
+  .connave{
+    display: flex;
+    flex-direction: row;
+    width:95%;
+    height: 50px;
+    margin-top:1%;
+    margin-left: 1%;
+    padding-left: 5%;
+    z-index: 2;
+  
+  }
+  .condiv {
+    display: flex;
+    flex-direction: column; 
+    width: 100vw;
+    height: 100vh;
+    background-color:rgba(173, 216, 230, 0.848);
+    
+    
+  }
+  .content{
+    display: flex;
+    border-radius: 20px;
+    margin-left: 1.5%;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: #CFFDFF;
+    width: 97.2%;
+    height: 90vh; 
+    position: relative;
+    z-index: 1;
+    box-shadow: 15px 10px 20px 4px #8d8c8c;
+    overflow: auto;
+    
+  }

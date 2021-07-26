@@ -1,7 +1,6 @@
 import React, { Component,useState } from "react";
 import ReactTypingEffect from "react-typing-effect";
 import { BrowserRouter as Router, Link, Route ,useParams,useRouteMatch,Switch} from "react-router-dom";
-import About from "../About";
 
 export default function HomeScholarships() {
     const { url, path } = useRouteMatch();
@@ -31,7 +30,7 @@ return (
       </div>
     </div>
     <div className="content"> 
-         <Route       path={`${path}:About`} component={About} />
+        
     </div>
   </div>
   </Router> 

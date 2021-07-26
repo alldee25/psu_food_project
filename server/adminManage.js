@@ -5,8 +5,24 @@ const bcrypt = require('bcrypt')
 const cors = require("cors")
 const session = require('express-session')
 const saltRounds = 10;
-const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+const path = require('path')
+const multer = require('multer')
+const storage = multer.diskStorage({
+    destination: (req , file, cb) =>{
+        cb(null, './public/images/adminUploaded');
+    },
+    filename: (req, file, cb)=>{
+        const im = req.body.image
+        console.log(im);
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+const upload = multer({storage:storage})
 
+adminRouter.post('/upload', upload.single('image'), (req,res)=>{
+
+        res.send('success')
+})
 adminRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -459,8 +475,8 @@ adminRouter.post('/getStoreAndComplaintInfo',(req, res)=>{
             }))
 })
 adminRouter.get('/getAdminInfoManager',(req, res)=>{
-    const storeId = 'manager'
-    db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
+    const storeId = 'เจ้าหน้าที่บริหารงานทั่วไป'
+    db.query(`SELECT role.role, admin.* FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -469,8 +485,8 @@ adminRouter.get('/getAdminInfoManager',(req, res)=>{
             }))
 })
 adminRouter.get('/getAdminInfoAttendant',(req, res)=>{
-    const storeId = 'attendant'
-    db.query(`SELECT role.role, admin.name FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
+    const storeId = 'ผู้ดูแล'
+    db.query(`SELECT role.role, admin.* FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -512,6 +528,17 @@ adminRouter.post('/InsertDataofComplaint',(req, res)=>{
 adminRouter.post('/getDataAnnounList',(req, res)=>{
     const yeartoday = req.body.yeartoday
     db.query(`SELECT * FROM announce WHERE year(date) = ?`,[yeartoday],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.get('/getAdminAll',(req, res)=>{
+    const yeartoday = req.body.yeartoday
+    db.query(`SELECT * FROM (admin INNER JOIN role ON admin.id_role = role.id) 
+    WHERE role.role != 'เจ้าหน้าที่บริหารงานทั่วไป' AND role.role != 'ผู้ดูแล'`,[yeartoday],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {

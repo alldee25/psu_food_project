@@ -1,6 +1,6 @@
 import React, { useState,useRef, useEffect} from "react";
 import "./StoreRegis.css";
-import {BrowserRouter as Router,Link,Route,useRouteMatch} from "react-router-dom";
+import {BrowserRouter as Router,Link,Route,useLocation,useRouteMatch} from "react-router-dom";
 //for Component---------------------------------------------------------Import----------------------------------------------------------------------------------------
 import ApplicationAnnouncement from "./AnnouncementForm";
 import CheckApplication from "./ApplicationsList";
@@ -39,54 +39,64 @@ const useStyles = makeStyles((theme) => ({
 export default function HomeStore(props) {
   const { url, path } = useRouteMatch();
   const [togle, setTogle] = useState(1);
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const prevOpen = useRef(open);
+  const anchorRef = useRef(null);
+  const location = useLocation()
   
   const togleTab = (index) => {
     setTogle(index); 
   };
 
-//for MUI-------------------------------------------------------------------functions in----------------------------------------------------------------------------
- 
-const classes = useStyles();
-const [open, setOpen] = useState(false);
-const anchorRef = useRef(null);
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
-const handleToggle = () => {
-  setOpen((prevOpen) => !prevOpen);
-};
-
-const handleClose = (event) => {
-  if (anchorRef.current && anchorRef.current.contains(event.target)) {
-    return;
-  }
-  setOpen(false);
-};
-
-function handleListKeyDown(event) {
-  if (event.key === 'Tab') {
-    event.preventDefault();
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
     setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
   }
-}
+  useEffect(() => {
 
-// return focus to the button when we transitioned from !open -> open
-const prevOpen = useRef(open);
-useEffect(() => {
-  if (prevOpen.current === true && open === false) {
-    
-    anchorRef.current.focus();
-  }
-  prevOpen.current = open;
-}, [open]);
-
-  //--------------------------------------------------------------------------//------------------------------------------------------------------------------------
-
+    if ((location.pathname == '/HomeStore/CleanlinessLevel') && (prevOpen.current == false && open == false) ) {
+      setTogle(2)
+    }
+    else if((location.pathname == '/HomeStore/CheckApplication') && (prevOpen.current == false && open == false)){
+      setTogle(3)
+    }
+    else if((location.pathname == '/HomeStore/LeaveList') && (prevOpen.current == false && open == false)){
+      setTogle(4)
+    }
+    else if((location.pathname == '/HomeStore/ComplaintList') && (prevOpen.current == false && open == false)){
+      setTogle(5)
+    }
+    else if((location.pathname == '/HomeStore/StoreInformation') && (prevOpen.current == false && open == false)){
+      setTogle(6)
+    }
+    if (prevOpen.current === true && open === false) {
+      
+      anchorRef.current.focus();
+    }
+    prevOpen.current = open;
+  }, [open]);
   return (
     <Router>
       <div className="condiv">
-        <div className="connave">
+        <div className="connave">        
           <div className={togle === 1 ? "itemNaveactive-nave" : "itemNave"}>
             <div className={classes.root}>
               <div>
+                
                 <Link to="#" onClick={handleToggle} style={{ display: "flex", alignItems: "center" }}>
                   การสมัค             
                   <div>
@@ -118,15 +128,12 @@ useEffect(() => {
           <div className={togle === 2 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(2)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
           </div>
-
           <div className={togle === 3 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(3)} to={`${url}/CheckApplication`}>ตรวจสอบการชำระ</Link>
           </div>
-       
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(4)} to={`${url}/LeaveList`}>ตรวรวสอบการลา</Link>
           </div>
-
           <div className={togle === 5 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(5)} to={`${url}/ComplaintList`}>ข้อร้องเรียน</Link>
           </div>
@@ -136,17 +143,19 @@ useEffect(() => {
           </div>
         </div>
 {/*<!-- ----------------------------------------------------------------------------------------------------Content-------------------------------------------------- -->*/}
-        <div className="content">
-          <Route exact path={`${path}`} component={DataListAnnounce} />
-          <Route     path={`${path}/CheckApplication`}component={CheckApplication} />
-          <Route      path={`${path}/InterView`} component={InterView} />
-          <Route      path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
-          <Route      path={`${path}/StoreInformation`} component={StoreInformation} />
-          <Route      path={`${path}/CleanlinessLevel`} component={CleanlinessLevel} />
-          <Route      path={`${path}/LeaveList`} component={LeaveList} />
-          <Route      path={`${path}/ComplaintList`} component={ComplaintList} />
-        </div>
-      </div>
-    </Router>
+          
+            <div className="content">             
+                <Route exact path={`${path}`} component={DataListAnnounce} />
+                <Route exact path={`${path}/CheckApplication`}component={CheckApplication} />
+                <Route exact  path={`${path}/InterView`} component={InterView} />
+                <Route  exact path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
+                <Route  exact path={`${path}/StoreInformation`} component={StoreInformation} />
+                <Route  exact path={`${path}/CleanlinessLevel`} component={CleanlinessLevel} />
+                <Route  exact  path={`${path}/LeaveList`} component={LeaveList} />
+                <Route  exact  path={`${path}/ComplaintList`} component={ComplaintList} />
+            </div>       
+          </div>  
+        </Router>
+  
   );
 }

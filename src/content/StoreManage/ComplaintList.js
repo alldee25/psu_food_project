@@ -121,7 +121,7 @@ function ComplaintList() {
             
             <div style={{marginTop:'20px'}}>
                 {complaintList == '' ? <div style={{position:'absolute',top:'50%',left:'40%'}}>
-                <h1>โปรดเลือกร้านค้า</h1>
+                <h1>ไม้พบข้อร้องเรียน</h1>
             </div> : <TableContainer component={Paper} >
                     <Table className={classes.table} aria-label="customized table">
                         <TableHead>
@@ -142,7 +142,7 @@ function ComplaintList() {
                                     <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
                                     <StyledTableCell align="center" width="10px">
-                                        <Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold'}}>
+                                        <Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
                                             {dataList.attendant_comment !== '' ? <div>แก้ไข</div> : <div>ตรวจสอบ</div>}
                                         </Button>
                                     </StyledTableCell>

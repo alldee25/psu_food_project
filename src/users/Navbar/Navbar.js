@@ -13,24 +13,25 @@ import ForAdmin from './forAdmin'
 
 
 export default function Navbar(props) {
-    const [navbar , setNavbar] = useState(true); 
+    const [navbar , setNavbar] = useState(false); 
     const [navAc, setNavAc] = useState(1)
     const { setAnimation} = useContext(AnimaContext);
-
+    const [open, setOpen] = React.useState(false);
+    const prevOpen = useRef(open);
+    const anchorRef = React.useRef(null);
+    const location = useLocation()
+    
     const activeNav = (e) =>{
         setNavAc(e)
         if (e === 2) {
-            setNavbar(false)  
+            setNavbar(true)  
         }
         else{
             setAnimation('in')
-            setNavbar(true)
+            setNavbar(false)
       }
     }
   
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
-
     const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
     };
@@ -52,10 +53,14 @@ export default function Navbar(props) {
       }
     }
 
-    const prevOpen = useRef(open);
-
     useEffect(() => {
-      
+      if (location.pathname == '/RegisStore') {
+        setNavbar(true)
+        setNavAc(2)
+      }
+      else if(location.pathname == '/login'){
+        setNavAc(4)
+      }
       if (prevOpen.current === true && open === false) {
         anchorRef.current.focus();
       }
@@ -64,7 +69,7 @@ export default function Navbar(props) {
 
     return ( 
         <div style={{position:'relative'}}>          
-          <div className={navbar ? 'Navbar' : 'NavbarActive1'}>          
+          <div className={navbar ? 'NavbarActive1' : 'Navbar'}>          
             <Link to={'/'}  onClick={() => activeNav(1)} style={{textDecoration:'none'}}>
               <div className={navAc === 1 ? "itemNavIndexActive" : "itemNavIndex"}>
                 หน้าหลัก 

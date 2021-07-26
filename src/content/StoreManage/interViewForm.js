@@ -91,13 +91,13 @@ function InterViewForm(props) {
             adminId:auth.usersData[0].id,
             date:date,
             bordOpenion:bordOpenion,
-            bType:dataInterViewList[0].id_type,
-            bLocation:dataInterViewList[0].id_locations
+            bType:'',
+            bLocation:''
           }).then((res)=>{
             swal("Good","Click","success").then((value)=>{
               history.go('HomeStore/InterView')
               setIsload(false)
-          }) 
+          })        
           })
         }
         else if((bordOpenion==='ผ่านการคัดเลือก') && (sum>=80)){        
@@ -115,8 +115,8 @@ function InterViewForm(props) {
             adminId:auth.usersData[0].id,
             date:date,
             bordOpenion:bordOpenion,
-            bType:dataInterViewList[0].id_type,
-            bLocation:dataInterViewList[0].id_locations
+            bType:'',
+            bLocation:''
           }).then((res)=>{
             swal("Good","Click","success").then((value)=>{
               history.go('HomeStore/InterView')
@@ -139,6 +139,8 @@ function InterViewForm(props) {
             adminId:auth.usersData[0].id,
             date:date,
             bordOpenion:bordOpenion,
+            bType:bType,
+            bLocation:bLocation
           }).then((res)=>{
             swal("Good","Click","success").then((value)=>{
               history.go('HomeStore/InterView')
@@ -338,19 +340,21 @@ function InterViewForm(props) {
                   <FormControlLabel  value="ผ่านการคัดเลือกแบบมีเงื่อนไข" control={<Radio />} label="ผ่านการคัดเลือกแบบมีเงื่อนไข" />
                 </RadioGroup>
               </FormControl>
+              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'10px',fontWeight:'bold'}}>
+                <span>จำหน่ายอาหารประเภท</span>
+              </div>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px'}}>
-                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bLocation} onChange={(e)=>{setBLocation(e.target.value)}} >
+                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bType} onChange={(e)=>{setBType(e.target.value)}}>
                   {typeList.map((datas,index)=>(
                     <MenuItem key={index} value={datas.id}>{datas.store_type}</MenuItem>
-                  ))}
-                  
+                  ))}                
                 </Select>
               </div>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'20px',fontWeight:'bold'}}>
                 <span>ประจำโรงอาหาร</span>
               </div>
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px'}}>
-                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bType} onChange={(e)=>{setBType(e.target.value)}} >
+                <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bLocation} onChange={(e)=>{setBLocation(e.target.value)}}>
                   {locationList.map((datas,index)=>(
                     <MenuItem key={index} value={datas.id}>{datas.location}</MenuItem>
                   ))}                                

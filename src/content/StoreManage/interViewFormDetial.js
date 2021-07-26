@@ -193,11 +193,10 @@ function InterViewDetial(props) {
               </div>
               {dataInterViewList.map((data,index)=>(
                 <div key={index} style={{display:'flex',flexDirection:'row'}}>
-                    <TextField disabled type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} value={data.score2} />
-                    <TextField disabled id="หมายเหตุ2" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} value={data.note2} />
+                  <TextField disabled type="number" label="คะแนนที่ได้" variant="outlined" InputLabelProps={{shrink: true}} value={data.score2} />
+                  <TextField disabled id="หมายเหตุ2" variant="outlined" label="หมายเหตุ" InputLabelProps={{shrink: true}} value={data.note2} />            
                 </div>
-                ))} 
-               
+                ))}               
             </div>
             <div style={{display:'flex',flexDirection:'row'}}>
               <div className="titleForm">
@@ -238,24 +237,23 @@ function InterViewDetial(props) {
                 </RadioGroup>
                 ))}
               </FormControl>
-              
+              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'10px',fontWeight:'bold'}}>
+                <span>จำหน่ายอาหารประเภท</span>
+              </div>
                   {boardLT.map((data,index)=>(
-                    <div key={index} style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px'}}>
-                        <TextField id="demo-simple-select-helper" value={data.store_type}  />
+                    <div key={index} style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'10px',width:'200px'}}>
+                        <TextField disabled value={data.store_type}  />
                     </div>   
                   ))}
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'20px',fontWeight:'bold'}}>
                 <span>ประจำโรงอาหาร</span>
               </div>
-              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px'}}>
-                <Select disabled id="demo-simple-select-helper" value={bType} onChange={(e)=>{setBType(e.target.value)}} >
-                  {locationList.map((datas,index)=>(
-                    <MenuItem key={index} value={datas.id}>{datas.location}</MenuItem>
-                  ))}                                
-                </Select>
-              </div>
+              {boardLT.map((data,index)=>(               
+                <div key={index} style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px',width:'200px'}}>
+                  <TextField disabled value={data.location} />                                                
+                </div>
+              ))}                                                
               </div>  
-            <Button variant="contained" type="submit" color="primary">บันทึก</Button>
           </form>          
         </div> 
       </div>

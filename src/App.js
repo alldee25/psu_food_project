@@ -1,22 +1,12 @@
 import React, { useState,useEffect } from "react";
-import Navbar from './AdminNavbar/Navbar'
 import "./App.css";
+import './content/content.css'
 import { BrowserRouter as Router, Route,Link, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import { IconName } from "react-icons/fa";
 import CircularProgress from '@material-ui/core/CircularProgress';
 //content
 /* import Navbar from './users/Navbar/Navbar' */
-import Home      from "./content/Dachboad/HomeDachboad";
-import HomeMade from "./content/MadeManage/HomeMade";
-import HomeStore from "./content/StoreManage/HomeStore";
-import HomeScholarships from "./content/Scholarships/HomeScholarships";
-import HomeArea from "./content/AreaManage/HomeArea";
-import HomeAdmin from "./content/AdminManage/HomeAdmin";
-import Profile from "./content/ProfileManage/Profile";
 
-import RegisStore from './users/RegisStore'
-import RegisStore1 from './users/Announcement of results'
-import Login from './users/login'
 import indexPage from "./users/indexPage";
 import Admin from "./Admin/Admin"
 import Student from './users/Student/Student'

@@ -2,10 +2,10 @@ import React from 'react'
 import Navbar from "../AdminNavbar/Navbar";
 import Home      from "../content/Dachboad/HomeDachboad";
 import HomeMade from "../content/MadeManage/HomeMade";
-import HomeStore from "../content/StoreManage/HomeStore";
+import HomeStore from "../content/StoreManage/NavStore";
 import HomeScholarships from "../content/Scholarships/HomeScholarships";
 import HomeArea from "../content/AreaManage/HomeArea";
-import HomeAdmin from "../content/AdminManage/HomeAdmin";
+import HomeAdmin from "../content/AdminManage/ืNavAdmin";
 
 import { BrowserRouter as Router, Route, Switch, withRouter } from "react-router-dom";
 

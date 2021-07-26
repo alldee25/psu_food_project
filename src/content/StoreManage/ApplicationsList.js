@@ -118,34 +118,34 @@ export default function CheckApplication(props) {
              ))}
             </Select>
             </div>
-                <div style={{marginTop:'20px'}}>
-<TableContainer component={Paper} >
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
-            <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
-            <StyledTableCell align="left">สถานะ</StyledTableCell>
-            <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
-            <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
-            <StyledTableCell align="left">แก้ไข</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dataApplicationList.map((dataList) => (
-            <StyledTableRow key={dataList.id}>
-              <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
-              <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
-              <StyledTableCell align="left" width="100px">{dataList.status}</StyledTableCell>
-              <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
-              <StyledTableCell align="center" width="100px">{dataList.adminName}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
-              <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==auth.usersData[0].name} variant="contained" style={{fontWeight:'bold'}}>แก้ไข</Button></StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-                </div>
+            <div style={{marginTop:'20px'}}>
+              <TableContainer component={Paper} >
+                    <Table className={classes.table} aria-label="customized table">
+                      <TableHead>
+                        <TableRow>
+                          <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
+                          <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
+                          <StyledTableCell align="left">สถานะ</StyledTableCell>
+                          <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
+                          <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
+                          <StyledTableCell align="left">แก้ไข</StyledTableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {dataApplicationList.map((dataList) => (
+                          <StyledTableRow key={dataList.id}>
+                            <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
+                            <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
+                            <StyledTableCell align="left" width="100px">{dataList.status}</StyledTableCell>
+                            <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                            <StyledTableCell align="center" width="100px">{dataList.adminName}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
+                            <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==auth.usersData[0].name} variant="contained" style={{fontWeight:'bold'}}>แก้ไข</Button></StyledTableCell>
+                          </StyledTableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+              </TableContainer>
+            </div>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>

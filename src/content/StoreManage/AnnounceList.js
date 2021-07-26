@@ -104,18 +104,23 @@ export default function DataListAnnounce() {
     
     return (
         <div className="subcon">
-             <div className="header" style={{height:'90px',display:"flex",alignItems:"center",position:"relative" }}><h1>ข้อมูลการเปิดรับสมัค</h1>            
+             <div className="header" style={{display:"flex",alignItems:"center",position:"relative" }}>
+                <h1>
+                 ข้อมูลการเปิดรับสมัค
+                </h1>            
                   <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"10px",width:"100px",borderRadius:"10px",fontSize: "1rem",
                     fontWeight: "bold",
                     color:"white"}} variant="contained" color="primary" >
                       เพิ่ม
                   </Button>
-              
               </div>
             {dataList == '' ? 
             <div style={{position:'absolute',top:'50%',right:'40%'}}>
               <h1>ไม่พบข้อมูล</h1>
-            </div> : <TableContainer component={Paper} >
+            </div> 
+            : 
+            <div style={{marginTop:'20px'}}>
+              <TableContainer component={Paper} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>
@@ -140,7 +145,9 @@ export default function DataListAnnounce() {
                     ))}
                   </TableBody>
                 </Table>
-              </TableContainer>}
+              </TableContainer>
+            </div>
+            }
               <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
               <AppBar className={classes.appBar}>
                 <Toolbar>

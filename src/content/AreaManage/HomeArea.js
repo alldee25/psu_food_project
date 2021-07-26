@@ -1,8 +1,6 @@
 import React, { Component,useState } from "react";
 import ReactTypingEffect from "react-typing-effect";
 import { BrowserRouter as Router, Link, Route ,useParams,useRouteMatch,Switch} from "react-router-dom";
-import About from "../About";
-
 
 export default function HomeArea() {
     const { url, path } = useRouteMatch();
@@ -30,10 +28,6 @@ return (
       <div className={togle === 5 ? "itemNaveactive-nave" : "itemNave"}>
         <Link onClick={() => togleTab(5)} to={`${url}/education`}>จัดการร้านค้า</Link>
       </div>
-    </div>
-    <div className="content"> 
-         
-         <Route       path={`${path}:About`} component={About} />
     </div>
   </div>
   </Router> 

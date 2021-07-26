@@ -23,8 +23,6 @@ export default function ForStore() {
              <Link to={`/RegisStore1`}  style={{textDecoration:'none'}}><div className="itemNavIndex">ประกาศผล</div></Link> 
                
             </div>
-        
-
         </animated.div> ))}  
         </animated.div>
       

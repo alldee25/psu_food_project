@@ -7,8 +7,6 @@ import {
   useRouteMatch,
   Switch,
 } from "react-router-dom";
-import About from "../About";
-
 
 const HomeMade = () => {
   const { path, url } = useRouteMatch();
