@@ -6,23 +6,38 @@ const cors = require("cors")
 const session = require('express-session')
 const saltRounds = 10;
 const path = require('path')
+
+adminRouter.use(express.static(path.join(__dirname, './public/images/adminUploaded/')));
+
 const multer = require('multer')
 const storage = multer.diskStorage({
     destination: (req , file, cb) =>{
-        cb(null, './public/images/adminUploaded');
+        cb(null, './public/images/adminUploaded/');
     },
     filename: (req, file, cb)=>{
-        const im = req.body.image
-        console.log(im);
         cb(null, Date.now() + path.extname(file.originalname))
     }
 })
-const upload = multer({storage:storage})
-
-adminRouter.post('/upload', upload.single('image'), (req,res)=>{
-
-        res.send('success')
+const upload = multer({
+    storage: storage,
+    limits:{fileSize: 1000000},
+    fileFilter: function(req,file,cb){
+        checkFileType(file, cb);
+    }
 })
+const checkFileType =(file,cb)=>{
+    const filetype = /jpeg|jpg|png|gif/;
+    const extname = filetype.test(path.extname
+        (file.originalname).toLocaleLowerCase())
+    const mimetype = filetype.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true)
+    } else {
+        cb('Error: Image Only!')
+    }
+}
+
 adminRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -32,7 +47,27 @@ adminRouter.use(bodyParser.urlencoded({
     extended: true
 }))
 adminRouter.use(bodyParser.json());
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------//
+adminRouter.post('/upload', upload.single('file'), (req,res)=>{
+
+        const image =  req.file.filename
+        console.log(image);
+        db.query(`UPDATE admin SET img = ? WHERE id = ?`,[image,3],((err,result)=>{
+            if (err) {
+                console.log(err);
+                res.send({
+                    msg: err
+                })
+            } if (result){
+                res.send({
+                  data: result,
+                  msg:"good" 
+                })
+                
+            }
+        }))
+})
 adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลประกาศ
     const title = req.body.title
     const content = req.body.content 

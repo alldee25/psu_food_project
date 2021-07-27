@@ -5,15 +5,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import AvatarA from '../../img/avatar-1577909.svg'
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import Divider from '@material-ui/core/Divider';
 import { Button, Input } from '@material-ui/core';
 import swal from 'sweetalert';
 import axios from 'axios';
 import { AuthContext } from '../../App';
+import AvatarA from '../../img/avatar-1577909.svg'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,10 +31,12 @@ function AdminMember() {
     const {setIsload} = useContext(AuthContext)
 
     const handleClickOpen =()=>{
+        const formData = new FormData();
+        formData.append("file", image)
+        
         console.log(image);
-        axios.post("http://localhost:3001/upload",{
-            image:image 
-        }).then((res)=>{
+        axios.post("http://localhost:3001/upload",formData 
+        ).then((res)=>{
         console.log(res.data);
         }   
         )
@@ -74,10 +74,10 @@ function AdminMember() {
                 <div style={{overflow:'auto',width:'50%'}}>
                   <List className={classes.root}>
                     {manager.map((data,index)=>(
-                    <ListItem>                       
+                    <ListItem key={index}>                       
                         <ListItemAvatar>
                             <Avatar>
-                               {data.img !== '' ? <img src={data.img}/> : <img src={AvatarA}/>}  
+                                <img width='38' src={`http://localhost:3001/${data.img}`} alt=""  />  
                             </Avatar>
                         </ListItemAvatar>                      
                         <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                           
@@ -85,22 +85,22 @@ function AdminMember() {
                     ))}
                     <Divider variant="inset" component="li" />
                     {attendant.map((data,index)=>(
-                    <ListItem>
+                    <ListItem key={index}>
                         <ListItemAvatar>
                             <Avatar>
-                                {data.img !== '' ? <img src={data.img}/> : <img src={AvatarA}/>} 
+                                {data.img !== '' ? <img width='38' src={`http://localhost:3001/${data.img}`} alt=""  /> : <img src={AvatarA} /> } 
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                      
                     </ListItem>
                     ))}
                     {admin.map((data,index)=>(
-                        <div>
+                        <div key={index}>
                             <Divider variant="inset" component="li" />
                             <ListItem>
                                 <ListItemAvatar>
                                     <Avatar>
-                                        {data.img !== '' ? <img src={data.img}/> : <img src={AvatarA}/>} 
+                                        {data.img !== '' ? <img width='38' src={`http://localhost:3001/${data.img}`} /> :  <img src={AvatarA} alt='' /> } 
                                     </Avatar>
                                 </ListItemAvatar>                     
                             <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                        
@@ -110,11 +110,9 @@ function AdminMember() {
                 </List>  
                 </div> 
             <div style={{height:'550px',borderLeft: '1.5px solid rgb(228, 228, 228)'}}>
-                <Input type="file" name='image' onChange={(e)=>{setImage(e.target.files)}}></Input>
+                <Input type="file" name='image' onChange={(e)=>{setImage(e.target.files[0])}}></Input>
             </div> 
         </div> 
         </div>
     )
-}
-
-export default AdminMember
+}export default AdminMember

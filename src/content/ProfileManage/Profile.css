@@ -1,4 +1,6 @@
 .name{
+    display: flex;
+    justify-content: center;
   margin-top: 10px;  
 
 }
@@ -18,7 +20,9 @@
     border-radius: 10px;
     width: 80%;
     height: 120px;
-    background-color: lavender;
+    background: rgba(173, 216, 230, 0.848); 
+    backdrop-filter: blur(8px); 
+    z-index: 2;
 }
 .inProfile{
     box-sizing: border-box;
