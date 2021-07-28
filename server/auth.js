@@ -29,7 +29,10 @@ authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโด
     const Username = req.body.Username;
     const Password = req.body.Password;
     const UserType = req.body.UserType;
-    db.query("SELECT * FROM admin WHERE USERNAME=? AND 	PASSWORD=?;",[Username,Password],((err,result)=>{
+    db.query(`SELECT admin.*,role.role 
+    FROM (admin
+        INNER JOIN role ON role.id = admin.id_role )
+    WHERE USERNAME=? AND 	PASSWORD=?;`,[Username,Password],((err,result)=>{
         if(err){
             console.log(err);
             
@@ -37,6 +40,7 @@ authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโด
         else if(result.length > 0){
                     req.session.UserType = UserType;
                     req.session.user = result;
+                    req.session.img = result[0].img;
                     res.send(result)                   
                 
             }else{
@@ -93,6 +97,7 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
                     if(response){                 
                         req.session.UserType = UserType;
                         req.session.user = result;
+                        req.session.img = result[0].img
                         res.send(result)  
                     }else{
                     res.send({ message: "Wrong username/password combination!" });
@@ -108,7 +113,7 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
 authRouter.get("/getSession" ,(req, res) => {//ตรวจสอบ เซสชั่น
     sleep(0).then(()=>{
         if(req.session.user){   
-        res.send({logedIn:true, usersData:req.session.user, UserType:req.session.UserType })
+        res.send({logedIn:true, usersData:req.session.user, UserType:req.session.UserType, usersImg:req.session.img })
         }else{
         res.send({logedIn:false})
         }

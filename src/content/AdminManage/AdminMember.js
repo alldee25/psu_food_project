@@ -77,7 +77,7 @@ function AdminMember() {
                     <ListItem key={index}>                       
                         <ListItemAvatar>
                             <Avatar>
-                                <img width='38' src={`http://localhost:3001/${data.img}`} alt=""  />  
+                            {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} alt=""  /> : <img src={AvatarA} /> }   
                             </Avatar>
                         </ListItemAvatar>                      
                         <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                           
@@ -88,7 +88,7 @@ function AdminMember() {
                     <ListItem key={index}>
                         <ListItemAvatar>
                             <Avatar>
-                                {data.img !== '' ? <img width='38' src={`http://localhost:3001/${data.img}`} alt=""  /> : <img src={AvatarA} /> } 
+                                {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} alt=""  /> : <img src={AvatarA} /> } 
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                      
@@ -100,7 +100,7 @@ function AdminMember() {
                             <ListItem>
                                 <ListItemAvatar>
                                     <Avatar>
-                                        {data.img !== '' ? <img width='38' src={`http://localhost:3001/${data.img}`} /> :  <img src={AvatarA} alt='' /> } 
+                                        {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} /> :  <img src={AvatarA} alt='' /> } 
                                     </Avatar>
                                 </ListItemAvatar>                     
                             <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                        
@@ -108,10 +108,7 @@ function AdminMember() {
                         </div>                  
                     ))}                  
                 </List>  
-                </div> 
-            <div style={{height:'550px',borderLeft: '1.5px solid rgb(228, 228, 228)'}}>
-                <Input type="file" name='image' onChange={(e)=>{setImage(e.target.files[0])}}></Input>
-            </div> 
+                </div>  
         </div> 
         </div>
     )

@@ -25,7 +25,7 @@ export default function App() {
   axios.defaults.withCredentials = true;
   
   const [auth, setAuth] = useState(null);
-  const [userName, setUserName] = useState('');
+  const [userImg, setUserImg] = useState('');
   const [animation, setAnimation] = useState('');
   const [userType, setUserType] =  useState('');
   const  [isload, setIsload] = useState(true)
@@ -34,7 +34,7 @@ useEffect(()=>{
   axios.get("http://localhost:3001/getSession").then((res)=>{
       if(res.data.logedIn === true){
           setAuth(res.data);
-          setUserName(res.data.usersData[0].name);
+          setUserImg(res.data.usersImg);
           setUserType(res.data.UserType);
           setIsload(false)
           
@@ -72,7 +72,7 @@ const transitions1 = useTransition(isload,{
 
   if((auth!=null) && (userType === 'Admin')){
     return (
-    <AuthContext.Provider value={{ auth, setIsload,isload }}>
+    <AuthContext.Provider value={{ auth, setIsload,isload,userImg }}>
         {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'black',zIndex:'4',borderRadius:'10px'}}/>}
         {isload === true && <div  className="blurAdmin"/>}
       {transitionsAdmin((styles, item) => item && ( <animated.div  style={styles}>
@@ -84,7 +84,7 @@ const transitions1 = useTransition(isload,{
     )
   }else if((auth!=null) && (userType === 'Student')){
     return(
-      <AuthContext.Provider value={{userName, setIsload }}>
+      <AuthContext.Provider value={{ setIsload }}>
       {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'black',zIndex:'4',borderRadius:'10px'}}/>}
          {transitionsStudent((styles, item) => item && <animated.div  style={styles}>
         <Router> 
@@ -97,7 +97,7 @@ const transitions1 = useTransition(isload,{
   }
   else if((auth!=null) && (userType === 'Teacher')){
     return(
-    <AuthContext.Provider value={{userName, setIsload }}>
+    <AuthContext.Provider value={{ setIsload }}>
       {transitionsTeacher((styles, item) => item && <animated.div  style={styles}>
       {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'black',zIndex:'4',borderRadius:'10px'}}/>}
       <Router> 

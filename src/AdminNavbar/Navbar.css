@@ -7,11 +7,13 @@
     width: 220px;
     font-weight: bold;
     transform-origin: left ;
-    position: relative;
-  
-    
+    position: relative; 
     
 }
+a{
+    color: black;
+}
+
 .itemNaveactive-nave{
 transform-origin: left ;
 transition-duration: 0.2s;

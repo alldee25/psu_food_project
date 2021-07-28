@@ -6,8 +6,9 @@ const cors = require("cors")
 const session = require('express-session')
 const saltRounds = 10;
 const path = require('path')
+let fs = require('fs');
 
-adminRouter.use(express.static(path.join(__dirname, './public/images/adminUploaded/')));
+adminRouter.use(express.static(path.join(__dirname, './public/images/')));
 
 const multer = require('multer')
 const storage = multer.diskStorage({
@@ -49,20 +50,29 @@ adminRouter.use(bodyParser.urlencoded({
 adminRouter.use(bodyParser.json());
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------//
-adminRouter.post('/upload', upload.single('file'), (req,res)=>{
-
-        const image =  req.file.filename
-        console.log(image);
-        db.query(`UPDATE admin SET img = ? WHERE id = ?`,[image,3],((err,result)=>{
+adminRouter.post('/upload', upload.single('file'), (req, res)=>{
+    const image =  req.file.filename
+    const id = req.body.data
+    if (req.body.oldFile) {
+        fs.unlink('./public/images/adminUploaded/'+req.body.oldFile, function(err){
+            if (err) {
+                throw err;
+            }
+        })
+    }
+        
+        db.query(`UPDATE admin SET img = ? WHERE id = ?`,[image,id],((err,result)=>{
             if (err) {
                 console.log(err);
                 res.send({
                     msg: err
                 })
             } if (result){
+                req.session.img = image;
                 res.send({
                   data: result,
-                  msg:"good" 
+                  msg:"good",
+                  
                 })
                 
             }

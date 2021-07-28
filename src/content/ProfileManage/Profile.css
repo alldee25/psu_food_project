@@ -1,8 +1,16 @@
 .name{
     display: flex;
     justify-content: center;
-  margin-top: 10px;  
+    width: 200px; 
+    height: 40px; 
 
+}
+.nameIcon{
+    position: absolute;  
+    top: 150px;
+    right: 15px;
+    font-size: 5px;
+    color: cadetblue;
 }
 .frame{
     display: flex;
@@ -10,6 +18,7 @@
     justify-content: center;
     margin-top: 15px;  
     height: 220px;
+    position: relative;
 
 }
 .Profile{
@@ -18,11 +27,22 @@
     border-color: rgb(15, 3, 243);
     box-sizing: border-box;
     border-radius: 10px;
-    width: 80%;
+    width: 200px;
     height: 120px;
-    background: rgba(173, 216, 230, 0.848); 
-    backdrop-filter: blur(8px); 
+    background: rgba(173, 216, 230, 0.848);  
     z-index: 2;
+}
+.ProfileReview{
+    display: flex;
+    justify-content: center;
+    border-color: rgb(15, 3, 243);
+    box-sizing: border-box;
+    border-radius: 10px;
+    width: 200px;
+    height: 120px;
+    background: rgba(173, 216, 230, 0.848);  
+    z-index: 2;
+    
 }
 .inProfile{
     box-sizing: border-box;
