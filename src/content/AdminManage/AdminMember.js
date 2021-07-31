@@ -9,15 +9,17 @@ import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import Divider from '@material-ui/core/Divider';
 import { Button, Input } from '@material-ui/core';
 import swal from 'sweetalert';
+import S__2154499 from '../../img/avatarA.png'
 import axios from 'axios';
 import { AuthContext } from '../../App';
 import AvatarA from '../../img/avatar-1577909.svg'
+import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 
 const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
-      height:'300px',
-      maxWidth: 460,
+      height:'500px',
+      maxWidth: 560,
     },
   }));
 
@@ -27,19 +29,19 @@ function AdminMember() {
     const [manager,setManager] = useState([])
     const [admin,setAdmin] = useState([])
     const [attendant,setAttendant] = useState([])
-    const [image,setImage] = useState('')
+    const [dataPreview,setdataPreview] = useState([])
     const {setIsload} = useContext(AuthContext)
 
     const handleClickOpen =()=>{
-        const formData = new FormData();
-        formData.append("file", image)
         
-        console.log(image);
-        axios.post("http://localhost:3001/upload",formData 
-        ).then((res)=>{
-        console.log(res.data);
-        }   
-        )
+    }
+    const selectDetial = (e)=>{
+        axios.post('http://localhost:3001/getInfoAdmin',{
+            adminId:e
+        }).then((res)=>{
+            setdataPreview(res.data)
+        })
+        
     }
 
     useEffect(()=>{ 
@@ -80,7 +82,8 @@ function AdminMember() {
                             {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} alt=""  /> : <img src={AvatarA} /> }   
                             </Avatar>
                         </ListItemAvatar>                      
-                        <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                           
+                        <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />
+                        <button style={{color:'green'}} onClick={(e)=>{selectDetial(data.id)}}><PlayArrowRoundedIcon  /></button>                           
                     </ListItem>
                     ))}
                     <Divider variant="inset" component="li" />
@@ -91,7 +94,8 @@ function AdminMember() {
                                 {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} alt=""  /> : <img src={AvatarA} /> } 
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                      
+                        <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} /> 
+                        <button style={{color:'green'}} onClick={(e)=>{selectDetial(data.id)}}><PlayArrowRoundedIcon  /></button>                     
                     </ListItem>
                     ))}
                     {admin.map((data,index)=>(
@@ -101,14 +105,35 @@ function AdminMember() {
                                 <ListItemAvatar>
                                     <Avatar>
                                         {data.img !== '' ? <img width='38' src={`http://localhost:3001/adminUploaded/${data.img}`} /> :  <img src={AvatarA} alt='' /> } 
-                                    </Avatar>
+                                    </Avatar>                              
                                 </ListItemAvatar>                     
-                            <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />                        
+                            <ListItemText primary={`ชื่อ : ${data.name}`} secondary={`ตำแหน่ง : ${data.role}`} />
+                            <button style={{color:'green'}} onClick={(e)=>{selectDetial(data.id)}}><PlayArrowRoundedIcon  /></button>                        
                             </ListItem>  
                         </div>                  
                     ))}                  
                 </List>  
-                </div>  
+                </div>
+                
+                <div style={{borderLeft:"1.5px solid red",display:'flex',justifyContent:'center',width:'500px'}}>
+                    {dataPreview == '' ? '': 
+                    dataPreview.map((data,index)=>(
+                    <div key={index} style={{display:"flex",alignItems:'center',flexDirection:'column'}}>                                                                   
+                    <div className="ProfileReview">
+                        <img width="auto" height="120" src={`http://localhost:3001/adminUploaded/${data.img}`} />
+                    </div>
+                    <div style={{marginTop:'40px'}}>                    
+                        <div style={{width:"400px",marginTop:'10px',fontWeight:'bold'}}>
+                        <p><span>ชื่อ-สกุล : {data.name} {data.lastname}</span></p>
+                        <p><span>รหัสประจำตัวประชาชน : {data.id_card}</span></p>
+                        <p><span>ตำแหน่งงาน : {data.role}</span></p>
+                        <p><span>เบอร์ติดต่อ : {data.phone}</span></p>
+                        <p><span>Email : {data.email}</span></p>
+                        </div>
+                    </div> 
+                </div>
+            ))}            
+        </div>  
         </div> 
         </div>
     )

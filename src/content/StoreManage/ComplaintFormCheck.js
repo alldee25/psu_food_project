@@ -143,10 +143,10 @@ function ComplaintForm(props) {
                         <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled variant="standard" type="time" value={data.time} ></TextField>
                     </div>
                     <span style={{marginLeft:'10px'}}>
-                        นาง/นาย
+                        นาง/นางสาว/นาย
                     </span>                
                     <div style={{marginLeft:'10px'}}>
-                      <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={data.name} variant="standard" type="text" ></TextField>
+                      <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={`${data.name} ${data.lastname}`}variant="standard" type="text" ></TextField>
                     </div>                                                                               
                 </div>
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>

@@ -10,7 +10,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';                         
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import CameraEnhanceOutlinedIcon from '@material-ui/icons/CameraEnhanceOutlined';
@@ -96,7 +96,7 @@ export default function Profile() {
         const formData = new FormData();
         formData.append("file", imageSelected)
         formData.append("oldFile", userImg)
-        formData.append("data", auth.usersData[0].id) 
+        formData.append("id", auth.usersData[0].id) 
         axios.post("http://localhost:3001/upload",formData 
     ).then((res)=>{
         console.log(res.data);
@@ -116,6 +116,9 @@ export default function Profile() {
   }
 
   useEffect(()=>{
+    if (userImg == '') {
+      
+    }
     setImageSelected(null)
     setImagePreview(null)
   },[open])
@@ -125,11 +128,11 @@ export default function Profile() {
       <div className="frame">
        <div className="Profile">
         <div className="inProfile">       
-          {userImg == '' ? <img width="auto" height="120" src={S__2154499} /> : <img width="auto" height="120" src={`http://localhost:3001/adminUploaded/${userImg}`}/> }                             
+          {userImg == '' ? <img width="120" height="120" src={S__2154499} /> : <img width="auto" height="120" src={`http://localhost:3001/adminUploaded/${userImg}`}/> }                             
         </div>
       </div >
       <div className="name">
-          <button style={{margin:'0'}} onClick={handleClickOpen}><h4>{auth.usersData[0].name}</h4></button>
+          <button style={{margin:'0'}} onClick={handleClickOpen}><h4>{auth.usersData[0].name}&nbsp;{auth.usersData[0].lastname}</h4></button>
         </div>      
       </div>
       <Dialog  aria-labelledby="customized-dialog-title" open={open}>
@@ -139,7 +142,7 @@ export default function Profile() {
         </DialogTitle>
         <DialogContent style={{display:"flex",alignItems:'center',width:'500px',height:'700px',flexDirection:'column'}}  dividers>
           <div className="ProfileReview">
-              {imagePreview ==null ? <img width="auto" height="120" src={`http://localhost:3001/adminUploaded/${userImg}`} /> : <img width="auto" height="120" src={imagePreview} />}
+              {imagePreview == null && userImg !== '' ? <img width="auto" height="120" src={`http://localhost:3001/adminUploaded/${userImg}`} /> : userImg == '' && imagePreview == null ? <img width="auto" height="120" src={S__2154499} /> : <img width="auto" height="120" src={imagePreview} />}
             </div>
           <div >         
             <div style={{display:"flex",alignItems:'center',flexDirection:'column'}}>
@@ -153,7 +156,7 @@ export default function Profile() {
                 </label>
               </div>
             <div style={{width:"400px",marginTop:'10px',fontWeight:'bold'}}>
-              <p><span>ชื่อ-สกุล : {auth.usersData[0].name}</span></p>
+              <p><span>ชื่อ-สกุล : {auth.usersData[0].name} {auth.usersData[0].lastname}</span></p>
               <p><span>รหัสประจำตัวประชาชน : {auth.usersData[0].id_card}</span></p>
               <p><span>ตำแหน่งงาน : {auth.usersData[0].role}</span></p>
               <p><span>เบอร์ติดต่อ : {auth.usersData[0].phone}</span></p>
@@ -163,7 +166,7 @@ export default function Profile() {
         </DialogContent>
         <DialogActions>
           <Button disabled={imageSelected == null} variant="contained" onClick={handleClickUpload} color="primary">
-            Save changes
+            บันทึกการเปลี่ยนแปลง
           </Button>
         </DialogActions>
       </Dialog>

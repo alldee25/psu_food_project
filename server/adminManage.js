@@ -7,7 +7,6 @@ const session = require('express-session')
 const saltRounds = 10;
 const path = require('path')
 let fs = require('fs');
-
 adminRouter.use(express.static(path.join(__dirname, './public/images/')));
 
 const multer = require('multer')
@@ -19,8 +18,25 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname))
     }
 })
+
 const upload = multer({
     storage: storage,
+    limits:{fileSize: 1000000},
+    fileFilter: function(req,file,cb){
+        checkFileType(file, cb);
+    }
+})
+const userStorage = multer.diskStorage({
+    destination: (req , file, cb) =>{
+        cb(null, './public/images/userUploaded/');
+    },
+    filename: (req, file, cb)=>{
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const userUpload = multer({
+    storage: userStorage,
     limits:{fileSize: 1000000},
     fileFilter: function(req,file,cb){
         checkFileType(file, cb);
@@ -51,17 +67,20 @@ adminRouter.use(bodyParser.json());
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------//
 adminRouter.post('/upload', upload.single('file'), (req, res)=>{
-    const image =  req.file.filename
-    const id = req.body.data
-    if (req.body.oldFile) {
-        fs.unlink('./public/images/adminUploaded/'+req.body.oldFile, function(err){
-            if (err) {
-                throw err;
-            }
-        })
-    }
-        
-        db.query(`UPDATE admin SET img = ? WHERE id = ?`,[image,id],((err,result)=>{
+    if (req.file == undefined) {
+        res.send({msg:'Error: No File Selected!'})
+    } else {
+        const image =  req.file.filename
+        const id = req.body.id
+        if (req.body.oldFile && req.file !== undefined) {
+        console.log('non');
+            fs.unlink('./public/images/adminUploaded/'+req.body.oldFile, function(err){
+                if (err) {
+                    throw err;
+                }
+            })
+        }
+         db.query(`UPDATE admin SET img = ? WHERE id = ?`,[image,id],((err,result)=>{
             if (err) {
                 console.log(err);
                 res.send({
@@ -77,6 +96,9 @@ adminRouter.post('/upload', upload.single('file'), (req, res)=>{
                 
             }
         }))
+    }
+        
+       
 })
 adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลประกาศ
     const title = req.body.title
@@ -296,9 +318,9 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                     if (err) {
                         console.log(err);
                     } else {
-                     db.query(`INSERT INTO store_owner (store_id,name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
+                     db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
                                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-                                [result[0].id,dataInterViewList[0].name,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
+                                [result[0].id,dataInterViewList[0].name,dataInterViewList[0].lastname,dataInterViewList[0].gender,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
                                 ((err)=>{
                                     if (err) {
                                         console.log(err);
@@ -582,8 +604,19 @@ adminRouter.post('/getDataAnnounList',(req, res)=>{
 })
 adminRouter.get('/getAdminAll',(req, res)=>{
     const yeartoday = req.body.yeartoday
-    db.query(`SELECT * FROM (admin INNER JOIN role ON admin.id_role = role.id) 
+    db.query(`SELECT admin.* FROM (admin INNER JOIN role ON admin.id_role = role.id) 
     WHERE role.role != 'เจ้าหน้าที่บริหารงานทั่วไป' AND role.role != 'ผู้ดูแล'`,[yeartoday],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/getInfoAdmin',(req, res)=>{
+    const adminId = req.body.adminId
+    db.query(`SELECT * FROM (admin INNER JOIN role ON admin.id_role = role.id) 
+    WHERE admin.id = ?`,[adminId],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {

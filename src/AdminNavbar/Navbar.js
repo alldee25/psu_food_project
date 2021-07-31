@@ -80,7 +80,7 @@ function Navbar (){
                             </div>
                         </Link> 
                     </li>             
-                    <li className={Navbar === 5 ? 'active' : ''}>
+                    {/* <li className={Navbar === 5 ? 'active' : ''}>
                         <Link item="จัดการสถานที่"  to="/HomeArea"       onClick={()=>{setNavbar(5)}}>
                             <div className="it">
                                 <div className="icon">
@@ -91,7 +91,7 @@ function Navbar (){
                                 </div>
                             </div>
                         </Link>  
-                    </li>  
+                    </li> */}  
                     <li className={Navbar === 6 ? 'active' : ''}>
                     <Link item="Admin"  to="/HomeAdmin"                 onClick={()=>{setNavbar(6)}}>
                         <div className="it">

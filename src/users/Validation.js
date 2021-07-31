@@ -1,6 +1,8 @@
 import * as yup from 'yup'
 export const userSchema = yup.object().shape({
         name:yup.string().required(),
+        lastName:yup.string().required(),
+        gender:yup.string().required(),
         dob:yup.date().required(),
         race:yup.string().required(),
         nationality:yup.string().required(),
@@ -15,6 +17,7 @@ export const userSchema = yup.object().shape({
         type1:yup.string().required(),
         locations:yup.string().required(),
         promosion:yup.string().required(),
+        imageSelected:yup.string().required(),
         inputfild:yup.string().required(),
         storeName:yup.string().required()
 })

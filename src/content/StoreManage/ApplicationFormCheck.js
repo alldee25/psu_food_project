@@ -155,38 +155,43 @@ function getSteps() {
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return transitions(
+      return transitions(     
             (styles, item) => item && <animated.div  className="container" style={styles}> 
-              <div className="head">
-              <img width="auto" height="120" src={psuLogo}/> 
-              <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
-              โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
-              </p>                
-              </div>                
-              <div className="form">
-                <div className="Title">
-                  <h3>ข้อมูลผู้สมัค</h3>
-                  <hr />
-              </div>
-              <div style={{marginLeft:'10px'}}>
-                {data.map((datas,index)=>(
-                  <div key={index}>
-                    <TextField  id="ชื่อ-นามสกุล"         disabled value={datas.name} label="ชื่อ-นามสกุล" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
-                    <TextField id="เดือน-วัน-ปี เกิด"      disabled value={datas.dob} label="เดือน-วัน-ปี เกิด" type="date"  style={{width:'30%'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
-                    <TextField id="อายุ"                disabled value={age} label="อายุ" type="text" style={{width:'30%'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
-                    <TextField id="เชื้อชาติ"             disabled value={datas.race} label="เชื้อชาติ" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true}} variant="outlined" />
-                    <TextField id="สัญชาติ"             disabled value={datas.nationality} label="สัญชาติ" type="text"  style={{width:'30%'}}InputLabelProps={{shrink: true}} variant="outlined" />
-                    <TextField id="ศาสนา"             disabled value={datas.religion} label="ศาสนา" type="text" style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                    <TextField id="หมายเลขบัตรประชาชน" disabled value={datas.idcard} label="หมายเลขบัตรประชาชน" type="number" style={{width:'30%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                    <TextField id="วันที่ออกบัตร"        disabled value={datas.idstart} label="วันที่ออกบัตร" type="text"  style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                    <TextField id="บัตรหมดอายุ"        disabled value={datas.idend} label="บัตรหมดอายุ" type="text"  style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                    <TextField id="ที่อยู่ที่สามารถติดต่อได้" disabled value={datas.adress} label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'95%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                    <TextField id="โทรศัท์"            disabled value={datas.phone} label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                    <TextField id="email"            disabled value={datas.email} label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />                                                                 
+              {data.map((datas,index)=>(
+                <div key={index}>
+                  <div className="head">
+                  <img width="auto" height="120" src={psuLogo}/> 
+                  <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
+                  โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
+                  </p>               
+                  <div style={{width:"180px",position:'absolute',right:'15px',top:'-15px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <div style={{borderStyle:'solid'}}>
+                      <img  width="120" height="140"  src={`http://localhost:3001/userUploaded/${datas.img}`}/>
+                    </div>                                   
+                  </div>                
+                  </div>                
+                  <div className="form">
+                    <div className="Title">
+                      <h3>ข้อมูลผู้สมัค</h3>
+                      <hr />
+                    </div>
+                    <div style={{marginLeft:'10px'}}>                                
+                        <TextField  id="ชื่อ-นามสกุล"         disabled value={`${datas.name} ${datas.lastname}`} label="ชื่อ-นามสกุล" type="text" style={{width:'340px'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
+                        <TextField id="เดือน-วัน-ปี เกิด"      disabled value={datas.dob} label="เดือน-วัน-ปี เกิด" type="date"  style={{width:'340px'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
+                        <TextField id="อายุ"                disabled value={age} label="อายุ" type="text" style={{width:'340px'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
+                        <TextField id="เชื้อชาติ"             disabled value={datas.race} label="เชื้อชาติ" type="text" style={{width:'340px'}} InputLabelProps={{shrink: true}} variant="outlined" />
+                        <TextField id="สัญชาติ"             disabled value={datas.nationality} label="สัญชาติ" type="text"  style={{width:'340px'}}InputLabelProps={{shrink: true}} variant="outlined" />
+                        <TextField id="ศาสนา"             disabled value={datas.religion} label="ศาสนา" type="text" style={{width:'340px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                        <TextField id="หมายเลขบัตรประชาชน" disabled value={datas.idcard} label="หมายเลขบัตรประชาชน" type="number" style={{width:'340px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                        <TextField id="วันที่ออกบัตร"        disabled value={datas.idstart} label="วันที่ออกบัตร" type="text"  style={{width:'340px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                        <TextField id="บัตรหมดอายุ"        disabled value={datas.idend} label="บัตรหมดอายุ" type="text"  style={{width:'340px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                        <TextField id="ที่อยู่ที่สามารถติดต่อได้" disabled value={datas.adress} label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'1068px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                        <TextField id="โทรศัท์"            disabled value={datas.phone} label="โทรศัท์" type="text" style={{width:'522px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                        <TextField id="email"            disabled value={datas.email} label="Email" type="email" style={{width:'522px'}} InputLabelProps={{ shrink: true }} variant="outlined" />                                                                                         
+                    </div>     
+                  </div> 
                 </div> 
-              ))}
-                </div>     
-              </div>                                           
+              ))}                                          
             </animated.div>
       )
     case 1:

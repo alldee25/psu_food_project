@@ -11,6 +11,8 @@ import { useTransition,animated } from 'react-spring'
 import { AuthContext } from '../App';
 import {userSchema} from './Validation'
 import psuLogo from './../img/Prince_of_Songkla_University_Emblem.png'
+import IconButton from '@material-ui/core/IconButton';
+import CameraEnhanceOutlinedIcon from '@material-ui/icons/CameraEnhanceOutlined';
 //---------------------------------------------------------------Steper-----------------------------------------
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -25,6 +27,9 @@ import axios from 'axios';
 import { DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import swal from 'sweetalert';
 import './RegisStore.css'
+import NativeSelect from '@material-ui/core/NativeSelect';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 
  //-------------------------------------------------------------------------------------------------------------- 
 
@@ -36,7 +41,11 @@ const useStyles = makeStyles((theme) => ({
         width: '25ch',
       },
     },
+    input: {
+      display: 'none',
+    },
   }));
+
  //-------------------------------------------------------------------------------------------------------------- 
 export default function RegisStore() {
   
@@ -49,6 +58,8 @@ export default function RegisStore() {
   const classes = useStyles();
 //---------------------------------------------------------------------
   const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('');
   const [storeName, setStoreName] = useState('');
   const [dob, setDOB] = useState('');
   const [age, setAge] = useState('');
@@ -78,8 +89,20 @@ export default function RegisStore() {
   const [morYear,setMorYear] = useState('')
   const [morToday,setMorToday] = useState('')
   const [inId, setInId] = useState([])
+  const [imagePreview,setImagePreview] = useState(null)
+  const [imageSelected,setImageSelected] = useState(null)
 //---------------------------------------------------------------------
-  
+  const selectImage = (e)=>{
+    const render = new FileReader();
+    render.onload =()=> {
+      if(render.readyState == 2){
+      setImagePreview(render.result)
+      }
+    } 
+    setImageSelected(e.target.files[0])
+    render.readAsDataURL(e.target.files[0]) 
+  }
+
   const calculate_age = (dob) => {
       setDOB(dob);
       const today = new Date();
@@ -110,7 +133,8 @@ export default function RegisStore() {
     else if(date < 10 && month > 9){
       const forThan = `${year}-${month}-0${date}`
       const forday = `${yeartoday}-${month}-0${date}`
-      setMorYear(forThan)     
+      setMorYear(forThan)
+      setMorToday(forday)     
     }
     else if(date < 10 && month < 10){
       const forThan = `${year}-0${month}-0${date}`
@@ -178,6 +202,8 @@ export default function RegisStore() {
   }
   let formData = {
         name:name,
+        lastName:lastName,
+        gender:gender,
         storeName:storeName,
         dob:dob,
         race:race,
@@ -193,6 +219,7 @@ export default function RegisStore() {
         type1:type1,
         locations:locations,
         promosion:promosion,
+        imageSelected:imageSelected,
         inputfild:inputfild[0].menu
       }
 
@@ -201,6 +228,25 @@ export default function RegisStore() {
   }
 
   const handleNext = async () => {
+    console.log(name);
+    console.log(lastName);
+    console.log(gender);
+    console.log(storeName);
+    console.log(dob);
+    console.log(race);
+    console.log(nationality);
+    console.log(religion);
+    console.log(idcard);
+    console.log(idstart);
+    console.log(idend);
+    console.log(adress);
+    console.log(phone);
+    console.log(email);
+    console.log(type);
+    console.log(type1);
+    console.log(locations);
+    console.log(morToday);
+    console.log(inputfild);
     if (activeStep !== 3) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } 
@@ -209,6 +255,7 @@ export default function RegisStore() {
     }
     if(activeStep === 3){
       const isValid = await userSchema.isValid(formData)
+      console.log(userSchema.isValid(formData));
      if (isValid) {
         if (inId.every(checkId)) {
           swal("กด ok เพื่อยืนยันการบันทึก",{
@@ -216,34 +263,46 @@ export default function RegisStore() {
           .then((value) => {
             if (value) {
               setIsload(true);
-              axios.post('http://localhost:3001/insertRegisStore',{
-                name:name,
-                storeName:storeName,
-                dob:dob,
-                race:race,
-                nationality:nationality,
-                religion:religion,
-                idcard:idcard,
-                idstart:idstart,
-                idend:idend,
-                adress:adress,
-                phone:phone,
-                email:email,
-                type:typeId,
-                type1:type1Id,
-                locations:locationsId,
-                promosion:promosion,
-                inputfild:inputfild,
-                date:morToday,
-          }).then((res)=>{
+              const formDatas = new FormData();
+              formDatas.append("file", imageSelected)
+              formDatas.append("name", name)
+              formDatas.append("lastName", lastName)
+              formDatas.append("gender", gender)
+              formDatas.append("storeName", storeName)
+              formDatas.append("dob", dob)
+              formDatas.append("race", race)
+              formDatas.append("nationality", nationality)
+              formDatas.append("religion", religion)
+              formDatas.append("idcard", idcard)
+              formDatas.append("idstart", idstart)
+              formDatas.append("idend", idend)
+              formDatas.append("adress", adress)
+              formDatas.append("phone", phone)
+              formDatas.append("email", email)
+              formDatas.append("type1Id", typeId)
+              formDatas.append("typeId", type1Id)
+              formDatas.append("locationsId", locationsId)
+              formDatas.append("promosion", promosion)
+              formDatas.append("date", morToday)
+              axios.post('http://localhost:3001/insertRegisStore',formDatas).then((res)=>{
                     if (res.data.message) {
                     swal(res.data.message).then((value) => {setIsload(false)});
                     }
                     else{
-                      swal({ title: "สมัคเรียบร้อย",text: "กดปุ่มเพื่อไปต่อ",icon: "success", button: "OK",}).then((value) =>{
-                        history.push('/')
-                        history.go() 
-                      })  
+                      axios.post("http://localhost:3001/insertRegisStoreMenuList",{
+                        date:morToday,
+                        idcard:idcard,
+                      inputfild:inputfild
+                      }).then((res)=>{
+                        if (res.data.message) {
+                          swal(res.data.message).then((value) => {setIsload(false)}); 
+                        } else {
+                          swal({ title: "สมัคเรียบร้อย",text: "กดปุ่มเพื่อไปต่อ",icon: "success", button: "OK",}).then((value) =>{
+                            history.push('/')
+                            history.go() 
+                          })
+                        }
+                      })                       
                     }
             
           })
@@ -255,7 +314,6 @@ export default function RegisStore() {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
         }   
      } else {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
       setArgee(true)
       swal ({title: "ข้อมูลไม่ครบถ้วน",
             text: "โปรดตรวจสอบข้อมูลให้อีกครั้ง...",
@@ -298,10 +356,22 @@ function getStepContent(step) {
         return transitions(
               (styles, item) => item && <animated.div className="container" style={styles}> 
                 <div className="head">
-                <img  width="auto" height="120" src={psuLogo}/> 
-                <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
-                โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
-                </p>                
+                  <img  width="auto" height="120" src={psuLogo}/> 
+                  <p> &nbsp;&nbsp;ใบสมัคเข้าเป็นผู้ประกอบการร้านค้าจำหน่ายอาหาร<br />
+                  โรงอาหารมหาวิยาลัยสงขลานครินทร์ วิทยาเขตปัตตานี
+                  </p>
+                  <div style={{width:"180px",position:'absolute',right:'15px',top:'-15px',display:'flex',flexDirection:'column',alignItems:'center'}}>
+                    <div style={{borderStyle:'solid'}}>
+                      <img  width="120" height="140" src={imagePreview}/>
+                    </div>                  
+                    <input onChange={(e)=>{selectImage(e)}} name="file" accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+                    <label htmlFor="icon-button-file" >
+                        <IconButton color="primary" aria-label="upload picture" component="span">
+                            <CameraEnhanceOutlinedIcon />
+                            <span>เลือกรูปภาพ</span>
+                        </IconButton>
+                    </label>
+                  </div>                
                 </div>                
                 <div className="form">
                   <div className="Title">
@@ -309,18 +379,26 @@ function getStepContent(step) {
                     <hr />
                 </div>
                     <div style={{marginLeft:'10px'}}>
-                      <TextField onChange={(e) => setName(e.target.value)} required value={name} id="ชื่อ-นามสกุล" label="ชื่อ-นามสกุล" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
-                      <TextField onChange={(e) => calculate_age(e.target.value)} required value={dob} id="เดือน-วัน-ปี เกิด" label="เดือน-วัน-ปี เกิด" type="date" inputProps={{ max: (morYear)}} style={{width:'30%'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
-                      <TextField onChange={(e) => setAge(e.target.value)} value={age} id="อายุ" label="อายุ" type="text" style={{width:'30%'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
-                      <TextField onChange={(e) => setRace(e.target.value)} required value={race} id="เชื้อชาติ" label="เชื้อชาติ" type="text" style={{width:'30%'}} InputLabelProps={{shrink: true}} variant="outlined" />
-                      <TextField onChange={(e) => setNationality(e.target.value)} required value={nationality} id="สัญชาติ" label="สัญชาติ" type="text"  style={{width:'30%'}}InputLabelProps={{shrink: true}} variant="outlined" />
-                      <TextField onChange={(e) => setReligion(e.target.value)} required value={religion} id="ศาสนา" label="ศาสนา" type="text" style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                      <TextField onChange={(e) => setIDcard(e.target.value)} required value={idcard} id="หมายเลขบัตรประชาชน" label="หมายเลขบัตรประชาชน" type="number" style={{width:'30%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                      <TextField onChange={(e) => setIDstart(e.target.value)} required value={idstart} id="วันที่ออกบัตร" label="วันที่ออกบัตร" type="date" inputProps={{ max: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                      <TextField onChange={(e) => setIDend(e.target.value)} required value={idend} id="บัตรหมดอายุ" label="บัตรหมดอายุ" type="date" inputProps={{ min: (morToday)}} style={{width:'30%'}} InputLabelProps={{ shrink: true}} variant="outlined" />
-                      <TextField onChange={(e) => setAdress(e.target.value)} required value={adress} id="ที่อยู่ที่สามารถติดต่อได้" label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'95%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                      <TextField onChange={(e) => setPhone(e.target.value)} required value={phone} id="โทรศัท์" label="โทรศัท์" type="text" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
-                      <TextField onChange={(e) => setEmail(e.target.value)} required value={email} id="email" label="Email" type="email" style={{width:'45.9%'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setName(e.target.value)} required value={name} id="ชื่อ" label="ชื่อ" type="text" style={{width:'170px'}} InputLabelProps={{shrink: true,}} variant="outlined" />                            
+                      <TextField onChange={(e) => setLastName(e.target.value)} required value={lastName} id="นามสกุล" label="นามสกุล" type="text" style={{width:'170px'}} InputLabelProps={{shrink: true,}} variant="outlined" /> 
+                      <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel style={{width:'170px',marginTop:'12px',marginLeft:'10px'}}  id="demo-simple-select-filled-label">เพศ</InputLabel>
+                        <Select labelId="demo-simple-select-filled-label" id="demo-simple-select-filled" type="text" value={gender} onChange={(e) => setGender(e.target.value)} style={{width:'170px',marginTop:'12px',marginLeft:'12px'}} label="เพศ" >                     
+                          <MenuItem value={'ชาย'}>ชาย</MenuItem>
+                          <MenuItem value={'หญิง'}>หญิง</MenuItem>
+                        </Select>
+                      </FormControl>                           
+                      <TextField onChange={(e) => calculate_age(e.target.value)} required value={dob} id="เดือน-วัน-ปี เกิด" label="เดือน-วัน-ปี เกิด" type="date" inputProps={{ max: (morYear)}} style={{width:'170px',marginLeft:'25px'}} InputLabelProps={{ shrink: true, }} variant="outlined" />
+                      <TextField onChange={(e) => setAge(e.target.value)} value={age} id="อายุ" label="อายุ" type="text" style={{width:'295px'}} disabled={true} InputLabelProps={{ readOnly:true, shrink: true, }} variant="outlined" /> 
+                      <TextField onChange={(e) => setRace(e.target.value)} required value={race} id="เชื้อชาติ" label="เชื้อชาติ" type="text" style={{width:'365px'}} InputLabelProps={{shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setNationality(e.target.value)} required value={nationality} id="สัญชาติ" label="สัญชาติ" type="text"  style={{width:'365px'}}InputLabelProps={{shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setReligion(e.target.value)} required value={religion} id="ศาสนา" label="ศาสนา" type="text" style={{width:'295px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setIDcard(e.target.value)} required value={idcard} id="หมายเลขบัตรประชาชน" label="หมายเลขบัตรประชาชน" type="number" style={{width:'365px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setIDstart(e.target.value)} required value={idstart} id="วันที่ออกบัตร" label="วันที่ออกบัตร" type="date" inputProps={{ max: (morToday)}} style={{width:'365px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setIDend(e.target.value)} required value={idend} id="บัตรหมดอายุ" label="บัตรหมดอายุ" type="date" inputProps={{ min: (morToday)}} style={{width:'295px'}} InputLabelProps={{ shrink: true}} variant="outlined" />
+                      <TextField onChange={(e) => setAdress(e.target.value)} required value={adress} id="ที่อยู่ที่สามารถติดต่อได้" label="ที่อยู่ที่สามารถติดต่อได้" type="text" multiline rows={4} style={{width:'1075px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setPhone(e.target.value)} required value={phone} id="โทรศัท์" label="โทรศัท์" type="text" style={{width:'525.5px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
+                      <TextField onChange={(e) => setEmail(e.target.value)} required value={email} id="email" label="Email" type="email" style={{width:'525.5px'}} InputLabelProps={{ shrink: true }} variant="outlined" />
                       <h1></h1>
                   </div>                                            
                 </div>                                  
@@ -443,7 +521,6 @@ function getStepContent(step) {
     }
   }
     return transitions1(
-  
     (styles, item) =>item && <animated.div className="contain" style={styles}>
     <div className={classes.root}  style={{display:'flex',flexDirection:'column' ,justifyContent:'center'}}>
       <Stepper activeStep={activeStep} alternativeLabel style={{width:'100%',borderRadius:'30px',marginTop:'50px',height:'100px',backgroundColor:'transparent'}}>
@@ -460,9 +537,9 @@ function getStepContent(step) {
             <Button onClick={handleReset}>Reset</Button>
           </div>
         ) : (
-          <div >
+          <div style={{position:"relative"}}>
             <div>{getStepContent(activeStep)}</div>
-            <div style={{position:'relative',display:'flex',flexDirection:'row'}}>
+            <div style={{display:'flex',flexDirection:'row'}}>
               <Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton} style={{position:'absolute',left:'320px',bottom:'30px'}}>กลับ</Button>
               <Button variant="contained" disabled={agree} color="primary" onClick={handleNext} style={{position:'absolute',right:'320px',bottom:'30px'}}>
                 {activeStep === steps.length - 1 ? 'บันทึก' : 'ถัดไป'}

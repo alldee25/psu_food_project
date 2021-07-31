@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const usersRouter = express.Router()
 const cors = require("cors")
+const path = require('path')
+const multer = require('multer')
+usersRouter.use(express.static(path.join(__dirname, './public/images/')));
 usersRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -11,9 +14,44 @@ usersRouter.use(bodyParser.urlencoded({
     extended: true
 }))
 usersRouter.use(bodyParser.json());
+const userStorage = multer.diskStorage({
+    destination: (req , file, cb) =>{
+        cb(null, './public/images/userUploaded/');
+    },
+    filename: (req, file, cb)=>{
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const userUpload = multer({
+    storage: userStorage,
+    limits:{fileSize: 1000000},
+    fileFilter: function(req,file,cb){
+        checkFileType(file, cb);
+    }
+})
+const checkFileType =(file,cb)=>{
+    const filetype = /jpeg|jpg|png|gif/;
+    const extname = filetype.test(path.extname
+        (file.originalname).toLocaleLowerCase())
+    const mimetype = filetype.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true)
+    } else {
+        cb('Error: Image Only!')
+    }
+}
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-usersRouter.post("/insertRegisStore",(req, res)=> {//เพิ่มข้อมูลใบสมัคร
+usersRouter.post("/insertRegisStore",userUpload.single('file'),(req, res)=> {//เพิ่มข้อมูลใบสมัคร
+
+    if (req.file == undefined) {
+        res.send({msg:'Error: No File Selected!'})
+    } else {
+    const img = req.file.filename
     const name = req.body.name
+    const lastName = req.body.lastName
+    const gender = req.body.gender
     const storeName = req.body.storeName
     const dob = req.body.dob
     const race = req.body.race
@@ -25,37 +63,38 @@ usersRouter.post("/insertRegisStore",(req, res)=> {//เพิ่มข้อม
     const adress = req.body.adress
     const phone = req.body.phone
     const email = req.body.email
-    const type = req.body.type
-    const type1 = req.body.type1
-    const locations = req.body.locations
+    const typeId = req.body.typeId
+    const type1Id = req.body.type1Id
+    const locationsId = req.body.locationsId
     const promosion = req.body.promosion
-    const inputfild = req.body.inputfild
     const date = req.body.date
-    db.query(`INSERT INTO regisstore (name,store_name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,id_type,id_type1,id_locations,promosion,date_regis,status) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'รอดำเนินการ');`,
-    [name,storeName,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,type,type1,locations,promosion,date],((err)=>{
+    db.query(`INSERT INTO regisstore (name,lastname,gender,store_name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,id_type,id_type1,id_locations,promosion,img,date_regis,status) 
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'รอดำเนินการ');`,
+    [name,lastName,gender,storeName,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,typeId,type1Id,locationsId,promosion,img,date],((err)=>{
         if(err){
             console.log(err);
             res.send({ message: "เพิ่มข้อมูลไม่สำเร็จ" })
         }
         else{
-         db.query("SELECT id FROM regisstore WHERE idcard=?",[idcard],((err,result)=>{
-                if (err) {
-                    console.log("err2 "+err);
-                }
-                else{               
-                inputfild.forEach(inputfild => {
-                   db.query("INSERT INTO menustore (idstore,menu,price) VALUES (?,?,?)",[result[0].id,inputfild.menu,inputfild.price],((err,)=>{
-                     if(err){
-                         console.log(err);
-                     }
-                   })) 
-                })
-                res.send('เพิ่มข้อมูลเรียบร้อย')
-                }             
-            }))   
+            res.send('เพิ่มข้อมูลเรียบร้อย')   
         }   
-        }))  
+        })
+    )}
+      
+})
+usersRouter.post("/insertRegisStoreMenuList",(req, res)=>{//เพิ่มข้อมุลเมนู
+    const date = req.body.date
+    const idcard = req.body.idcard
+    const inputfild = req.body.inputfild
+    inputfild.forEach(inputfild => {
+        db.query("INSERT INTO menustore (idstore,menu,price) VALUES ((SELECT id FROM regisstore WHERE idcard = ? AND date_regis = ?),?,?)",[idcard,date,inputfild.menu,inputfild.price],((err,)=>{
+          if(err){
+              console.log(err);
+              res.send({ message: "เพิ่มข้อมูลไม่สำเร็จ" })
+          }
+        })) 
+     })
+     res.send('เพิ่มข้อมูลเรียบร้อย')
 })
 usersRouter.post("/getIdCard",(req, res)=>{//ดึงข้อมูลรหัสบัตรประชาชนในปีที่สมัคร
     const year = req.body.year

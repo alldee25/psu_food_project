@@ -5,6 +5,9 @@
     height: 40px; 
 
 }
+.name h4:hover{
+    color: cadetblue;
+}
 .nameIcon{
     position: absolute;  
     top: 150px;
@@ -30,7 +33,6 @@
     width: 200px;
     height: 120px;
     background: rgba(173, 216, 230, 0.848);  
-    z-index: 2;
 }
 .ProfileReview{
     display: flex;

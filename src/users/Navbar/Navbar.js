@@ -106,12 +106,12 @@ export default function Navbar(props) {
             </Grow>
           )}
         </Popper>
-          <CanteenCapital active={handleClose} activeNave={navAc} activeSetNave={setNavAc}/>
+          {/* <CanteenCapital active={handleClose} activeNave={navAc} activeSetNave={setNavAc}/>
             <Link to={`/login`}   onClick={() => activeNav(4)} style={{textDecoration:'none'}}>
               <div className={navAc === 4 ? "itemNavIndexActive" : "itemNavIndex"}>
                 ขอใช้สถานที่
               </div>
-            </Link> 
+            </Link> */} 
           <ForAdmin />     
         </div>      
       </div>      
