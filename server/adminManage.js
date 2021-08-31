@@ -224,21 +224,15 @@ adminRouter.post('/CheckApplication',(req, res)=>{//อัพเดทหลั�
                 if (err) {
                     console.log(err);
                 }
-                else{
-                    db.query(`SELECT id FROM applicationcheck WHERE regis_id=?`,[regis_id],(err,result)=>{
+                else{            
+                    db.query(`INSERT INTO applicationcheck_detial (applicationcheck_id,image,copyIdcard,copyHome,MedicalCertificate,Certificate,Applicationfee) VALUES ((SELECT id FROM applicationcheck WHERE regis_id = ?),?,?,?,?,?,?)`,
+                    [regis_id,Detial.image,Detial.copyIdcard,Detial.copyHome,Detial.MedicalCertificate,Detial.Certificate,Detial.Applicationfee],((err,)=>{
                         if (err) {
                             console.log(err);
                         } else {
-                          db.query(`INSERT INTO applicationcheck_detial (applicationcheck_id,image,copyIdcard,copyHome,MedicalCertificate,Certificate,Applicationfee) VALUES (?,?,?,?,?,?,?)`,
-                          [result[0].id,Detial.image,Detial.copyIdcard,Detial.copyHome,Detial.MedicalCertificate,Detial.Certificate,Detial.Applicationfee],((err,)=>{
-                              if (err) {
-                                  console.log(err);
-                              } else {
-                                  res.send('เพิ่มเรียบร้อย')
-                              }
-                          }))  
+                            res.send('เพิ่มเรียบร้อย')
                         }
-                    })
+                    }))                                           
                     
                 }
             
@@ -314,20 +308,16 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                 console.log(err);
             }
             else{
-                db.query(`SELECT id FROM store WHERE regis_id=?`,[regisId],((err,result)=>{
-                    if (err) {
-                        console.log(err);
-                    } else {
-                     db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-                                [result[0].id,dataInterViewList[0].name,dataInterViewList[0].lastname,dataInterViewList[0].gender,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
-                                ((err)=>{
-                                    if (err) {
-                                        console.log(err);
-                                    }                                 
-                                }))   
-                    }
-                }))           
+               
+                db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
+                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?)`,
+                        [regisId,dataInterViewList[0].name,dataInterViewList[0].lastname,dataInterViewList[0].gender,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
+                        ((err)=>{
+                            if (err) {
+                                console.log(err);
+                            }                                 
+                        }))   
+                              
             }
         }))
     }

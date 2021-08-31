@@ -84,7 +84,7 @@ function StoreInformation() {
                 ข้อมูลร้านค้า
                 </h1>
             </div>
-            <div>
+            <div style={{marginTop:'20px'}}>
             {storeDataList == '' ? 
             <div style={{position:'absolute',top:'50%',left:'40%'}}>
               <h1>

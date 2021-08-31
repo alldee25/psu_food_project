@@ -56,7 +56,7 @@ function Navbar (){
                             </div>
                         </Link> 
                     </li>                 
-                    <li className={Navbar === 3 ? 'active' : ''}>
+                    {/* <li className={Navbar === 3 ? 'active' : ''}>
                         <Link item="แม่บ้าน"  to="/HomeMade"              onClick={()=>{setNavbar(3)}}>
                             <div className="it">
                                 <div className="icon">
@@ -67,7 +67,7 @@ function Navbar (){
                                 </div>
                             </div>
                         </Link>  
-                    </li>               
+                    </li> */}               
                     <li className={Navbar === 4 ? 'active' : ''}>
                         <Link item="ทุนการศึกษา"  to="/HomeScholarships"   onClick={()=>{setNavbar(4)}}>
                             <div className="it">

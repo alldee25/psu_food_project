@@ -48,6 +48,7 @@ const StyledTableCell = withStyles((theme) => ({
       minWidth: 700,
     },
   });
+  
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });

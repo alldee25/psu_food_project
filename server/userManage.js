@@ -16,7 +16,7 @@ usersRouter.use(bodyParser.urlencoded({
 usersRouter.use(bodyParser.json());
 const userStorage = multer.diskStorage({
     destination: (req , file, cb) =>{
-        cb(null, './public/images/userUploaded/');
+        cb(null, './public/images/userUploaded/')
     },
     filename: (req, file, cb)=>{
         cb(null, Date.now() + path.extname(file.originalname))
@@ -29,7 +29,7 @@ const userUpload = multer({
     fileFilter: function(req,file,cb){
         checkFileType(file, cb);
     }
-})
+}).single('file')
 const checkFileType =(file,cb)=>{
     const filetype = /jpeg|jpg|png|gif/;
     const extname = filetype.test(path.extname
@@ -39,50 +39,63 @@ const checkFileType =(file,cb)=>{
     if (mimetype && extname) {
         return cb(null, true)
     } else {
-        cb('Error: Image Only!')
+        cb('Image Only!');
     }
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-usersRouter.post("/insertRegisStore",userUpload.single('file'),(req, res)=> {//เพิ่มข้อมูลใบสมัคร
-
-    if (req.file == undefined) {
-        res.send({msg:'Error: No File Selected!'})
-    } else {
-    const img = req.file.filename
-    const name = req.body.name
-    const lastName = req.body.lastName
-    const gender = req.body.gender
-    const storeName = req.body.storeName
-    const dob = req.body.dob
-    const race = req.body.race
-    const nationality = req.body.nationality
-    const religion = req.body.religion
-    const idcard = req.body.idcard
-    const idstart = req.body.idstart
-    const idend = req.body.idend
-    const adress = req.body.adress
-    const phone = req.body.phone
-    const email = req.body.email
-    const typeId = req.body.typeId
-    const type1Id = req.body.type1Id
-    const locationsId = req.body.locationsId
-    const promosion = req.body.promosion
-    const date = req.body.date
-    db.query(`INSERT INTO regisstore (name,lastname,gender,store_name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,id_type,id_type1,id_locations,promosion,img,date_regis,status) 
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'รอดำเนินการ');`,
-    [name,lastName,gender,storeName,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,typeId,type1Id,locationsId,promosion,img,date],((err)=>{
-        if(err){
-            console.log(err);
-            res.send({ message: "เพิ่มข้อมูลไม่สำเร็จ" })
-        }
-        else{
-            res.send('เพิ่มข้อมูลเรียบร้อย')   
-        }   
-        })
-    )}
-      
+usersRouter.post("/insertRegisStore",(req, res)=> {//เพิ่มข้อมูลใบสมัคร
+    userUpload(req,res,(err)=>{  
+        if(err) {
+            if (err.code !== undefined) {
+                res.send({message:'File size too large'})
+            } else {
+               res.send({message:err}) 
+            }
+            
+        }else{
+            
+                if (req.file == undefined) {
+                    res.send({message:'Error: No File Selected!'})
+                } else { 
+                                  
+                    const img = req.file.filename
+                    const name = req.body.name
+                    const lastName = req.body.lastName
+                    const gender = req.body.gender
+                    const storeName = req.body.storeName
+                    const dob = req.body.dob
+                    const race = req.body.race
+                    const nationality = req.body.nationality
+                    const religion = req.body.religion
+                    const idcard = req.body.idcard
+                    const idstart = req.body.idstart
+                    const idend = req.body.idend
+                    const adress = req.body.adress
+                    const phone = req.body.phone
+                    const email = req.body.email
+                    const typeId = req.body.typeId
+                    const type1Id = req.body.type1Id
+                    const locationsId = req.body.locationsId
+                    const promosion = req.body.promosion
+                    const date = req.body.date
+                    db.query(`INSERT INTO regisstore (name,lastname,gender,store_name,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,id_type,id_type1,id_locations,promosion,img,date_regis,status) 
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'รอดำเนินการ');`,
+                    [name,lastName,gender,storeName,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,typeId,type1Id,locationsId,promosion,img,date],((err)=>{
+                        if(err){
+                            console.log(err);
+                            res.send({ message: "เพิ่มข้อมูลไม่สำเร็จ" })
+                        }
+                        else{
+                            res.send('เพิ่มข้อมูลเรียบร้อย')   
+                        }   
+                        })
+                    )
+                
+            }
+        }     
+    })    
 })
-usersRouter.post("/insertRegisStoreMenuList",(req, res)=>{//เพิ่มข้อมุลเมนู
+usersRouter.post("/insertRegisStoreMenuList",(req, res)=>{//เพิ่มข้อมูลเมนู
     const date = req.body.date
     const idcard = req.body.idcard
     const inputfild = req.body.inputfild

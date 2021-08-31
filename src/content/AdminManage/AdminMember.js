@@ -17,7 +17,7 @@ import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      width: '100%',
+      width: '95%',
       height:'500px',
       maxWidth: 560,
     },
@@ -115,7 +115,7 @@ function AdminMember() {
                 </List>  
                 </div>
                 
-                <div style={{borderLeft:"1.5px solid red",display:'flex',justifyContent:'center',width:'500px'}}>
+                <div style={{borderLeft:"1.5px solid rgba(228, 228, 228, 1)",display:'flex',justifyContent:'center',width:'500px',height:'500px'}}>
                     {dataPreview == '' ? '': 
                     dataPreview.map((data,index)=>(
                     <div key={index} style={{display:"flex",alignItems:'center',flexDirection:'column'}}>                                                                   

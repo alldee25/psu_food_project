@@ -52,7 +52,6 @@ export default function RegisStore() {
 
   const [activeStep, setActiveStep] = React.useState(0);
   const location = useLocation()
-  const {url} = useRouteMatch();
   const history = useHistory()
   const { setIsload} = useContext(AuthContext);
   const classes = useStyles();
@@ -119,6 +118,7 @@ export default function RegisStore() {
     }
 
   useEffect(()=>{
+    setIsload(true)
     const today = new Date();
     const year = today.getFullYear() - 20
     const yeartoday = today.getFullYear() 
@@ -164,6 +164,11 @@ export default function RegisStore() {
         axios.get('http://localhost:3001/getLocation').then((res)=>{
           setLocationList(res.data)
          })  
+      ).finally(
+        setTimeout(function() {
+          setIsload(false)
+        }, 1000)
+        
       ) 
   },[])
 
@@ -228,25 +233,6 @@ export default function RegisStore() {
   }
 
   const handleNext = async () => {
-    console.log(name);
-    console.log(lastName);
-    console.log(gender);
-    console.log(storeName);
-    console.log(dob);
-    console.log(race);
-    console.log(nationality);
-    console.log(religion);
-    console.log(idcard);
-    console.log(idstart);
-    console.log(idend);
-    console.log(adress);
-    console.log(phone);
-    console.log(email);
-    console.log(type);
-    console.log(type1);
-    console.log(locations);
-    console.log(morToday);
-    console.log(inputfild);
     if (activeStep !== 3) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     } 
@@ -256,7 +242,9 @@ export default function RegisStore() {
     if(activeStep === 3){
       const isValid = await userSchema.isValid(formData)
       console.log(userSchema.isValid(formData));
-     if (isValid) {
+     if (isValid && inputfild.every((e)=>{
+      return (e.menu !== '' && e.menu !== undefined) && (e.price !== '' && e.price !== undefined)
+   })) {
         if (inId.every(checkId)) {
           swal("กด ok เพื่อยืนยันการบันทึก",{
           })
@@ -287,6 +275,7 @@ export default function RegisStore() {
               axios.post('http://localhost:3001/insertRegisStore',formDatas).then((res)=>{
                     if (res.data.message) {
                     swal(res.data.message).then((value) => {setIsload(false)});
+                    setArgee(true)
                     }
                     else{
                       axios.post("http://localhost:3001/insertRegisStoreMenuList",{
@@ -296,15 +285,17 @@ export default function RegisStore() {
                       }).then((res)=>{
                         if (res.data.message) {
                           swal(res.data.message).then((value) => {setIsload(false)}); 
+                          setArgee(true)
                         } else {
-                          swal({ title: "สมัคเรียบร้อย",text: "กดปุ่มเพื่อไปต่อ",icon: "success", button: "OK",}).then((value) =>{
+                          swal({ title: "สมัคเรียบร้อย",text: "สามารถตรวจสอบผลการสมัครได้ที่เมนู\'ตรวจสอบผล\'",icon: "success", button: "OK",}).then((value) =>{
                             history.push('/')
                             history.go() 
+                          }).then((value)=>{
+                            setIsload(false)
                           })
                         }
                       })                       
-                    }
-            
+                }       
           })
   }
   
@@ -505,7 +496,7 @@ function getStepContent(step) {
                   </div>
                   <hr/>                  
                   <p style={{textAlign:"justify"}}>
-                    <Checkbox onChange={()=>{setArgee(!agree)}} style={{marginBottom:'3px'}} color="primary" inputProps={{ 'aria-label': 'secondary checkbox' }} />
+                    <Checkbox onChange={()=>{setArgee(!agree)}} style={{marginBottom:'3px'}} checked={!agree} color="primary" inputProps={{ 'aria-label': 'secondary checkbox' }} />
                     ข้าพเจ้าขอรับรองว่า ข้อความที่กรอกในใบสมัคนี้เป็นความจริงและสมบูรณ์ครบถ้วน<br/>
                     ซึ่งเป็นส่วนหนึ่งของสัญญา หากมีการบิดเบือนความจริง แจ้งเท็จ หรือปิดบังข้อเท็จจริง จะเป็นสาเหตุอัน<br/>
                     เพียงพอที่ยกเลิกสัญญาประกอบการหากได้รับคัดเลือกเป็นผู้ประกอบการร้านค้าโรงอาหาร<br/>

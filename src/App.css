@@ -20,6 +20,9 @@
   font-style: normal;
   text-decoration: none;
 }
+a:hover{
+ text-decoration: none;
+}
 .App {
   display: flex;
   width: 100vw;
@@ -38,8 +41,8 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background: rgba(37, 37, 37, 0.013); 
-  backdrop-filter: blur(8px);  
+  background: rgba(37, 37, 37, 0.5.5); 
+  backdrop-filter: blur(10px);  
   z-index: 3; 
 }
 .blurAdmin{
@@ -48,8 +51,8 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.441); 
-  backdrop-filter: blur(8px);  
+  background: rgba(255, 255, 255, 0.5.5); 
+  backdrop-filter: blur(10px);  
   z-index: 3; 
 }
 

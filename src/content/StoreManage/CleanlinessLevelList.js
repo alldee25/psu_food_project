@@ -131,7 +131,7 @@ function CleanlinessLevel() {
           <div className="subcon">
             <div className="header">
                 <h1>
-                รายการกสรตรวจสอบความสะอาดร้านค้า
+                รายการตรวจสอบคุณภาพความสะอาดร้านค้า
                 </h1>
             </div>       
             <div style={{display:'flex',position:'absolute',right:"75px",top:'30px'}}>

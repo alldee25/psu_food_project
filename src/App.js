@@ -2,7 +2,6 @@ import React, { useState,useEffect } from "react";
 import "./App.css";
 import './content/content.css'
 import { BrowserRouter as Router, Route,Link, Switch, useLocation, useRouteMatch } from "react-router-dom";
-import { IconName } from "react-icons/fa";
 import CircularProgress from '@material-ui/core/CircularProgress';
 //content
 /* import Navbar from './users/Navbar/Navbar' */
@@ -73,9 +72,11 @@ const transitions1 = useTransition(isload,{
   if((auth!=null) && (userType === 'Admin')){
     return (
     <AuthContext.Provider value={{ auth, setIsload,isload,userImg }}>
-        {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'black',zIndex:'4',borderRadius:'10px'}}/>}
-        {isload === true && <div  className="blurAdmin"/>}
-      {transitionsAdmin((styles, item) => item && ( <animated.div  style={styles}>
+        {isload === true && <div style={{position:'absolute',top:'50%',left:'50%',color:'black',fontSize:'18px',fontWeight:'bold',zIndex:'4',borderRadius:'10px',display:'flex',flexDirection:'column',alignItems:'center'}}><CircularProgress disableShrink /><p style={{marginTop:'10px'}}>Loading...</p></div>}
+        
+        {transitions1((styles, item) => item && ( <animated.div  className="blurAdmin" style={styles}>
+        </animated.div>))}
+      {transitionsAdmin((styles, item) => item && ( <animated.div style={styles}>
         <Router>
         <Route      path="/"  component={Admin}      />        
       </Router>
@@ -111,14 +112,13 @@ const transitions1 = useTransition(isload,{
   else{ 
   return (
     <AuthContext.Provider value={{userType, auth, animation, setIsload }}>
-      {isload === true && <CircularProgress disableShrink style={{position:'absolute',top:'50%',left:'50%',color:'white',zIndex:'4',}}/>}
-      {transitions1((styles, item) => item && ( <animated.div className="blurAnimation" style={styles}></animated.div> ))} 
+      {isload === true && <div style={{position:'absolute',top:'50%',fontWeight:'bold',left:'50%',color:'white',fontSize:'18px',zIndex:'4',borderRadius:'10px',display:'flex',flexDirection:'column',alignItems:'center'}}><CircularProgress disableShrink /><p style={{marginTop:'10px'}}>Loading...</p></div>}
+      {transitions1((styles, item) => item && ( <animated.div className="blurAnimation" style={styles}>
+      </animated.div> ))} 
         <Router>
         <Route   path="/"     component={indexPage}/>       
       </Router> 
-    </AuthContext.Provider>
-
-    
+    </AuthContext.Provider>   
   );
 }
 }

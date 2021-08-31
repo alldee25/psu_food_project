@@ -4,7 +4,6 @@ import Step from '@material-ui/core/Step';
 import { AuthContext } from '../../App';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
-import Addicon from '@material-ui/icons/AddRounded'
 import { Button, Checkbox, FormControlLabel, FormGroup, FormHelperText, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, TextField } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router';
 import { animated, useTransition } from '@react-spring/web';
@@ -35,6 +34,7 @@ function StoreInfornationDetial(props) {
   const [save,setSave] = useState(false)
   const [data, setData] = useState([])
   const steps = getSteps();
+  const {setIsload} = useContext(AuthContext)
 
   const transitions1 = useTransition(location, {
     from: { opacity: 0 },

@@ -37,8 +37,10 @@ function ComplaintForm(props) {
     const [topic,setTopic] = useState('')
     const [attendantComment,setAttendantComment] = useState('')
     const [other,setOther] = useState('')
-    const [attendant,setAttendant] = useState('')
-    const [manager,setManager] = useState('')
+    const [attendantName,setAttendantName] = useState('')
+    const [attendantLastname,setAttendantLastname] = useState('')
+    const [managerName,setManagerName] = useState('')
+    const [managerLastname,setManagerLastname] = useState('')
 
     const transitions = useTransition(props.open, {
         from: { opacity: 0, y: 800 },
@@ -93,13 +95,17 @@ function ComplaintForm(props) {
                     axios.get("http://localhost:3001/getAdminInfoManager",{ 
                     }).then((res)=>{
                       const [{name}] = res.data
-                    setManager(name)
+                      const [{lastname}] = res.data
+                    setManagerName(name)
+                    setManagerLastname(lastname)
                   }   
                     )).then(
                     axios.get("http://localhost:3001/getAdminInfoAttendant",{ 
                     }).then((res)=>{
                       const [{name}] = res.data
-                    setAttendant(name) 
+                      const [{lastname}] = res.data
+                    setAttendantName(name) 
+                    setAttendantLastname(lastname) 
     })).then(setIsload(false))
     },[])
     return transitions(
@@ -174,12 +180,12 @@ function ComplaintForm(props) {
                     ดังนั้นจึงขอให้ผู้ประกอบการดำเนินการดังนี้
                   </span>
                   <div style={{marginLeft:'10px',width:'720px'}}>
-                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled variant="standard" type="text" value={data.action}></TextField>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled variant="standard" type="text" value={data.action} />
                   </div>                                 
                 </div>             
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
                     <div style={{marginLeft:'10px'}}>
-                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={attendant} variant="standard" type="text" ></TextField>
+                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={`${attendantName} ${attendantLastname}`} variant="standard" type="text" />
                     </div>
                     <div style={{display:'flex',width:"175px",justifyContent:"center"}}>
                       <span>
@@ -192,12 +198,12 @@ function ComplaintForm(props) {
                     ความคิดเห็นผู้ควบคุมกำกับดูแล
                   </span>
                   <div style={{marginLeft:'10px',width:'800px'}}>
-                    <TextField helperText="ถ้าไม่มีให้ใส่ -" fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled={auth.usersData[0].name !== manager} variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
+                    <TextField helperText="ถ้าไม่มีให้ใส่ -" fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled={auth.usersData[0].name !== managerName} variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
                   </div>                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
                     <div style={{marginLeft:'10px'}}>
-                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={manager} variant="standard" type="text" ></TextField>
+                      <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={`${managerName} ${managerLastname}`} variant="standard" type="text" ></TextField>
                     </div>
                     <div>
                       <span>

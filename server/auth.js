@@ -35,7 +35,7 @@ authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโด
     WHERE USERNAME=? AND 	PASSWORD=?;`,[Username,Password],((err,result)=>{
         if(err){
             console.log(err);
-            
+            res.send({message:"Internet Error"})          
         }
         else if(result.length > 0){
                     req.session.UserType = UserType;
@@ -110,21 +110,17 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
         }
     }))
 })
-authRouter.get("/getSession" ,(req, res) => {//ตรวจสอบ เซสชั่น
-    sleep(0).then(()=>{
-        if(req.session.user){   
-        res.send({logedIn:true, usersData:req.session.user, UserType:req.session.UserType, usersImg:req.session.img })
-        }else{
-        res.send({logedIn:false})
-        }
-    }  
-    )      
+authRouter.get("/getSession" ,(req, res) => {//ตรวจสอบเซสชั่น
+    if(req.session.user){   
+    res.send({logedIn:true, usersData:req.session.user, UserType:req.session.UserType, usersImg:req.session.img })
+    }else{
+    res.send({logedIn:false})
+    }         
 })
 
 authRouter.get("/logout" ,(req, res) => { //ออกจากระบบ
-    sleep(5000).then(
-        req.session.destroy()
-    )
+    
+    req.session.destroy()
 })
 module.exports = authRouter
 
