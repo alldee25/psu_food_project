@@ -60,6 +60,7 @@ adminRouter.use(cors({
     methods:['GET', 'POST'],
     credentials:true
 }));
+
 adminRouter.use(bodyParser.urlencoded({
     extended: true
 }))
@@ -307,11 +308,25 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
             if (err) {
                 console.log(err);
             }
-            else{
-               
-                db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email) 
-                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?)`,
-                        [regisId,dataInterViewList[0].name,dataInterViewList[0].lastname,dataInterViewList[0].gender,dataInterViewList[0].dob,dataInterViewList[0].race,dataInterViewList[0].nationality,dataInterViewList[0].religion,dataInterViewList[0].idcard,dataInterViewList[0].idstart,dataInterViewList[0].idend,dataInterViewList[0].adress,dataInterViewList[0].phone,dataInterViewList[0].email],
+            else{             
+                db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,username,password) 
+                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT id FROM store WHERE regis_id=?),?)`,
+                        [regisId,
+                        dataInterViewList[0].name,
+                        dataInterViewList[0].lastname,
+                        dataInterViewList[0].gender,
+                        dataInterViewList[0].dob,
+                        dataInterViewList[0].race,
+                        dataInterViewList[0].nationality,
+                        dataInterViewList[0].religion,
+                        dataInterViewList[0].idcard,
+                        dataInterViewList[0].idstart,
+                        dataInterViewList[0].idend,
+                        dataInterViewList[0].adress,
+                        dataInterViewList[0].phone,
+                        dataInterViewList[0].email,
+                        regisId,                
+                        dataInterViewList[0].idcard],
                         ((err)=>{
                             if (err) {
                                 console.log(err);
@@ -325,17 +340,13 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
         if(err){
             console.log(err);
         }else{
-            db.query("SELECT id FROM interview WHERE regis_id=?",[regisId],((err,result)=>{
-                if (err) {
-                    console.log(err);
-                }
-                else{
-                    db.query("INSERT INTO interview_detial (interview_id,score1,score2,score3,note1,note2,note3,feedback) VALUE (?,?,?,?,?,?,?,?)",[result[0].id,score1,score2,score3,note1,note2,note3,feedback],((err)=>{
+                db.query("INSERT INTO interview_detial (interview_id,score1,score2,score3,note1,note2,note3,feedback) VALUE ((SELECT id FROM interview WHERE regis_id=?),?,?,?,?,?,?,?)",
+                    [regisId,score1,score2,score3,note1,note2,note3,feedback],((err)=>{
                         if (err) {
                             console.log(err);
                         }
                         else{
-                            db.query(`INSERT INTO board_opinion (interview_id,bord_opinion_detial,type_id,location_id) VALUES (?,?,?,?)`,[result[0].id,bordOpenion,bType,bLocation],((err)=>{
+                            db.query(`INSERT INTO board_opinion (interview_id,bord_opinion_detial,type_id,location_id) VALUES ((SELECT id FROM interview WHERE regis_id=?),?,?,?)`,[regisId,bordOpenion,bType,bLocation],((err)=>{
                                 if (err) {
                                     console.log(err);
                                 }
@@ -344,9 +355,7 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                                 }
                             }))
                         }
-                    }))                                                        
-                }
-            }))
+                }))                                                        
         }
     }))    
 })

@@ -49,10 +49,42 @@ authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโด
     }))
 })
 
-authRouter.post("/Student",(req, res)=> {//เข้าสู่ระบบโดย นักศึกษา
-    const Username = req.body.Username;
-    const Password = req.body.Password;
-    const UserType = req.body.UserType;
+authRouter.post("/customer",(req, res)=> {//เข้าสู่ระบบโดย ลูกค้าทั่วไป
+    console.log('555');
+    const Username = req.body.username;
+    const Password = req.body.password;
+    const UserType = req.body.userType;
+    db.query("SELECT * FROM customer WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
+        if(err){
+            console.log(err);
+
+        }
+        else if(result.length > 0){
+                if (err) {
+                  console.log(err);
+                }else{
+                bcrypt.compare(Password, result[0].password,(error, response)=>{  
+                    if(true){                       
+                        req.session.UserType = UserType;
+                        req.session.user = result;
+                        req.session.img = result[0].img;
+                        res.send(result)  
+                    }else{
+                        console.log("Wrong username/password combination!");
+                    res.send({ message: "Wrong username/password combination!" });
+                    }
+                })                    
+                }
+            }else{
+           res.send({message:"User dossn't exist"})
+           console.log("User dossn't exist"); 
+        }
+    }))
+})
+authRouter.post("/student",(req, res)=> {//เข้าสู่ระบบโดย นักศึกษา
+    const Username = req.body.username;
+    const Password = req.body.password;
+    const UserType = req.body.userType;
     db.query("SELECT * FROM student WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
         if(err){
             console.log(err);
@@ -67,6 +99,38 @@ authRouter.post("/Student",(req, res)=> {//เข้าสู่ระบบโ�
                     if(response){                       
                         req.session.UserType = UserType;
                         req.session.user = result;
+                        req.session.img = result[0].img;
+                        res.send(result)  
+                    }else{
+                    res.send({ message: "Wrong username/password combination!" });
+                    }
+                })                    
+                }
+            })
+            }else{
+           res.send({message:"User dossn't exist"}) 
+        }
+    }))
+})
+authRouter.post("/store",(req, res)=> {//เข้าสู่ระบบโดย ร้านค้า
+    const Username = req.body.username;
+    const Password = req.body.password;
+    const UserType = req.body.userType;
+    db.query("SELECT * FROM student WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
+        if(err){
+            console.log(err);
+
+        }
+        else if(result.length > 0){
+            bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
+                if (err) {
+                  console.log(err);
+                }else{
+                bcrypt.compare(Password, hash,(error, response)=>{  
+                    if(response){                       
+                        req.session.UserType = UserType;
+                        req.session.user = result;
+                        req.session.img = result[0].img;
                         res.send(result)  
                     }else{
                     res.send({ message: "Wrong username/password combination!" });
@@ -81,9 +145,9 @@ authRouter.post("/Student",(req, res)=> {//เข้าสู่ระบบโ�
 })
 
 authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโดย อาจารย์
-    const Username = req.body.Username;
-    const Password = req.body.Password;
-    const UserType = req.body.UserType;
+    const Username = req.body.username;
+    const Password = req.body.password;
+    const UserType = req.body.userType;
     db.query("SELECT * FROM user_details WHERE username=? AND password=? ;",[Username,Password],((err,result)=>{
         if(err){
             console.log(err);
