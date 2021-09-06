@@ -50,7 +50,6 @@ authRouter.post("/Admin",(req, res)=> {//เข้าสู่ระบบโด
 })
 
 authRouter.post("/customer",(req, res)=> {//เข้าสู่ระบบโดย ลูกค้าทั่วไป
-    console.log('555');
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
@@ -183,8 +182,8 @@ authRouter.get("/getSession" ,(req, res) => {//ตรวจสอบเซสช
 })
 
 authRouter.get("/logout" ,(req, res) => { //ออกจากระบบ
-    
     req.session.destroy()
+    res.send({message:'unLogin'})
 })
 module.exports = authRouter
 

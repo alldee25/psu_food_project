@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../UserScreens/HomeScreen';
-import MenuScreen from '../UserScreens/MenuScreen';
-import ProfileScreen from '../UserScreens/ProfileScreen';
+import HomeScreen from '../Customer&StudentScreens/HomeScreen';
+import MenuScreen from '../Customer&StudentScreens/MenuScreen';
+import ProfileScreen from '../Customer&StudentScreens/ProfileScreen';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
@@ -32,7 +32,7 @@ const Tabs = () =>{
                             <Image source={require('../assets/img/pngkey.com-profile-icon-png-2024691.png')}
                             resizeMode='contain'
                             style={{width:20,height:25,tintColor: focused ?'#e32f45' : '#748c94'}} />
-                            <Text key='1' style={{tintColor: focused ?'#e32f45' : '#748c94',fontSize:12}} >
+                            <Text key='1' style={{color: focused ?'#e32f45' : '#748c94',fontSize:12}} >
                                 Profile
                             </Text>
                         </View>
@@ -51,7 +51,7 @@ const Tabs = () =>{
                             <Image source={require('../assets/img/meal-food.png')}
                             resizeMode='contain'
                             style={{width:20,height:25,tintColor: focused ?'#e32f45' : '#748c94'}} />
-                            <Text key='2' style={{tintColor: focused ?'#e32f45' : '#748c94',fontSize:12}} >
+                            <Text key='2' style={{color: focused ?'#e32f45' : '#748c94',fontSize:12}} >
                                 เมนู
                             </Text>
                         </View>
@@ -67,7 +67,7 @@ const Tabs = () =>{
                         <Image source={require('../assets/img/menu.png')}
                         resizeMode='contain'
                         style={{width:25.5,height:25.5,tintColor: focused ?'#e32f45' : '#748c94'}} />
-                        <Text key='3' style={{tintColor: focused ?'#e32f45' : '#748c94',fontSize:12}}>
+                        <Text key='3' style={{color: focused ?'#e32f45' : '#748c94',fontSize:12}}>
                             รายการ
                         </Text>
                     </View>

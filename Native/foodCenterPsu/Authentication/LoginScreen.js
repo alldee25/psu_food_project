@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity,RefreshControl, View } from 'react-native'
+import * as Progress from 'react-native-progress';
+import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity,RefreshControl, View, Alert } from 'react-native'
 import { Button, IndexPath, Input, Select, SelectItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Icon, MenuItem } from '@ui-kitten/components';
+import { Icon, MenuItem, Spinner } from '@ui-kitten/components';
 import { useState } from 'react';
 import RegisterScreen from './RegisterScreen';
 import axios from 'axios';
+import { AuthContext } from '../App';
 
 const selectUserStack = createStackNavigator();
 
@@ -17,11 +19,23 @@ const home = (props) => (
     <Icon {...props} name='home'/>
   );
 
+const LoadingIndicator = (props) => (
+<View style={[props.style, styles.indicator]}>
+    <Spinner size='small'/>
+</View>
+);
+
 export default function LoginScreen() {
 
     return (
         <selectUserStack.Navigator initialRouteName="รายการ">
-            <selectUserStack.Screen name="userType" component={MenuUserType} options={{headerShown:false}} />                                
+            <selectUserStack.Screen 
+                name="userType" 
+                component={MenuUserType} 
+                options={{
+                    headerShown:false,
+                    }} 
+            />                                
             <selectUserStack.Screen name="customer" component={Loin} />              
             <selectUserStack.Screen name="student" component={Loin} />              
             <selectUserStack.Screen name="store" component={Loin} />              
@@ -31,18 +45,40 @@ export default function LoginScreen() {
 }
 const Loin =({navigation,route})=>{
 
+    const {setAuth} = React.useContext(AuthContext)
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [process, setProcess] = React.useState(false);
 
     const login =()=>{
-        console.log("audi");
+        
+        setProcess(true)
         axios.post(`http://192.168.1.102:3001/${route.params.userType}`,{
             userType:route.params.userType,
             username:username,
             password:password
         }).then((res)=>{
-            console.log(res.message);
-            navigation.goBack();
+            if (res.data.message) {
+                Alert.alert(
+                    res.data.message,
+                    "Try Again",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ],
+                    { cancelable: false }
+                  );
+                  setProcess(false);
+            } else {                 
+            setAuth('isLogin')     
+        }
+        }).catch((error)=>{
+            setProcess(false)
+            console.log(error);
         })
     }
 
@@ -55,16 +91,16 @@ const Loin =({navigation,route})=>{
                 style={styles.image} 
             >
                     <View style={styles.filter} /> 
-                        <View style={styles.formInput}>       
+                        <View style={styles.formInput}>                                
                             <Input value={username} placeholder='Username' onChangeText={nextValue => setUsername(nextValue)} size="medium" style={styles.input}/>
                             <Input value={password} placeholder='Password' onChangeText={nextValue => setPassword(nextValue)} size="medium" style={styles.input}/>         
                             <View style={{display:'flex',alignItems:'center',width:'80%'}}>
                                 <Button 
                                     size='small' 
                                     style={styles.buttonLogin}
-                                    onPress={login} 
-                                >
-                                    Log in
+                                    onPress={login}
+                                    
+                                >{process ? (<Progress.Circle size={30} indeterminate={true} color="white" />):(<Text>Log in</Text>)}                                              
                                 </Button>
                             </View>
                             {route.params.userType == 'customer' ?  (
@@ -180,7 +216,7 @@ const styles = StyleSheet.create({
         backgroundColor:"black",
         width:'100%',
         height:'100%',
-        opacity:0.3
+        opacity:0.25
       }
 })
 
