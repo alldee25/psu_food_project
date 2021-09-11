@@ -4,17 +4,11 @@ import { Button, Icon, MenuItem } from '@ui-kitten/components';
 import { AuthContext } from '../App';
 import axios from 'axios';
 
-const ForwardIcon = (props) => (
-    <Icon {...props} name='arrow-ios-forward'/>
-  );
+const ProfileScreen =({navigation},props)=>{
 
-const ProfileScreen =({navigation})=>{
-
-    const {setAuth} = React.useContext(AuthContext)
+    const {setAuth,auth} = React.useContext(AuthContext)
     const Logout =()=>{
-     axios.get('http://192.168.1.102:3001/logout').then((res)=>{
-        console.log(res.data.message);
-         }).then(setAuth('unLogin'))
+     axios.get('http://192.168.1.102:3001/logout').then(setAuth('logout'))
     }
     
     return(
@@ -24,9 +18,10 @@ const ProfileScreen =({navigation})=>{
             </Text>
             <Button 
                 onPress={Logout} 
-            >
+            >   
                 Log out
             </Button>
+            
         </View>
     )
 }

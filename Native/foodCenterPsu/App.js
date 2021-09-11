@@ -6,21 +6,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import Tabs from './navigation/tabs';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider,IconRegistry } from '@ui-kitten/components';
+import { ApplicationProvider,IconRegistry, Spinner } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import ProfileScreen from './Customer&StudentScreens/ProfileScreen';
-import MenuScreen from './Customer&StudentScreens/MenuScreen';
 import { useState } from 'react';
 import LoginScreen from './Authentication/LoginScreen';
 import axios from 'axios';
-import { cleanup } from '@testing-library/react';
 
 const stack = createStackNavigator();
 const AuthContext = React.createContext();
 
-export default function App({navigation}) {
+export default function App() {
 
-  const [auth, setAuth] = useState('unLogin');
+  const [auth, setAuth] = useState('');
   const [userData, setUserData] = useState(null);
   const [userImg, setUserImg] = useState('');
   const [animation, setAnimation] = useState('');
@@ -29,7 +26,7 @@ export default function App({navigation}) {
 
   const apiGetSession =()=>{
     axios.get('http://192.168.1.102:3001/getSession').then((res)=>{
-
+    console.log(11);
       if(res.data.logedIn === true){
         setUserData(res.data);
         setUserImg(res.data.usersImg);
@@ -38,7 +35,6 @@ export default function App({navigation}) {
         
         
       }else{
-        
           setIsload(false)
           setUserData('');
           setUserImg('');
@@ -58,16 +54,15 @@ export default function App({navigation}) {
             ],
             { cancelable: false }
           );
-          setIsload(false)
-          
+          setIsload(false)         
         })
   } 
 
   React.useEffect(()=>{
-    SplashScreen.hide();
+    SplashScreen.hide()
     apiGetSession();
-      },[auth])
-
+      },[auth]) 
+console.log(auth);
   if ((userData !== null) && ((userType == 'customer') || (userType == 'student'))) {
     return (
     <>
@@ -87,9 +82,9 @@ export default function App({navigation}) {
       <>
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
-          <AuthContext.Provider value={{ auth,setIsload,userImg,userType}}>
+          <AuthContext.Provider value={{ auth, setAuth, setIsload, userImg, userType, userData}}>
             <NavigationContainer>
-                <LoginScreen />
+              <Tabs />
             </NavigationContainer>
           </AuthContext.Provider>
         </ApplicationProvider> 
@@ -100,22 +95,19 @@ export default function App({navigation}) {
   else if(isload == true) {
     return(
       <>
-        <ImageBackground
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+          <ImageBackground
           style={styles.loadingPage}
           blurRadius={15}
           source={require('./assets/img/summer-composition-with-ingredients-blank-space.jpg')}>
-            <View style={styles.filter} />  
-        <Text>
-          <AwesomeLoading 
-            indicatorId={9} 
-            size={40} 
-            isActive={true} 
-            text="loading"
-            ImageBackground="none"
-          />
-          loadig
-        </Text>      
-      </ImageBackground>
+            <View style={styles.filter} />
+             <Spinner status='basic' size='large'/> 
+          <Text >
+            loadig
+          </Text>      
+        </ImageBackground>
+      </ApplicationProvider>   
       </>
     )
   }
@@ -145,7 +137,8 @@ const styles = StyleSheet.create({
     height:'100%'
   },
   filter:{
-    position:'absolute',
+  color:'white',
+  position:'absolute',
   backgroundColor:"black",
   width:'100%',
   height:'100%',

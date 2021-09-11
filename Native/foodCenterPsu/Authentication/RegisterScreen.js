@@ -1,7 +1,9 @@
 import { Button, Card, Icon, Input } from '@ui-kitten/components';
 import axios from 'axios';
 import * as React from 'react';
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import * as Progress from 'react-native-progress';
+import { Alert, Image, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Formik } from 'formik';
 
 
 const person = (props) => (
@@ -9,18 +11,38 @@ const person = (props) => (
   );
 
 export default function RegisterScreen() {
-    const [name,setName] = React.useState(''); 
-    const [lastname,setLastname] = React.useState(''); 
-    const [username,setUsername] = React.useState(''); 
-    const [password,setPassword] = React.useState(''); 
-    const [phone,setPhone] = React.useState(''); 
-    const [email,setEmail] = React.useState(''); 
+    const [process, setProcess] = React.useState(false); 
 
-    const signup = () =>{
+    const signup = (values) =>{
         axios.post('http://192.168.1.102:3001/signup',{
-
+            name:values.name, 
+            lastname:values.lastname, 
+            username:values.username,
+            password:values.password,
+            phone:values.phone, 
+            email:values.email
+        }).then((res)=>{
+            if (res.data.message) {
+                Alert.alert(
+                    res.data.message,
+                    "Try Again",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ],
+                    { cancelable: false }
+                  );
+                  setProcess(false);
+            } else {                 
+            setAuth('login')     
+        }
         })
     }
+
     return (
         <View>   
             <ImageBackground
@@ -28,83 +50,88 @@ export default function RegisterScreen() {
                 style={{width:'100%',height:'100%',display:'flex',justifyContent:'flex-end'}} 
                 source={require('../assets/img/summer-composition-with-ingredients-blank-space.jpg')} 
             >
-                <View style={styles.form}>
-                <ScrollView style={{width:'100%',height:'100%'}}>
-                    <View style={{width:'100%',height:'100%',display:'flex',alignItems:'center'}}>
+                <View style={styles.formView}>
+                <ScrollView style={{width:'100%',height:'100%'}}>                 
                     <Image 
                     source={require("../assets/img/pngkey.com-profile-icon-png-2024691.png")}
                     style={{width:50,height:50,tintColor:'blue',marginTop:30}}
                 />
-                <form onSubmit={signup}>
+                <Formik 
+                    onSubmit={(values) => signup(values)}
+                    initialValues={{name:'',lastname:'',username:'',password:'',phone:'',email:''}}
+                >
+                {({ handleChange, handleBlur, handleSubmit, values }) =>(
+                    <View style={{width:'100%',height:'100%',display:'flex',alignItems:'center'}}>
                 <Input                    
                         status='primary'
                         placeholder='First Name'
                         style={styles.Input}
                         accessoryLeft={person}
-                        value={name}
+                        value={values.name}
                         type="text"
-                        onChangeText={nextValue => setName(nextValue)}                      
-                    />
+                        handleBlur="name"                      
+                        onChangeText={handleChange('name')}                      
+                    />                   
                     <Input                    
                         status='primary'
-                        placeholder='Last Name'
+                        placeholder='LastName'
                         style={styles.Input}
                         accessoryLeft={person}
-                        value={lastname}
+                        value={values.lastname}
                         type="text"
-                        onChangeText={nextValue => setLastname(nextValue)}                      
+                        onChangeText={handleChange('lastname')}                      
                     />
                     <Input                    
                         status='primary'
                         placeholder='Username'
                         style={styles.Input}
                         accessoryLeft={person} 
-                        value={username}
+                        value={values.username}
                         type="text"
-                        onChangeText={nextValue => setUsername(nextValue)}                     
+                        onChangeText={handleChange('username')}                     
                     />
                     <Input                    
                         status='primary'
                         placeholder='Password'
                         style={styles.Input}
                         accessoryLeft={person} 
-                        value={password}
+                        value={values.password}
                         type="password"
-                        onChangeText={nextValue => setPassword(nextValue)}                     
+                        onChangeText={handleChange('password')}                     
                     />
                     <Input                    
                         status='primary'
                         placeholder='Phone'
                         style={styles.Input}
                         accessoryLeft={person} 
-                        value={phone}
+                        value={values.phone}
                         type="phone"
-                        onChangeText={nextValue => setPassword(nextValue)}                     
+                        onChangeText={handleChange('phone')}                     
                     />
                     <Input                    
                         status='primary'
                         placeholder='Email'
                         style={styles.Input}
                         accessoryLeft={person} 
-                        value={email}
+                        value={values.email}
                         type="email"
-                        onChangeText={nextValue => setEmail(nextValue)}                     
+                        onChangeText={handleChange('email')}                     
                     />
-                    
                     <Button                       
                         size='small' 
                         style={styles.buttonSignin}
-                        type="submit"                      
+                        type="submit" 
+                        onPress={handleSubmit}                    
                         
                     >
-                        <Text>
-                            Signup
-                        </Text>
-                    </Button>
-                    </form>
-                    </View>                   
-                      
-                                    
+                        {process ? (<Progress.Circle size={30} indeterminate={true} color="white" />)
+                        :
+                        (<Text>Log in</Text>)}                       
+                    </Button>                        
+                    </View>
+
+                )}
+                    </Formik>                                                                       
                 </ScrollView>
             </View>
                 
@@ -118,7 +145,7 @@ const styles = StyleSheet.create({
         width:'80%',
         borderRadius:15
     },
-    form:{
+    formView:{
         display:'flex',
         alignItems:'center',
         backgroundColor:'white',

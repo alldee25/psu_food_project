@@ -4,10 +4,11 @@ const mysql = require('mysql')
 const authRouter = require('./auth') 
 const adminRouter = require('./adminManage')
 const usersRouter = require('./userManage')
+const appRouter = require('./appManage')
 const path = require('path')
 
 
-app.use(authRouter,adminRouter,usersRouter)
+app.use(authRouter,adminRouter,usersRouter,appRouter)
 app.use(express.static(path.join(__dirname, './public')));
 
 db = mysql.createConnection({

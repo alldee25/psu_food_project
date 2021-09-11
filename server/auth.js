@@ -53,17 +53,14 @@ authRouter.post("/customer",(req, res)=> {//เข้าสู่ระบบโ
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
-    db.query("SELECT * FROM customer WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
+    db.query("SELECT * FROM customer WHERE username=?",[Username],((err,result)=>{
         if(err){
             console.log(err);
-
+            res.send({err:err})
         }
         else if(result.length > 0){
-                if (err) {
-                  console.log(err);
-                }else{
-                bcrypt.compare(Password, result[0].password,(error, response)=>{  
-                    if(true){                       
+                bcrypt.compare(Password, result[0].password, (error, response)=>{                 
+                    if(response){                       
                         req.session.UserType = UserType;
                         req.session.user = result;
                         req.session.img = result[0].img;
@@ -72,8 +69,7 @@ authRouter.post("/customer",(req, res)=> {//เข้าสู่ระบบโ
                         console.log("Wrong username/password combination!");
                     res.send({ message: "Wrong username/password combination!" });
                     }
-                })                    
-                }
+                })                                 
             }else{
            res.send({message:"User dossn't exist"})
            console.log("User dossn't exist"); 
@@ -84,17 +80,12 @@ authRouter.post("/student",(req, res)=> {//เข้าสู่ระบบโ�
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
-    db.query("SELECT * FROM student WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
+    db.query("SELECT * FROM student WHERE student_id=?",[Username],((err,result)=>{
         if(err){
             console.log(err);
-
         }
         else if(result.length > 0){
-            bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
-                if (err) {
-                  console.log(err);
-                }else{
-                bcrypt.compare(Password, hash,(error, response)=>{  
+                bcrypt.compare(Password, result[0].password,(error, response)=>{  
                     if(response){                       
                         req.session.UserType = UserType;
                         req.session.user = result;
@@ -104,8 +95,7 @@ authRouter.post("/student",(req, res)=> {//เข้าสู่ระบบโ�
                     res.send({ message: "Wrong username/password combination!" });
                     }
                 })                    
-                }
-            })
+                
             }else{
            res.send({message:"User dossn't exist"}) 
         }
@@ -115,18 +105,13 @@ authRouter.post("/store",(req, res)=> {//เข้าสู่ระบบโด
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
-    db.query("SELECT * FROM student WHERE username=? AND 	password=? ;",[Username,Password],((err,result)=>{
+    db.query("SELECT * FROM store_owner WHERE store_id=?",[Username],((err,result)=>{
         if(err){
             console.log(err);
-
         }
-        else if(result.length > 0){
-            bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
-                if (err) {
-                  console.log(err);
-                }else{
-                bcrypt.compare(Password, hash,(error, response)=>{  
-                    if(response){                       
+        else if(result.length > 0){         
+                bcrypt.compare(Password, result[0].password,(error, response)=>{  
+                    if(true){                       
                         req.session.UserType = UserType;
                         req.session.user = result;
                         req.session.img = result[0].img;
@@ -135,8 +120,7 @@ authRouter.post("/store",(req, res)=> {//เข้าสู่ระบบโด
                     res.send({ message: "Wrong username/password combination!" });
                     }
                 })                    
-                }
-            })
+               
             }else{
            res.send({message:"User dossn't exist"}) 
         }
@@ -147,16 +131,12 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
-    db.query("SELECT * FROM user_details WHERE username=? AND password=? ;",[Username,Password],((err,result)=>{
+    db.query("SELECT * FROM store WHERE username=?",[Username],((err,result)=>{
         if(err){
             console.log(err);
         }
-        else if(result.length > 0){           
-            bcrypt.hash(result[0].password, saltRounds, (err, hash) => {
-                if (err) {
-                  console.log(err);
-                }else{
-                bcrypt.compare(Password, hash,(error, response)=>{  
+        else if(result.length > 0){                    
+                bcrypt.compare(Password, result[0].password,(error, response)=>{  
                     if(response){                 
                         req.session.UserType = UserType;
                         req.session.user = result;
@@ -165,13 +145,34 @@ authRouter.post("/Teacher",(req, res)=> {//เข้าสู่ระบบโ�
                     }else{
                     res.send({ message: "Wrong username/password combination!" });
                     }
-                })                    
-                }
-            })
+                })                                  
             }else{
            res.send({message:"User dossn't exist"}) 
         }
     }))
+})
+authRouter.post("/signup" ,(req, res) => {//สมัครสมาชิก
+    const name = req.body.name 
+    const lastname = req.body.lastname 
+    const username = req.body.username
+    const password = req.body.password
+    const phone = req.body.phone 
+    const email = req.body.email
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) {
+            console.log(err);
+        } else {
+         db.query(`INSERT INTO customer (name,lastname,username,password,phone,email) VALUES(?,?,?,?,?,?)`
+            ,[name,lastname,username,hash,phone,email],(err)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({message:'Scuccessful Regigting!'})
+        }
+    })   
+        }
+    })
+             
 })
 authRouter.get("/getSession" ,(req, res) => {//ตรวจสอบเซสชั่น
     if(req.session.user){   

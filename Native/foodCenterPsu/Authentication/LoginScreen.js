@@ -45,7 +45,7 @@ export default function LoginScreen() {
 }
 const Loin =({navigation,route})=>{
 
-    const {setAuth} = React.useContext(AuthContext)
+    const {setAuth,auth} = React.useContext(AuthContext)
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [process, setProcess] = React.useState(false);
@@ -74,7 +74,7 @@ const Loin =({navigation,route})=>{
                   );
                   setProcess(false);
             } else {                 
-            setAuth('isLogin')     
+            setAuth('login')     
         }
         }).catch((error)=>{
             setProcess(false)
@@ -100,7 +100,8 @@ const Loin =({navigation,route})=>{
                                     style={styles.buttonLogin}
                                     onPress={login}
                                     
-                                >{process ? (<Progress.Circle size={30} indeterminate={true} color="white" />):(<Text>Log in</Text>)}                                              
+                                >
+                                    {process ? (<Progress.Circle size={30} indeterminate={true} color="white" />):(<Text>Log in</Text>)}                                              
                                 </Button>
                             </View>
                             {route.params.userType == 'customer' ?  (

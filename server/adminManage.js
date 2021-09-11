@@ -10,6 +10,7 @@ let fs = require('fs');
 adminRouter.use(express.static(path.join(__dirname, './public/images/')));
 
 const multer = require('multer')
+
 const storage = multer.diskStorage({
     destination: (req , file, cb) =>{
         cb(null, './public/images/adminUploaded/');
@@ -308,9 +309,13 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
             if (err) {
                 console.log(err);
             }
-            else{             
-                db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,username,password) 
-                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT id FROM store WHERE regis_id=?),?)`,
+            else{ 
+                bcrypt.hash(password, saltRounds, (err, hash) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,password) 
+                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
                         [regisId,
                         dataInterViewList[0].name,
                         dataInterViewList[0].lastname,
@@ -324,15 +329,16 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                         dataInterViewList[0].idend,
                         dataInterViewList[0].adress,
                         dataInterViewList[0].phone,
-                        dataInterViewList[0].email,
-                        regisId,                
-                        dataInterViewList[0].idcard],
+                        dataInterViewList[0].email,                                       
+                        hash],
                         ((err)=>{
                             if (err) {
                                 console.log(err);
                             }                                 
-                        }))   
-                              
+                        }))
+                    }
+                    
+                    })                                           
             }
         }))
     }

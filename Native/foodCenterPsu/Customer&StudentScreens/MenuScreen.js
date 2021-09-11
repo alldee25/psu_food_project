@@ -28,6 +28,7 @@ const Menu =()=>{
     )
 }
 export default Menu;
+
 const MenuStack = ({navigation})=>{
     return(
         <SafeAreaView style={styles.container}> 
