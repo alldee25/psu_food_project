@@ -3,6 +3,11 @@ import { Text, View } from 'react-native'
 import { Button, Icon, MenuItem } from '@ui-kitten/components';
 import { AuthContext } from '../App';
 import axios from 'axios';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import MenuManage from '../StoreScreens/Addmenu/MenuManage';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const Drawer = createDrawerNavigator();
 
 const ProfileScreen =({navigation},props)=>{
 
@@ -12,17 +17,11 @@ const ProfileScreen =({navigation},props)=>{
     }
     
     return(
-        <View style={{display:"flex",alignItems:'center'}}>
+        <SafeAreaView>
             <Text>
-                ProfileScreen
+                Audi
             </Text>
-            <Button 
-                onPress={Logout} 
-            >   
-                Log out
-            </Button>
-            
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -1,13 +1,20 @@
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
-import { ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity,RefreshControl, View, Alert } from 'react-native'
+import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl, View, Alert } from 'react-native'
 import { Button, IndexPath, Input, Select, SelectItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon, MenuItem, Spinner } from '@ui-kitten/components';
 import { useState } from 'react';
 import RegisterScreen from './RegisterScreen';
 import axios from 'axios';
+import { Divider,
+    Flex,
+    Text,
+    Heading,
+    Box
+     } from "native-base"
 import { AuthContext } from '../App';
+
 
 const selectUserStack = createStackNavigator();
 
@@ -139,18 +146,31 @@ const MenuUserType =({navigation})=>{
     return (       
         <View>
             <ImageBackground source={require('../assets/img/summer-composition-with-ingredients-blank-space.jpg')} resizeMode="cover"  style={styles.image} > 
-            <View style={styles.filter} />  
-                <View style={{display:'flex',alignItems:'center',marginTop:20,justifyContent:'center'}}>
-                    <Button
-                        accessoryLeft={person}                  
-                        style={styles.buttonLogin} 
+            <View style={styles.filter} />
+                <View style={{display:'flex',alignItems:'center',marginTop:20,justifyContent:'center',borderWidth:2}}>
+                <Box w={260}>
+                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
+                <Button
+                        appearance='outline'                 
+                        style={styles.button} 
                         onPress={()=> navigation.navigate('customer',{userType:'customer'})} 
-                    >                         
-                            <Text>
+                    >          
+                    <View style={{display:'flex',flexDirection:'row',justifyContent:'center',width:502,height:542,borderWidth:2}}>
+                    <Icon name='arrow-forward-outline' fill='#ffff' style={{width:10,height:32}} />
+                        <Text style={{color:'#ffff',fontWeight:'bold',fontSize:4}}>
                                 ลูกค้าทั่วไป
-                            </Text>                                                              
+                        </Text>
+                            <Icon name='arrow-forward-outline' fill='#ffff' style={{width:10,height:32}} />
+                    </View>               
+                            
+                                                                                         
                     </Button>
-                    <Button
+                     
+                </Heading>
+                <Divider my={3} />
+                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
+                <Button
+                        appearance='outline'
                         accessoryLeft={person}   
                         style={styles.buttonLogin} 
                         onPress={()=> navigation.navigate('student',{userType:'student'})}
@@ -158,16 +178,22 @@ const MenuUserType =({navigation})=>{
                             <Text >
                                 นักศึกษา 
                             </Text>                                                                                      
-                    </Button> 
-                    <Button 
+                    </Button>
+                </Heading>
+                <Divider my={2} />
+                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
+                <Button 
+                        appearance='outline'
                         accessoryLeft={home} 
                         style={styles.buttonLogin} 
                         onPress={()=> navigation.navigate('store',{userType:'store'})}  
                         >
-                            <Text >
+                            <Text>
                                 ร้านค้า
                             </Text>
-                    </Button>    
+                    </Button>
+                </Heading>
+                </Box>               
                 </View>                
             </ImageBackground>          
         </View>
@@ -218,6 +244,11 @@ const styles = StyleSheet.create({
         width:'100%',
         height:'100%',
         opacity:0.25
-      }
+      },
+      button:{
+        marginTop: 15,
+        width:200,
+        borderRadius:20, 
+      },
 })
 

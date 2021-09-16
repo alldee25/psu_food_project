@@ -75,7 +75,6 @@ adminRouter.post('/upload', upload.single('file'), (req, res)=>{
         const image =  req.file.filename
         const id = req.body.id
         if (req.body.oldFile && req.file !== undefined) {
-        console.log('non');
             fs.unlink('./public/images/adminUploaded/'+req.body.oldFile, function(err){
                 if (err) {
                     throw err;

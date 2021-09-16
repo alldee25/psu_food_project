@@ -7,24 +7,26 @@ import { Formik } from 'formik';
 import { AuthContext } from '../../App';
 import { Modal, Button, CheckCircleIcon} from "native-base"
 
-const FormAddOption = forwardRef((props,ref)=> {
+const FormAddSpecialOption = forwardRef((props,ref)=> {
 
     const {userData} =  useContext(AuthContext);
     const [modalVisible, setModalVisible] = React.useState(false)
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null) 
     const [option, setOption] = React.useState(''); 
+    const [price, setPrice] = React.useState(0);  
 
     const addOption = () => {
         
-        axios.post('http://192.168.1.102:3001/addOption',{
+        axios.post('http://192.168.1.102:3001/addSpecialOption',{
             storeId:userData.usersData[0].store_id,
-            optionName:option
+            optionName:option,
+            optionprice:price
         }).then((res)=>{
             if (res.data.err) {
                 Alert.alert(
                     res.data.err,
-                    "Try Again",
+                    "OK",
                     [
                       { text: "OK", onPress: () =>  console.log("OK Pressed") }
                     ],
@@ -35,7 +37,7 @@ const FormAddOption = forwardRef((props,ref)=> {
                 res.data.message,
                 "Ok",
                 [
-                  { text: "OK",  onPress: () => setModalStatus(false) }
+                  { text: "OK",  onPress: () => {setModalStatus(false),props.userEffect(true)} }
                 ],
                 { cancelable: false }
               ); 
@@ -48,7 +50,7 @@ const FormAddOption = forwardRef((props,ref)=> {
     useImperativeHandle(
         ref,
         () => ({         
-                openModale(){
+                openModalSpecialOption(){
                     setModalVisible(true)
                 }
              
@@ -70,9 +72,19 @@ const FormAddOption = forwardRef((props,ref)=> {
                 <Modal.CloseButton />
                 <Modal.Header>เพิ่มตัวเลือก</Modal.Header>
                 <Modal.Body>
-                    เช่น น้ำจิ้ม น้ำซุป ซ้อส
+                    <Text>
+                        เช่น ไข่ดาว ไข่เจียว ชีส พิเศษเพิ่มข้าว
+                    </Text>
                     <Input
                         onChangeText={(textValue)=>{setOption(textValue)}}
+                        mt={4}
+                        ref={initialRef}                       
+                    />
+                    <Text>
+                       ราคา 
+                    </Text>               
+                    <Input
+                        onChangeText={(textValue)=>{setPrice(textValue)}}
                         mt={4}
                         ref={initialRef}                       
                     />
@@ -94,7 +106,7 @@ const FormAddOption = forwardRef((props,ref)=> {
             </Modal>
     )
 })
-export default FormAddOption;
+export default FormAddSpecialOption;
 const styles = StyleSheet.create({
     Input:{
         marginTop: 30,
