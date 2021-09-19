@@ -80,7 +80,7 @@ export default function AnnouncementForm(props) {
     (styles, item) => item && <animated.div style={styles}> 
     <div style={{display:'flex',justifyContent:'center'}}>
       <div style={{width:'1200px',backgroundColor:'cyan',height:'100vh',marginTop:'20px'}}>
-        <div className="header" style={{height:'90px'}}><h1>เปิดประกาศรับสมัคร้านค้า</h1></div>
+        <div className="header" style={{height:'90px'}}><h1>กาศรับสมัคร้านค้า</h1></div>
         <form className={classes.root} method="POST" noValidate autoComplete="off" onSubmit={insertData}>
         <div>
           <TextField

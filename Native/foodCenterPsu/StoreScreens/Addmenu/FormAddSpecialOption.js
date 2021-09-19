@@ -12,6 +12,7 @@ const FormAddSpecialOption = forwardRef((props,ref)=> {
     const {userData} =  useContext(AuthContext);
     const [modalVisible, setModalVisible] = React.useState(false)
     const initialRef = React.useRef(null)
+    const thirRef = React.useRef(null)
     const finalRef = React.useRef(null) 
     const [option, setOption] = React.useState(''); 
     const [price, setPrice] = React.useState(0);  
@@ -86,7 +87,7 @@ const FormAddSpecialOption = forwardRef((props,ref)=> {
                     <Input
                         onChangeText={(textValue)=>{setPrice(textValue)}}
                         mt={4}
-                        ref={initialRef}                       
+                        ref={thirRef}                       
                     />
                 </Modal.Body>
                 <Modal.Footer>

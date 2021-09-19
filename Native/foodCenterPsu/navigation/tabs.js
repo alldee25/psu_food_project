@@ -8,8 +8,8 @@ import { AuthContext } from '../App';
 import OrdersScreen from '../StoreScreens/OrdersScreen';
 import ManageScreen from '../StoreScreens/ManageScreen';
 import { Icon } from '@ui-kitten/components';
-import MenuManage from '../StoreScreens/Addmenu/MenuManage';
-import stackMenuMa from '../StoreScreens/Addmenu/MenuManage';
+import HomeStoreScreen from '../StoreScreens/HomeStoreScreen';
+import stackMenuManageScreen from '../StoreScreens/Addmenu/MenuList';
 
 
 const Tab = createBottomTabNavigator();
@@ -20,10 +20,11 @@ const Tabs = () =>{
     return(
         userType !== 'store' ? (     
         <Tab.Navigator
-        initialRouteName="detial" 
+        initialRouteName="เมนู" 
             screenOptions={{
                 tabBarShowLabel: false,
                 tabBarStyle: {
+                    backgroundColor:'transparent',
                     position:'absolute',
                     bottom: 20,
                     left:20,
@@ -32,6 +33,7 @@ const Tabs = () =>{
                     backgroundColor:'#ffff',
                     borderRadius:15,
                     height:60,
+                    opacity:0.5,
                     ...styles.shadow
                 }
             }}
@@ -100,18 +102,24 @@ const Tabs = () =>{
     
         ):(
             <Tab.Navigator
-            initialRouteName="detial" 
+            sceneContainerStyle={{backgroundColor: '#2F1050'}}
                 screenOptions={{
+                    color:'#2F1050',
+                    headerShown: false,
                     tabBarShowLabel: false,
                     tabBarStyle: {
-                        elevation:0,
-                        backgroundColor:'#ffff',                      
+                        shadowColor:'#DC143C',
+                        backgroundColor:'#2F1050',                                 
+                        shadowOpacity:1,
+                        shadowRadius:20,                                  
+                        backgroundColor:'transparent',
+                        elevation:0,                      
                         height:70,
-                        ...styles.shadow
+                                            
                     }
                 }}
                 >
-                <Tab.Screen name="Home" component={ProfileScreen} 
+                <Tab.Screen name="Home" component={HomeStoreScreen} 
                     options={{
                         tabBarIcon: ({focused}) => (
                             <View style={{                              
@@ -121,7 +129,7 @@ const Tabs = () =>{
                                 backgroundColor: focused ? '#00CED1' : '#ffFFFF',
                                 width:60,
                                 height:40,
-                                borderRadius:80/2,
+                                borderRadius:15,
                                 shadowColor:'#DC143C',                                 
                                 shadowOpacity:1,
                                 shadowRadius:20,                                  
@@ -157,7 +165,7 @@ const Tabs = () =>{
                                         backgroundColor: focused ? '#00CED1' : '#ffFFFF',
                                         width:60,
                                         height:40,
-                                        borderRadius:80/2,
+                                        borderRadius:15,
                                         shadowColor:'#DC143C',                                 
                                         shadowOpacity:1,
                                         shadowRadius:20,                                  
@@ -165,13 +173,12 @@ const Tabs = () =>{
                                         }}>
                                 <Icon name='menu-2-outline'
                                     style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />                             
-                                                             
+                                />                                                                                        
                             </View>
                         )
                     }}    
                 />         
-                <Tab.Screen name="จัดการเมนูอาหาร" component={stackMenuMa}
+                <Tab.Screen name="MenuManage" component={stackMenuManageScreen}
                 options={{
                     headerShown: false,
                     tabBarIcon: ({focused}) => (
@@ -182,7 +189,7 @@ const Tabs = () =>{
                             backgroundColor: focused ? '#00CED1' : '#ffFFFF',
                             width:60,
                             height:40,
-                            borderRadius:80/2,
+                            borderRadius:15,
                             shadowColor:'#DC143C',                                 
                             shadowOpacity:1,
                             shadowRadius:20,                                  
@@ -207,7 +214,7 @@ const Tabs = () =>{
                             backgroundColor: focused ? '#00CED1' : '#ffFFFF',
                             width:60,
                             height:40,
-                            borderRadius:80/2,
+                            borderRadius:15,
                             shadowColor:'#DC143C',                                 
                             shadowOpacity:1,
                             shadowRadius:20,                                  

@@ -124,6 +124,27 @@ adminRouter.get("/get",(req,res)=>{//ดึงข้อมูลประกา�
         }
     }))
 })
+adminRouter.post("/UpdateStatusRegis",(req,res)=>{//ดึงข้อมูลประกาศ
+    const regisStatus = req.body.regisStatus
+    db.query("UPDATE status SET status = ? WHERE status_name = ?",[regisStatus,'regis_status'],((err)=>{
+        if(err){
+            console.log(err);
+            res.send({err:err});
+        }else{
+            res.send({message:'Ok'});
+        }
+    }))
+})
+adminRouter.get("/getRegisStatus",(req,res)=>{//ดึงข้อมูลประกาศ
+    db.query("SELECT status FROM status WHERE status_name = ?",['regis_status'],((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send({err:err});
+        }else{
+            res.send(result);
+        }
+    }))
+})
 
 adminRouter.post("/delete",(req,res)=>{//ลบข้อมูประกาศ
     const id = req.body.id;
@@ -254,6 +275,24 @@ adminRouter.post("/getInterViewDetial",(req,res)=>{//ดึงรายละเ
         }
     }))
 })
+adminRouter.post("/getChectpoint",(req,res)=>{//ดึงรายละเอียดข้อมูลของร้านที่สมัคผ่าน
+    const idCard = req.body.idCard
+    db.query(`SELECT regisstore.status,regisstore.name,regisstore.lastname,regisstore.store_name,applicationcheck_detial.*,board_opinion.*,location.location,type.store_type,store.right_status,store.id AS store_id 
+    FROM regisstore 
+    LEFT JOIN applicationcheck ON applicationcheck.regis_id = regisstore.id 
+    LEFT JOIN applicationcheck_detial ON applicationcheck_detial.applicationcheck_id = applicationcheck.id 
+    LEFT JOIN interview ON interview.regis_id = regisstore.id LEFT JOIN interview_detial ON interview_detial.interview_id = interview.id 
+    LEFT JOIN board_opinion ON board_opinion.interview_id = interview.id 
+    LEFT JOIN location ON board_opinion.location_id = location.id 
+    LEFT JOIN store ON store.regis_id = regisstore.id 
+    LEFT JOIN type ON type.id = board_opinion.type_id WHERE idcard = ?`,[idCard],((err,result)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(result)
+        }
+    }))
+})
 adminRouter.post("/getInterViewDetialForSee",(req,res)=>{//ดึงรายละเอียดข้อมูลของร้านที่สมัคผ่าน
     const id = req.body.id
     db.query(`SELECT regisstore.*,type.store_type AS type,location.location AS location,
@@ -363,6 +402,39 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                 }))                                                        
         }
     }))    
+})
+adminRouter.post("/UpdateRightStatus",(req,res)=>{
+    const idCard = req.body.idCard
+    const rightStatus = req.body.rightStatus
+    if (rightStatus=='ยืนยัน') {
+        db.query(`UPDATE store SET right_status=?`,[rightStatus],((err,result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send({message:'ยืนยันเรียบร้อย'})
+        }
+    }))
+    } else {
+        db.query(`DELETE store.*,store_owner.* 
+        FROM store INNER JOIN store_owner 
+        ON store_owner.store_id = store.id 
+        WHERE store_owner.idcard = ?`,[idCard],((err,result)=>{
+            if(err){
+                console.log(err);
+            }
+            else{
+                db.query(`UPDATE regisstore SET status=?`,['ปฏิเสท'],(err)=>{
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.send({message:'ปฏิเสทเรียบร้อย'})
+                    }
+                })              
+            }
+        })) 
+    }
+                  
 })
 adminRouter.post("/getStoreList",(req,res)=>{
     db.query(`SELECT store.*,store.id AS s_id, store_owner.* 
@@ -628,4 +700,65 @@ adminRouter.post('/getInfoAdmin',(req, res)=>{
                 }
             }))
 })
+adminRouter.post('/getStoreListLeave',(req, res)=>{
+    const ThisYears = req.body.ThisYears
+    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*
+    FROM leave_store
+    INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id 
+    INNER JOIN store ON store.id = store_owner.store_id
+    WHERE YEAR(leave_store.date_write) = ?`,[ThisYears],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/getStoreListLeaveDetial',(req, res)=>{
+    const leaveId = req.body.leaveId
+    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*,location.location 
+    FROM leave_store
+    INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id 
+    INNER JOIN store ON store.id = store_owner.store_id
+    INNER JOIN location ON location.id = store.location_id
+    WHERE leave_store.id = ?`,[leaveId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/InsertStoreListLeaveDetialAdmin1',(req, res)=>{
+
+    const leaveId = req.body.leaveId
+    const admimId = req.body.admimId
+    const attendantComment = req.body.attendantComment
+    const status = req.body.status
+        db.query(`UPDATE leave_store SET admin_id=?, admin_opinion=?, status = ?
+            WHERE id = ?`,[admimId,attendantComment,status,leaveId],((err)=>{
+                if (err) {
+                    console.log(err);
+                    res.send({err:err})
+                } else {
+                    res.send({message:'เรียบร้อย'}) 
+                }
+            }
+        )
+    )
+})
+adminRouter.post('/InsertStoreListLeaveDetialAdmin2',(req, res)=>{
+    const admimId = req.body.admimId
+    const attendantComment1 = req.body.attendantComment1
+    const leaveId = req.body.leaveId
+    db.query('UPDATE leave_store SET admin_id1=?, admin_opinion1=? WHERE id=?',[admimId,attendantComment1,leaveId],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err})
+        } else {
+         res.send({message:'เรียบร้อย'})   
+        }
+    })
+})
+
 module.exports = adminRouter

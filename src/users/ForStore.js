@@ -20,7 +20,7 @@ export default function ForStore() {
         {transitions ((styles, item ) => item && ( <animated.div className="containerForStore" style={styles}>
             <div className='NavButton'>
             <Link to={`/RegisStore`}  style={{textDecoration:'none'}}><div className="itemNavIndex">สมัค</div></Link> 
-             <Link to={`/RegisStore1`}  style={{textDecoration:'none'}}><div className="itemNavIndex">ประกาศผล</div></Link> 
+             <Link to={`/checkPoint`}  style={{textDecoration:'none'}}><div className="itemNavIndex">ประกาศผล</div></Link> 
                
             </div>
         </animated.div> ))}  

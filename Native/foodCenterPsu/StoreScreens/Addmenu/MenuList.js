@@ -1,20 +1,20 @@
-
 import { createStackNavigator } from '@react-navigation/stack'
-import { Icon, MenuItem,Layout,Tab,TabView,Button, Toggle  } from '@ui-kitten/components';
+import { Icon,Tab,TabView, Toggle, Layout } from '@ui-kitten/components';
 import axios from 'axios';
-import React, {  forwardRef, useContext, useEffect, useRef, useState,useImperativeHandle } from 'react'
-import { StyleSheet, SafeAreaView, Image,Animated, Dimensions,View , Modal, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { useIsFocused } from '@react-navigation/core'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { StyleSheet, SafeAreaView, Image,Animated, Dimensions , TouchableOpacity, Alert, ImageBackground } from 'react-native'
 import { AuthContext } from '../../App';
 import ButtonTop from './ButtonAdd';
 import {
+    View,
     Text,
-    Divider,
     Actionsheet,
     useDisclose,
     FlatList,
     Avatar,
     Menu,
-    
+    Divider,
   } from "native-base"
 import FormAddOption from './FormAddOption';
 import FormAddSpecialOption from './FormAddSpecialOption';
@@ -23,7 +23,7 @@ import FormEditMenu from './FormEditMenu';
 
 const stackMenuManage = createStackNavigator()
 
-const stackMenuMa =()=>{
+export default function stackMenuManageScreen(){
     return (
         <stackMenuManage.Navigator>
             <stackMenuManage.Screen name='จัดการเมนูอาหาร' component={MenuManage} />
@@ -32,11 +32,9 @@ const stackMenuMa =()=>{
         </stackMenuManage.Navigator>
     )
 }
-export default stackMenuMa ;
 
-
-const MenuManage = ({navigation})=> {
-
+const  MenuManage =({navigation})=> {
+    const isFocus = useIsFocused()
     const HEIGHT = Dimensions.get('window').height
     const { isOpen, onOpen, onClose } = useDisclose()
     const {userData} = useContext(AuthContext);
@@ -51,9 +49,46 @@ const MenuManage = ({navigation})=> {
     const [shouldOverlapWithTrigger] = React.useState(false)
     const [position, setPosition] = React.useState("auto")
 
+    
+
+
+    const changModalStatus =()=>{
+        onOpen() 
+    }
+
+    const onCheckedChange = (status,id) => {
+        
+        axios.post('http://192.168.1.102:3001/changStatus',{
+            storeId:id,
+            status:status
+        }).then(
+            setEffect(!effect)
+        )
+    };
+
+    const deleteItem =(id)=>{
+        axios.post('http://192.168.1.102:3001/deleteMenu',{
+            menuId:id
+        }).then((res)=>{
+            if (res.data.err) {
+                Alert.alert(
+                    res.data.err,
+                    'ไม่สามารถดำเนินการ'
+                )
+            } else {
+                Alert.alert(
+                'ลบเรียบร้อย',
+                'ลบเรียบร้อย'
+               
+            )
+             setEffect(!effect)
+        }
+        })
+    }
+
     useEffect(()=>{
         let isMounted = true;
-        axios.post('http://192.168.1.102:3001/getFoodMenuList',{
+            axios.post('http://192.168.1.102:3001/getFoodMenuList',{
             storeId:userData.usersData[0].store_id
         }).then((res)=>{
             setFoodDatalist(res.data);
@@ -71,22 +106,9 @@ const MenuManage = ({navigation})=> {
                 setFoodSpecialOptions(res.data)
             })
         )
+        
         return () => { isMounted = false }; 
-    },[effect])
-
-
-    const changModalStatus =()=>{
-        onOpen() 
-    }
-    const onCheckedChange = (status,id) => {
-        axios.post('http://192.168.1.102:3001/changStatus',{
-            storeId:id,
-            status:status
-        }).then(
-            setEffect(!effect)
-        )
-    };
-    
+    },[effect,isFocus])
     return(
         <SafeAreaView>
             <FormAddOption 
@@ -136,8 +158,12 @@ const MenuManage = ({navigation})=> {
             <TabView
                 selectedIndex={selectedIndex}
                 onSelect={index => setSelectedIndex(index)}>
-                <Tab title='รายการอาหาร'>
-                    <Layout style={styles.tabContainer}>
+                <Tab 
+                title='รายการอาหาร'>
+                    <ImageBackground
+                        style={{width:'100%',height:'100%'}}
+                        source={require('../../assets/img/v748-toon-106.jpg')}
+                        >
                         <View style={styles.menuList}>
                             <FlatList 
                                 data={foodDataList}
@@ -150,13 +176,10 @@ const MenuManage = ({navigation})=> {
                                 <View style={{flexDirection:'row',
                                     marginTop:8,
                                     padding:10,
-                                    backgroundColor:'#00FFFF',
-                                    borderRadius:5,
+                                    backgroundColor:'#E4E4F4',
+                                    borderRadius:10,
                                     marginBottom:5,
-                                    shadowColor:'#FF0000',
-                                    shadowOpacity:1,
-                                    shadowRadius:20,                                  
-                                    elevation:7
+                                    
                                 }}>
                                     <Image
                                         style={{width:120,               
@@ -166,24 +189,25 @@ const MenuManage = ({navigation})=> {
                                         }}
                                         source={{uri:`http://192.168.1.102:3001/userUploaded/${item.food_img}`}}                           
                                     />
-                                    <View style={{marginLeft:10}}>
-                                        <Text style={{fontSize:22}}>
+                                    <View style={{marginLeft:10,width:'60%'}}>
+                                        <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
                                             อาหาร: {item.food_name}
                                         </Text> 
-                                        <Text style={{fontSize:18}}>
+                                        <Divider my={2} w='100%' bgColor='#888888' alignSelf='center' />
+                                        <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                             ประเภท: {item.food_type}
                                         </Text> 
-                                        <Text style={{fontSize:18}}>
+                                        <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                             ราคา: {item.food_price} บาท
                                         </Text>                                       
                                         <Toggle status='success' checked={item.food_status == 1} onChange={()=>{onCheckedChange(!item.food_status,item.id)}}>
-                                        <Text>สถานะ</Text>:{item.food_status == 1 ? <Text>มี</Text> :  <Text>หมด</Text>}
+                                            <Text fontFamily='IBMPlexSansThai-Regular'>สถานะ : </Text>{item.food_status == 1 ? (<Text fontFamily='IBMPlexSansThai-Regular'>มี</Text>) :  (<Text fontFamily='IBMPlexSansThai-Regular'>หมด</Text>)}
                                         </Toggle>
                                                                                
                                     </View>
                                     <Menu
                                         style={{marginRight:10}}
-                                        shouldOverlapWithTrigger={shouldOverlapWithTrigger} // @ts-ignore
+                                        shouldOverlapWithTrigger={shouldOverlapWithTrigger} 
                                         placement={position == "auto" ? undefined : position}
                                         trigger={(triggerProps) => {
                                         return (
@@ -204,16 +228,22 @@ const MenuManage = ({navigation})=> {
                                                     foodprice:String(item.food_price) 
                                                 })}
                                             >แก้ไข</Menu.Item>
-                                            <Menu.Item>ลบ</Menu.Item>
+                                            <Menu.Item
+                                                onPress={()=> deleteItem(item.id)}
+                                            >ลบ</Menu.Item>
                                         </Menu>                                                            
                                 </View>                                
                                }
                             />        
                         </View>
-                    </Layout>
+                        </ImageBackground>
+                        
                 </Tab>
                 <Tab title='พิเศษ'>
-                    <Layout style={styles.tabContainer}>
+                <ImageBackground
+                        style={{width:'100%',height:'100%'}}
+                        source={require('../../assets/img/v748-toon-106.jpg')}
+                        >
                     <View style={styles.menuList}>
                             <FlatList 
                                 data={foodSpecialOptions}
@@ -222,7 +252,7 @@ const MenuManage = ({navigation})=> {
                                 padding:10
                                 }}
                                 renderItem={({item,index})=>
-                                <View style={{flexDirection:'row',padding:10,backgroundColor:'#00FFFF',borderRadius:5,marginBottom:5}}>
+                                <View style={{flexDirection:'row',padding:10,backgroundColor:'#E4E4F4',borderRadius:5,marginBottom:5}}>
                                    <Avatar
                                         source={{
                                         uri: "https://pbs.twimg.com/profile_images/1188747996843761665/8CiUdKZW_400x400.jpg",
@@ -242,10 +272,13 @@ const MenuManage = ({navigation})=> {
                                 }
                             />        
                         </View>              
-                    </Layout>
+                    </ImageBackground>
                 </Tab>
                 <Tab title='ตัวเลือก'>
-                    <Layout style={styles.tabContainer}>
+                <ImageBackground
+                        style={{width:'100%',height:'100%'}}
+                        source={require('../../assets/img/v748-toon-106.jpg')}
+                        >
                     <View style={styles.menuList}>
                             <FlatList 
                                 data={foodOptions}
@@ -269,14 +302,13 @@ const MenuManage = ({navigation})=> {
                                 }
                             />        
                         </View>
-                    </Layout>
+                    </ImageBackground>
                 </Tab>      
             </TabView> 
-        </SafeAreaView>
-        
-        
+        </SafeAreaView> 
     )
 }
+
 const styles = StyleSheet.create({
     container:{
         display:'flex',
@@ -288,7 +320,7 @@ const styles = StyleSheet.create({
     },
     menuList:{
         width:'100%',
-        height:'100%'
+        height:'96.6%'
     },
     close:{
         flex:1,

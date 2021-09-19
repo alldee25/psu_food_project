@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route,Link, Switch,useRouteMatch,useLocation, 
 //--------------------------------------This is component
 import Navbar from './Navbar/Navbar'
 import RegisStore from './RegisStore'
-import RegisStore1 from './Announcement of results'
+import CheckPoint from './Announcement of results'
 import Login from './login'
 import IndexAnnoun from './indexAnnoun'
 import ForStore from './ForStore'
@@ -27,7 +27,7 @@ export default function IndexPage() {
                     <Navbar pathname={location.pathname}/>  
                     <Route     exact      path={`/ForStore`}  component={ForStore} />                         
                     <Route     exact      path={`/RegisStore`}  component={RegisStore} /> 
-                    <Route     exact      path={`/RegisStore1`} component={RegisStore1} />
+                    <Route     exact      path={`/CheckPoint`} component={CheckPoint} />
                     <Route     exact      path={`/login`}       component={Login} />
                     <IndexAnnoun />          
                 </div>

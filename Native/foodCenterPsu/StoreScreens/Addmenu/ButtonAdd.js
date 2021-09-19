@@ -4,10 +4,9 @@ import { Animated, Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View
 
 const ButtonTop = forwardRef((props,ref)=> {
     const [open,setOpen] = useState(0)
-    const animation = useRef(new Animated.Value(0)).current;
     
     const toggleMenu =()=> {
-        console.log('is open');
+      
         setOpen(!open)
         ref();
     } 
@@ -15,7 +14,8 @@ const ButtonTop = forwardRef((props,ref)=> {
     
         <View style={styles.container}>
             <SafeAreaView>
-                <TouchableOpacity onPress={toggleMenu}>
+                <TouchableOpacity              
+                     onPress={toggleMenu}>
                     <Animated.View >
                         <Icon name='plus-outline' fill='darkgreen' style={styles.icon} />    
                     </Animated.View>   

@@ -51,7 +51,7 @@ const form = new FormData();
     form.append('foodType',values.foodType)
     form.append('foodPrice',values.foodPrice)
       if (image !== null ) {
-        console.log(1);
+    
         form.append('file', {
             name: image.path,
             type: image.mime,
@@ -99,7 +99,6 @@ const form = new FormData();
             
     }) 
     } else {
-        console.log(2);
         axios.post('http://192.168.1.102:3001/udateWithoutFoodMenu',form).then((res)=>{
             if (res.data.err) {
                 toast.show({
@@ -141,8 +140,13 @@ const form = new FormData();
               
   }
 const specialOptionDisplayValues = multiSelectedIndex.map(index => {
-  const groupTitle = Object.keys(optionDataList)[index.row];
+  const groupTitle = Object.keys(specialOptionDataList)[index.row];
   return specialOptionDataList[groupTitle].special_option_name;
+ 
+});
+const specialOptionyValues = multiSelectedIndex.map(index => {
+  const groupTitle = Object.keys(specialOptionDataList)[index.row];
+  return specialOptionDataList[groupTitle];
  
 });
 const freebiesDisplayValues = freebiesmultiSelectedIndex.map(index => {
@@ -150,11 +154,7 @@ const freebiesDisplayValues = freebiesmultiSelectedIndex.map(index => {
   return optionDataList[groupTitle].option_name;
  
 });
-const specialOptionyValues = multiSelectedIndex.map(index => {
-  const groupTitle = Object.keys(optionDataList)[index.row];
-  return specialOptionDataList[groupTitle];
- 
-});
+
 const freebiesValues = freebiesmultiSelectedIndex.map(index => {
   const groupTitle = Object.keys(optionDataList)[index.row];
   return optionDataList[groupTitle];

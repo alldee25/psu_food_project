@@ -9,6 +9,7 @@ const path = require('path')
 let fs = require('fs');
 const multer = require('multer')
 
+
 appRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -133,16 +134,19 @@ appRouter.post('/AddFoodMenu', upload.single('file'), (req, res)=>{
     if (req.file == undefined) {
         res.send({err:'Error: No File Selected!'})
     } else {
+        console.log(req.body.id);
         const image =  req.file.filename
+        const id =  req.body.id
         const store_id = req.body.storeId
         const foodName = req.body.foodName
         const foodType = req.body.foodType
         const foodPrice = req.body.foodPrice
-        db.query('INSERT INTO food_menu (store_id,food_name,food_type,food_price,food_img) VALUES(?,?,?,?,?)',[store_id,foodName,foodType,foodPrice,image],async(err)=>{
+        db.query('INSERT INTO food_menu (id,store_id,food_name,food_type,food_price,food_img) VALUES(?,?,?,?,?,?)',[id,store_id,foodName,foodType,foodPrice,image],async(err)=>{
             if (err) {
                 console.log(err);
                 res.send({err:err});
             } else {
+
                 res.send({message:"good",})
                 
             }
@@ -151,14 +155,13 @@ appRouter.post('/AddFoodMenu', upload.single('file'), (req, res)=>{
        
 })
 appRouter.post('/addMenu_Mix',async(req,res)=>{
+    console.log(req.body.id);
+    const id =  req.body.id
     const specialOptionDisplayValues = req.body.specialOptionDisplayValues
     const storefreebiesDisplayValues = req.body.freebiesDisplayValues
-    const store_id = req.body.storeId
-    const foodName = req.body.foodName
-    const foodPrice = req.body.foodPrice
           await  specialOptionDisplayValues.forEach(element => {
                db.query(`INSERT INTO food_and_option_mix (food_id,option_id) 
-               VALUES((SELECT id FROM food_menu WHERE store_id = ? AND food_name = ? AND food_price = ?),?)`,[store_id,foodName,foodPrice,element.id],(err)=>{
+               VALUES(?,?)`,[id,element.id],(err)=>{
                    if (err) {
                        console.log(err);
                    }
@@ -167,7 +170,7 @@ appRouter.post('/addMenu_Mix',async(req,res)=>{
         )
        await storefreebiesDisplayValues.forEach(element => {
             db.query(`INSERT INTO food_and_special_option_mix (food_id,special_option_id) 
-            VALUES((SELECT id FROM food_menu WHERE store_id = ? AND food_name = ? AND food_price = ?),?)`,[store_id,foodName,foodPrice,element.id],(err)=>{
+            VALUES(?,?)`,[id,element.id],(err)=>{
                 if (err) {
                     console.log(err);
                 }
@@ -253,7 +256,120 @@ appRouter.post('/udateWithFoodMenu',(req,res)=>{
             console.log(err);
             res.send({err:err});
         } else {
-            res.send({message:'เปลี่ยนเรียบร้อย'});
+            res.send({message:'เพิ่มเรียบร้อย'});
+        }
+    })
+})
+
+appRouter.post('/getLeaveList',(req,res)=>{
+    const user_id = req.body.userId
+    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*
+    FROM leave_store 
+    WHERE leave_store.store_owner_id = ?`,[user_id],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);
+        }
+    })
+})
+appRouter.post('/InsertLeave',(req,res)=>{
+    const ownerId = req.body.ownerId
+    const title = req.body.title
+    const detial = req.body.detial
+    const dateFrom = req.body.dateFrom
+    const dateTo = req.body.dateTo
+    const dateWrite = req.body.dateWrite
+    const status = req.body.status
+    db.query(`INSERT INTO leave_store(store_owner_id,title_leave,datial,frome_date,to_date,date_write,status) VALUES(?,?,?,?,?,?,?)`,[ownerId,title,detial,dateFrom,dateTo,dateWrite,status],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+
+            res.send({message:'เพิ่มเรียบร้อย'});   
+        }
+    })
+})
+appRouter.post('/deleteLeaveList',(req,res)=>{
+    const leaveId = req.body.leaveId
+    db.query(`DELETE FROM leave_store WHERE id = ?`,[leaveId],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send({message:'ลบเรียบร้อย'});
+        }
+    }
+    )
+}
+)
+appRouter.post('/deleteMenu',(req,res)=>{
+    const menuId = req.body.menuId
+    db.query(`DELETE FROM food_menu WHERE id = ?`,[menuId],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            db.query('DELETE FROM food_and_special_option_mix WHERE food_id=?',[menuId],(err)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                  db.query('DELETE FROM food_and_option_mix WHERE food_id=?',[menuId],async(err)=>{
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            res.send({message:'ลบเรียบร้อย'});
+                        }
+                        
+                    })
+                }
+            }
+            ) 
+        }
+    }
+    )
+}
+)
+appRouter.post('/getCleaneseLevelList',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT cleanliness_level.*, SUM(cleanliness_level_detial.point) AS point FROM cleanliness_level
+    INNER JOIN cleanliness_level_detial ON cleanliness_level_detial.cleanliness_level_id = cleanliness_level.id WHERE store_id = ?
+    GROUP BY (cleanliness_level.id)`,[storeId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getCleaneseLevelListDetial',(req,res)=>{
+    const CleansId = req.body.Cleaneseid
+    db.query(`SELECT cleanliness_level_detial.point AS point,cleanliness_topic.detial AS topic, cleanliness_topic.id AS title
+    FROM cleanliness_level_detial 
+    INNER JOIN cleanliness_topic ON cleanliness_level_detial.topic_id = cleanliness_topic.id 
+    WHERE cleanliness_level_detial.cleanliness_level_id = ?`,[CleansId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/ComplaintList',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT * FROM complaint WHERE store_id = ?`,[storeId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+
+            res.send(results);   
         }
     })
 })

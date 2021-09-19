@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import axios from "axios";
 import swal from 'sweetalert';
 import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
-import {BrowserRouter as Router,Link,Route,useParams,useRouteMatch,useHistory,} from "react-router-dom";
+import {BrowserRouter as Router,Route,useParams,useRouteMatch,useHistory,} from "react-router-dom";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,6 +22,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { AuthContext } from '../../App';
 import AnnouncementForm from "./AnnouncementForm";
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -55,12 +61,81 @@ const StyledTableCell = withStyles((theme) => ({
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
+  const IOSSwitch = withStyles((theme) => ({
+    root: {
+      width: 42,
+      height: 26,
+      padding: 0,
+      margin: theme.spacing(1),
+    },
+    switchBase: {
+      padding: 1,
+      '&$checked': {
+        transform: 'translateX(16px)',
+        color: theme.palette.common.white,
+        '& + $track': {
+          backgroundColor: '#52d869',
+          opacity: 1,
+          border: 'none',
+        },
+      },
+      '&$focusVisible $thumb': {
+        color: '#52d869',
+        border: '6px solid #fff',
+      },
+    },
+    thumb: {
+      width: 24,
+      height: 24,
+    },
+    track: {
+      borderRadius: 26 / 2,
+      border: `1px solid ${theme.palette.grey[400]}`,
+      backgroundColor: theme.palette.grey[50],
+      opacity: 1,
+      transition: theme.transitions.create(['background-color', 'border']),
+    },
+    checked: {},
+    focusVisible: {},
+  }))(({ classes, ...props }) => {
+    return (
+      <Switch
+        focusVisibleClassName={classes.focusVisible}
+        disableRipple
+        classes={{
+          root: classes.root,
+          switchBase: classes.switchBase,
+          thumb: classes.thumb,
+          track: classes.track,
+          checked: classes.checked,
+        }}
+        {...props}
+      />
+    );
+  });
 export default function DataListAnnounce() {
+  const [checked, setChecked] = React.useState(true);
     const history = useHistory();
     const [dataList, setDataList] = useState([]);
     const { url, path } = useRouteMatch();
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [regisStatus,setRegisStatus] = React.useState(null);
+    const [displayStatus,setDisplayStatus] = React.useState(null);
+    const [openDialog, setOpenDilog] = React.useState(false);
+
+    const handleClickOpenDialog = () => {
+      setOpenDilog(true);
+    };
+  
+    const handleCloseDialog = () => {
+      setOpenDilog(false);
+    };
+    
+    const handleChangeRegisStatus = () => {
+      
+      setRegisStatus(!regisStatus)
+    };
 
     const handleClickOpen = (e) => {
       setOpen(true);
@@ -69,13 +144,22 @@ export default function DataListAnnounce() {
     const handleClose = () => {
       setOpen(false);
     };
-
-  useEffect(() => {
-   axios.get("http://localhost:3001/get").then( res => {
-        const dataList = res.data;
-        setDataList(dataList)
+    const handleSave = () => {
+      axios.post('http://localhost:3001/UpdateStatusRegis',{
+        regisStatus:regisStatus
+      }).then(res =>{
+        if (res.data.err) {
+        } else {
+          swal('บันทึกเรียบร้อย','You clicked the button!',"success").then(
+          history.push("/HomeStore"),
+          history.go(),
+          setOpenDilog(false)
+          ) 
+        }
       })
-  },[]);
+    };
+
+  
 
   const DeleteItem =(id)=>{
     swal({
@@ -98,20 +182,84 @@ export default function DataListAnnounce() {
       } else {
         swal("Your imaginary file is safe!");
       }
-    })
+      })
   }
 
-    
+    useEffect(() => {
+   axios.get("http://localhost:3001/get").then( res => {
+        const dataList = res.data;
+        setDataList(dataList)
+      }).then(
+        axios.get("http://localhost:3001/getRegisStatus",{
+        }).then( res => {
+          console.log(res.data);
+        const [{status}] = res.data; 
+        if (status==1) {
+          setRegisStatus(true)
+          setDisplayStatus('เปิด')
+        } else {
+          setRegisStatus(false)
+          setDisplayStatus('ปิด')
+        }       
+        
+      })
+      )
+  },[]);
+
     return (
         <div className="subcon">
              <div className="header" style={{display:"flex",alignItems:"center",position:"relative" }}>
                 <h1>
                  ข้อมูลการเปิดรับสมัค
-                </h1>            
-                  <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"10px",width:"100px",borderRadius:"10px",fontSize: "1rem",
+                </h1>
+                <h3 style={{marginLeft:'20px'}}>
+                 สถาณะเปิดรับสมัคร : {displayStatus}
+                </h3> 
+                <Button variant="outlined" color="primary" style={{position:'absolute',right:'150px',bottom:"10px",borderRadius:"10px",fontSize: "1rem",
+                    fontWeight: "bold"}} onClick={handleClickOpenDialog}>
+                เปลี่ยนสถานะการสมัคร
+                </Button>
+                <Dialog
+                  open={openDialog}
+                  onClose={handleCloseDialog}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">{"ต้องการเปลี่ยนสถานะการสมัคร ?"}</DialogTitle>
+                  <div>
+                  <DialogContent>
+                    <div id="alert-dialog-description" >
+                      <div  style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                        <span style={{marginBottom:'10px'}}>
+                          ปิดการสมัคร
+                        </span>
+                        <span>
+                          <FormControlLabel
+                          style={{width:'90px',display:'flex',justifyContent:'center',marginLeft:'5px'}}
+                          control={<IOSSwitch checked={regisStatus} onChange={() =>handleChangeRegisStatus()}  value={regisStatus} />}
+                        />
+                        </span>                  
+                        <span style={{marginBottom:'10px'}}>
+                          เปิดการสมัคร
+                        </span> 
+                      </div>                  
+                       สามารถเปลี่ยนสถานะการสมัครโดยการคลิกทีุ่ป๋ม                    
+                    </div>
+                  </DialogContent>
+                  </div>
+                  <DialogActions>
+                    <Button onClick={handleSave} color="primary">
+                      บันทึก
+                    </Button>
+                    <Button onClick={handleCloseDialog} color="primary" autoFocus>
+                      ยกเลิก
+                    </Button>
+                  </DialogActions>
+                </Dialog>     
+                  <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"10px",width:"130px",borderRadius:"10px",fontSize: "1rem",
                     fontWeight: "bold",
                     color:"white"}} variant="contained" color="primary" >
-                      เพิ่ม
+                      เพิ่มประกาศ
                   </Button>
               </div>
             {dataList == '' ? 

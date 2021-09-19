@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,6 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
 import { AuthContext } from '../../App';
+import LeaveForm from './LeaveForm';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -51,13 +52,13 @@ const StyledTableCell = withStyles((theme) => ({
 
 function LeaveList() {
 
-    const [storeDataList,setStoreDataList] = useState([])
+    const {auth,setIsload} = useContext(AuthContext)
+    const [storeLeaveDataList,setLeaveStoreDataList] = useState([])
     var forYear = new Date();
     var ThisYears = forYear.getFullYear()
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [id, setIid] = useState()
-    const [idRegis,setIdRegis] = useState();
 
     const handleClickOpen = (e) => {
         setIid(e)
@@ -69,10 +70,10 @@ function LeaveList() {
       };
 
     useEffect(()=>{
-        axios.post("http://localhost:3001/getStoreList",{
+        axios.post("http://localhost:3001/getStoreListLeave",{
             ThisYears:ThisYears
         }).then((res)=>{
-                setStoreDataList(res.data);             
+                setLeaveStoreDataList(res.data);             
             }
         )
     },[])
@@ -81,7 +82,7 @@ function LeaveList() {
         <div className="subcon">
            <div className="header">
                 <h1>
-                ข้อมูลร้านค้า
+                ข้อมูลการลา
                 </h1>
             </div>
             <div>
@@ -90,18 +91,20 @@ function LeaveList() {
                     <TableHead>
                     <TableRow>
                         <StyledTableCell>หมายเลขร้าน</StyledTableCell>
-                        <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
-                        <StyledTableCell align="left">ชื่อเจ้าของร้าน</StyledTableCell>
-                        <StyledTableCell align="center">รายละเอียดร้าน</StyledTableCell>  
+                        <StyledTableCell align="center">ชื่อร้าน</StyledTableCell>
+                        <StyledTableCell align="center">ชื่อเจ้าของร้าน</StyledTableCell>
+                        <StyledTableCell align="center">สถาณะ</StyledTableCell>  
+                        <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {storeDataList.map((dataList) => (
-                        <StyledTableRow key={dataList.id}>
-                        <StyledTableCell  align="left" width="100px">{dataList.s_id}</StyledTableCell>
-                        <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="left" width="100px">{dataList.name}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                    {storeLeaveDataList.map((dataList,index) => (
+                        <StyledTableRow key={index}>
+                        <StyledTableCell  align="left" width="100px">{dataList.store_id}</StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.store_name}</StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.status}</StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button variant="contained" disabled={(auth.usersData[0].id == dataList.admin_id) || (auth.usersData[0].id == dataList.admin_id1)} onClick={(e)=>handleClickOpen(dataList.leaveStoreId)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>
@@ -115,12 +118,12 @@ function LeaveList() {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-              รายละเอียดข้อมูลร้านค้า
+              รายละเอียดการลา
             </Typography>
           </Toolbar>
         </AppBar>
         <div style={{marginTop:'50px'}}>
-          <StoreInfornationDetial active={id} />
+          <LeaveForm active={id} open={open} />
           </div> 
       </Dialog> 
         </div>

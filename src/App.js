@@ -30,6 +30,7 @@ export default function App() {
   const  [isload, setIsload] = useState(true)
   
 useEffect(()=>{
+  let isMounted = (
   axios.get("http://localhost:3001/getSession").then((res)=>{
       if(res.data.logedIn === true){
           setAuth(res.data);
@@ -45,6 +46,10 @@ useEffect(()=>{
     swal('Somthing Wrong About Internet','Click','warning')
     setIsload(false)
   })
+  )
+  return function cleanup() {
+    isMounted = false
+  };
 },[])
 
  const transitionsAdmin = useTransition(userType === 'Admin',{

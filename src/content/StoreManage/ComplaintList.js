@@ -94,7 +94,8 @@ function ComplaintList() {
     useEffect(()=>{
         axios.get("http://localhost:3001/getStoreOwnerList",{
         }).then((res)=>{
-            SetstoreOwnerName(res.data);             
+            SetstoreOwnerName(res.data);
+            console.log(res.data);             
             }
         )
     },[])
@@ -122,7 +123,7 @@ function ComplaintList() {
             
             <div style={{marginTop:'20px'}}>
                 {complaintList == '' ? <div style={{position:'absolute',top:'50%',left:'40%'}}>
-                <h1>ไม้พบข้อร้องเรียน</h1>
+                <h1>ไม่พบข้อร้องเรียน</h1>
             </div> : <TableContainer component={Paper} >
                     <Table className={classes.table} aria-label="customized table">
                         <TableHead>

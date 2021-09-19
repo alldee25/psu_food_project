@@ -6,21 +6,29 @@ import { Alert, Image, TouchableOpacity, ScrollView, StyleSheet, Text, Dimension
 import { Formik } from 'formik';
 import ImagePicker from 'react-native-image-crop-picker';
 import { AuthContext } from '../../App';
+import { v4 as uuidv4 } from 'uuid';
 import { Divider,
     Actionsheet,
     useDisclose ,
-    toast
+    useToast,
   } from 'native-base';
 
 const person = (props) => (
     <Icon {...props} name='person'/>
   );
 
-
+const dataType = [
+  'ตามสั่ง',
+  'ข้าวแกง',
+  'อาหารกินเล่น',
+  'ก๋วยเตี๋ยว',
+  'น้ำ',
+];
 export default function FormAddMenu({navigation}) {
 
   const {userData} =  useContext(AuthContext);
   const HEIGHT = Dimensions.get('window').height
+  const [selectedIndex, setSelectedIndex] = React.useState([]);
   const [optionDataList,setOptionDatalist] = useState([]);
   const [specialOptionDataList,setSpecialOptionDataList] = useState([]);
   const [process, setProcess] = React.useState(false); 
@@ -28,9 +36,10 @@ export default function FormAddMenu({navigation}) {
   const [freebiesmultiSelectedIndex, setFreebiesmultiSelectedIndex] = React.useState([]);
   const [visible, setVisible] = React.useState(false);
   const [imagePreview, setImagePreview] = React.useState(null);
-  const [image, setImage] = React.useState([]);
+  const [image, setImage] = React.useState(null);
   const { isOpen, onOpen, onClose } = useDisclose()
   const form = new FormData();
+  const toast = useToast() 
 
     const selectImage =()=> {
       ImagePicker.openPicker({
@@ -40,7 +49,15 @@ export default function FormAddMenu({navigation}) {
       }).then(image => {
         setImage(image)
         setImagePreview(image.path)
-      });
+      })
+      .catch(error =>{
+        console.log(error);
+        toast.show({
+          title: "Image unselected",
+          status: "warning",
+          description: "Please enter a valid email address",
+        })
+      })
       onClose()
   }
     const openCamera =()=> {
@@ -56,14 +73,17 @@ export default function FormAddMenu({navigation}) {
         }).then(onClose) */
     }
     const addMenu = (values) =>{ 
+        const id = uuidv4()
       form.append('file', {
         name: image.path,
         type: image.mime,
         uri: image.path,
       });
+      
       form.append('storeId',userData.usersData[0].store_id)
+      form.append('id',id)
       form.append('foodName',values.foodName)
-      form.append('foodType',values.foodType)
+      form.append('foodType',foodType)
       form.append('foodPrice',values.foodPrice)
         axios.post('http://192.168.1.102:3001/AddFoodMenu',form).then((res)=>{
             if (res.data.err) {
@@ -74,6 +94,7 @@ export default function FormAddMenu({navigation}) {
               })
             } else {
               axios.post('http://192.168.1.102:3001/addMenu_Mix',{
+                id:id,
                 specialOptionDisplayValues:specialOptionyValues,
                 freebiesDisplayValues:freebiesValues,
                 storeId:userData.usersData[0].store_id,
@@ -101,14 +122,23 @@ export default function FormAddMenu({navigation}) {
                   );
             }            
             })               
-            }
-          
-    }
-  )          
-}
+        }  
+      }
+    ).catch(function(error) {
+      console.log(error);
+        throw error;
+      });  
+      
+  }
+ 
   const specialOptionDisplayValues = multiSelectedIndex.map(index => {
-    const groupTitle = Object.keys(optionDataList)[index.row];
+    const groupTitle = Object.keys(specialOptionDataList)[index.row];
     return specialOptionDataList[groupTitle].special_option_name;
+   
+  });
+  const specialOptionyValues = multiSelectedIndex.map(index => {
+    const groupTitle = Object.keys(specialOptionDataList)[index.row];
+    return specialOptionDataList[groupTitle];
    
   });
   const freebiesDisplayValues = freebiesmultiSelectedIndex.map(index => {
@@ -116,26 +146,25 @@ export default function FormAddMenu({navigation}) {
     return optionDataList[groupTitle].option_name;
    
   });
-  const specialOptionyValues = multiSelectedIndex.map(index => {
-    const groupTitle = Object.keys(optionDataList)[index.row];
-    return specialOptionDataList[groupTitle];
-   
-  });
+  
   const freebiesValues = freebiesmultiSelectedIndex.map(index => {
     const groupTitle = Object.keys(optionDataList)[index.row];
     return optionDataList[groupTitle];
    
   });
-
+  
+  const foodType = dataType[selectedIndex.row];
 
   
-    
-    const renderOption = (title) => (
-        <SelectItem key={specialOptionDataList[title].id} title={specialOptionDataList[title].special_option_name}/>
-      );
-    const renderOptionfreebies = (title) => (
-        <SelectItem key={optionDataList[title].id} title={optionDataList[title].option_name}/>
-      );
+  const renderType = (title) => (
+    <SelectItem key={title} title={title}/>
+  ); 
+  const renderOption = (title) => (
+      <SelectItem key={specialOptionDataList[title].id} title={specialOptionDataList[title].special_option_name}/>
+    );
+  const renderOptionfreebies = (title) => (
+      <SelectItem key={optionDataList[title].id} title={optionDataList[title].option_name}/>
+    );
 
     useEffect(()=>{
       let isMounted = true; 
@@ -143,13 +172,14 @@ export default function FormAddMenu({navigation}) {
             storeId:userData.usersData[0].store_id
         }).then((res)=>{
             setOptionDatalist(res.data)
-            console.log(res.data);
+            
+           
         }).then(
             axios.post('http://192.168.1.102:3001/getSpecialOption',{
                 storeId:userData.usersData[0].store_id
             }).then((res)=>{
                 setSpecialOptionDataList(res.data)
-                console.log(res.data);         
+                       
          }))
          return () => { isMounted = false }; 
     },[])
@@ -182,7 +212,7 @@ export default function FormAddMenu({navigation}) {
                 <ScrollView style={{width:'100%',height:'100%'}}>                                   
                 <Formik 
                     onSubmit={(values) => addMenu(values)}
-                    initialValues={{foodName:'',foodType:'',foodPrice:''}}
+                    initialValues={{foodName:'',foodPrice:''}}
                 >
                 {({ handleChange, handleSubmit, values }) =>(
                     <View style={{width:'100%',height:'50%',display:'flex',alignItems:'center'}}>
@@ -219,15 +249,15 @@ export default function FormAddMenu({navigation}) {
                         value={values.foodName}
                         type="text"                                      
                         onChangeText={handleChange('foodName')}                      
-                    />                   
-                    <Input                    
-                        status='primary'
-                        placeholder='ประเภทเมนู'
-                        style={styles.Input}
-                        value={values.foodType}
-                        type="text"
-                        onChangeText={handleChange('foodType')}                      
                     />
+                    <Select
+                        style={styles.Input}
+                        placeholder='ประเภทเมนู'
+                        value={foodType}
+                        selectedIndex={selectedIndex}
+                        onSelect={index => setSelectedIndex(index)}>
+                        {dataType.map(renderType)}
+                    </Select>                                      
                     <Input                    
                         status='primary'
                         placeholder='ราคา'

@@ -65,6 +65,7 @@ export default function Navbar(props) {
         anchorRef.current.focus();
       }
       prevOpen.current = open; 
+
     }, [open]);
 
     return ( 
@@ -95,7 +96,7 @@ export default function Navbar(props) {
                       </MenuItem>
                     </Link>
                   <hr style={{width:'90%',position:'absolute',top:'30px',right:'0'}} />
-                    <Link to={`/RegisStore1`}  style={{textDecoration:'none',color:'#000024'}}>
+                    <Link to={`/CheckPoint`}  style={{textDecoration:'none',color:'#000024'}}>
                       <MenuItem onClick={handleClose}>
                         ประกาศผล
                       </MenuItem>

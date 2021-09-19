@@ -2,12 +2,15 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Icon, MenuItem,Layout,Tab,TabView } from '@ui-kitten/components';
 import axios from 'axios';
 import React, { createRef, useContext, useEffect, useRef, useState } from 'react'
-import { StyleSheet, View, SafeAreaView, Text, FlatList, Image, StatusBar,Animated,TouchableWithoutFeedback, Dimensions, TouchableOpacity, Modal, ImageBackground } from 'react-native'
+import { StyleSheet, SafeAreaView, Text, ImageBackground } from 'react-native'
 import { AuthContext } from '../App';
-import FormAddMenu from './Addmenu/FormAddMenu';
-import FormAddOption from './Addmenu/FormAddOption';
 import imagBack from '../assets/img/v748-toon-106.jpg'
-import FormEditMenu from './Addmenu/FormEditMenu';
+import CleaneseLevelDetial from './CleaneseLevelDetial';
+import CleaneseLevelList from './CleaneseLevelList';
+import ComplaintList from './ComplaintList';
+import ComplaintListDetial from './ComplaintListDetial';
+import LeaveScreen from './LeaveAddScreen';
+import LeaveListScreen from './LeaveListScreen';
 
 const ForwardIcon = (props) => (
     <Icon {...props} name='arrow-ios-forward'/>
@@ -18,11 +21,17 @@ export default function ManageScreen() {
     const stackManage = createStackNavigator();
     return (
         <stackManage.Navigator>
-            <stackManage.Screen name='menuManage' component={stackMenu} />           
+            <stackManage.Screen name='จัดการ' component={stackScreen} />           
+            <stackManage.Screen name='รายการลา' component={LeaveListScreen} />                    
+            <stackManage.Screen name='ระดับคุณภาพความสะอาด' component={CleaneseLevelList} />           
+            <stackManage.Screen name='รายละเอียดระดับคุณภาพความสะอาด' component={CleaneseLevelDetial} />           
+            <stackManage.Screen name='การแจ้งเตือนความผิด' component={ComplaintList} />           
+            <stackManage.Screen name='รายละเอียดการแจ้งเตือน' component={ComplaintListDetial} />           
+            <stackManage.Screen name='เพิ่มลาพักจำหน่ายอาหาร' component={LeaveScreen} />           
         </stackManage.Navigator>
     )
 }
-const stackMenu =({navigation})=>{
+const stackScreen =({navigation})=>{
     return (
         <ImageBackground
             resizeMode='cover'
@@ -30,30 +39,39 @@ const stackMenu =({navigation})=>{
             source={imagBack}
         >
             <SafeAreaView style={styles.container}> 
-                <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='การชำระค่าเช่า' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='จัดการการลา' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='ประวัติการขาย' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ลาพักจำหน่ายอาหาร' onPress={()=> navigation.navigate('รายการลา')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} />           
             </SafeAreaView>
         </ImageBackground>
 
     )
 }
 
-
 const styles = StyleSheet.create({
     container:{
         display:'flex',
-        alignItems:"flex-start",
+        alignItems:"flex-end",
         marginTop:10
     },
     MenuItem:{
-        marginTop:5
+        fontWeight:'bold',
+        fontSize:21,
+        marginTop:5,
+        borderRadius:10,
+        width:'97%',
+        height:90,
+        shadowColor:'#DC143C',                                 
+        shadowOpacity:1,
+        elevation:7,
+        shadowRadius:20,
     },
     menuList:{
         width:'100%',
-        height:'100%'
+        height:'100%',
+        
     },
     containerButton:{
         alignItems:'center',
