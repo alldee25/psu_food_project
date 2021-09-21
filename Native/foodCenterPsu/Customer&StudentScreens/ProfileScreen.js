@@ -4,7 +4,7 @@ import { Button, Icon, MenuItem } from '@ui-kitten/components';
 import { AuthContext } from '../App';
 import axios from 'axios';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import MenuManage from '../StoreScreens/Addmenu/MenuList';
+import MenuManage from '../StoreScreens/Menumanage/MenuList';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Drawer = createDrawerNavigator();

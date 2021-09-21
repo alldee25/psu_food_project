@@ -12,6 +12,7 @@ import { Divider,
     useDisclose ,
     useToast,
   } from 'native-base';
+import { addMenuValidate } from '../../Validation';
 
 const person = (props) => (
     <Icon {...props} name='person'/>
@@ -34,13 +35,13 @@ export default function FormAddMenu({navigation}) {
   const [process, setProcess] = React.useState(false); 
   const [multiSelectedIndex, setMultiSelectedIndex] = React.useState([]);
   const [freebiesmultiSelectedIndex, setFreebiesmultiSelectedIndex] = React.useState([]);
-  const [visible, setVisible] = React.useState(false);
   const [imagePreview, setImagePreview] = React.useState(null);
   const [image, setImage] = React.useState(null);
   const { isOpen, onOpen, onClose } = useDisclose()
   const form = new FormData();
   const toast = useToast() 
 
+  
     const selectImage =()=> {
       ImagePicker.openPicker({
         width: 400,
@@ -61,9 +62,6 @@ export default function FormAddMenu({navigation}) {
       onClose()
   }
     const openCamera =()=> {
-
-      
-
       /* ImagePicker.openCamera({
           width: 400,
           height: 400,
@@ -72,7 +70,18 @@ export default function FormAddMenu({navigation}) {
           console.log(images);
         }).then(onClose) */
     }
-    const addMenu = (values) =>{ 
+    const addMenu = async(values) =>{ 
+
+      let formAddmenu = {
+    image:image,
+    foodName:values.foodName,
+    foodType:foodType,
+    foodPrice:values.foodPrice
+
+  }
+      if (await addMenuValidate.isValid(formAddmenu)) {
+       
+      
         const id = uuidv4()
       form.append('file', {
         name: image.path,
@@ -128,7 +137,13 @@ export default function FormAddMenu({navigation}) {
       console.log(error);
         throw error;
       });  
-      
+  } else {
+        toast.show({
+          title: "ข้อมูลไม่ครบถ้วน",
+          status: "warning",
+          description: "โปรดตรวจสอบข้อมูลอีกครั้ง",
+        })
+      }    
   }
  
   const specialOptionDisplayValues = multiSelectedIndex.map(index => {
@@ -263,7 +278,8 @@ export default function FormAddMenu({navigation}) {
                         placeholder='ราคา'
                         style={styles.Input} 
                         value={values.foodPrice}
-                        type="text"
+                        type="numeric"
+                        keyboardType='numeric'
                         onChangeText={handleChange('foodPrice')}                     
                     />
                     <Layout style={styles.containerLayout} level='1'>                                     

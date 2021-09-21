@@ -75,12 +75,13 @@ appRouter.post('/udateWithFoodMenu', upload.single('file'), (req, res)=>{
     }       
        
 })
-appRouter.post('/udateWithoutFoodMenu', (req, res)=>{
 
+appRouter.post('/udateWithoutFoodMenu', (req, res)=>{
         const food_id = req.body.foodId
         const foodName = req.body.foodName
         const foodType = req.body.foodType
         const foodPrice = req.body.foodPrice
+        console.log(food_id)
         db.query('UPDATE food_menu SET food_name=?, food_type=?, food_price=? WHERE id=?',[foodName,foodType,foodPrice,food_id],async(err)=>{
             if (err) {
                 console.log(err);
@@ -92,14 +93,17 @@ appRouter.post('/udateWithoutFoodMenu', (req, res)=>{
 })
 
 appRouter.post('/UpdateAddMenu_Mix',(req,res)=>{
+    console.log(req.body.foodId);
     const specialOptionDisplayValues = req.body.specialOptionDisplayValues
     const storefreebiesDisplayValues = req.body.freebiesDisplayValues
     const food_id = req.body.foodId
+    console.log(food_id);
     db.query('DELETE FROM food_and_option_mix WHERE food_id=?',[food_id],async(err)=>{
         if (err) {
             console.log(err);
         } else {
             await storefreebiesDisplayValues.forEach(element => {
+                console.log(food_id);
                db.query(`INSERT INTO food_and_option_mix (food_id,option_id) 
                VALUES(?,?)`,[food_id,element.id],(err)=>{
                    if (err) {
@@ -159,7 +163,7 @@ appRouter.post('/addMenu_Mix',async(req,res)=>{
     const id =  req.body.id
     const specialOptionDisplayValues = req.body.specialOptionDisplayValues
     const storefreebiesDisplayValues = req.body.freebiesDisplayValues
-          await  specialOptionDisplayValues.forEach(element => {
+          await  storefreebiesDisplayValues.forEach(element => {
                db.query(`INSERT INTO food_and_option_mix (food_id,option_id) 
                VALUES(?,?)`,[id,element.id],(err)=>{
                    if (err) {
@@ -168,7 +172,7 @@ appRouter.post('/addMenu_Mix',async(req,res)=>{
                }) 
             }
         )
-       await storefreebiesDisplayValues.forEach(element => {
+       await specialOptionDisplayValues.forEach(element => {
             db.query(`INSERT INTO food_and_special_option_mix (food_id,special_option_id) 
             VALUES(?,?)`,[id,element.id],(err)=>{
                 if (err) {
@@ -194,6 +198,34 @@ appRouter.post('/addOption',(req,res)=>{
     const optionName = req.body.optionName
     db.query('INSERT INTO food_option (store_id,option_name) VALUES(?,?)',[store_id,optionName],(err)=>{
         if (err) {
+            res.send({err:err});
+        } else {
+            res.send({message:'เพิ่มเรียบร้อย'});
+        }
+    })
+})
+appRouter.post('/deleteSpOption',(req,res)=>{
+    const sOption = req.body.sOption
+    db.query(`DELETE food_special_option.*,food_and_special_option_mix.*
+    FROM food_special_option
+    INNER JOIN food_and_special_option_mix ON food_special_option.id = food_and_special_option_mix.special_option_id
+    WHERE food_special_option.id = ?`,[sOption],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send({message:'เพิ่มเรียบร้อย'});
+        }
+    })
+})
+appRouter.post('/deleteNOption',(req,res)=>{
+    const nOption = req.body.nOption
+    db.query(`DELETE food_option.*,food_and_option_mix.*
+    FROM food_option
+    INNER JOIN food_and_option_mix ON food_option.id = food_and_option_mix.option_id
+    WHERE food_option.id = ?`,[nOption],(err)=>{
+        if (err) {
+            console.log(err);
             res.send({err:err});
         } else {
             res.send({message:'เพิ่มเรียบร้อย'});
@@ -245,18 +277,6 @@ appRouter.post('/changStatus',(req,res)=>{
             res.send({err:err});
         } else {
             res.send({message:'เปลี่ยนเรียบร้อย'});
-        }
-    })
-})
-appRouter.post('/udateWithFoodMenu',(req,res)=>{
-    const store_id = req.body.storeId
-    const status = req.body.status
-    db.query('UPDATE food_menu SET food_status = ? WHERE id = ?',[status,store_id],(err)=>{
-        if (err) {
-            console.log(err);
-            res.send({err:err});
-        } else {
-            res.send({message:'เพิ่มเรียบร้อย'});
         }
     })
 })
@@ -374,4 +394,14 @@ appRouter.post('/ComplaintList',(req,res)=>{
     })
 })
 
+appRouter.get('/getFoodMenuListCustomer',(req,res)=>{
+    const store_id = req.body.storeId
+    db.query('SELECT * FROM food_menu',[store_id],(err,result)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
 module.exports = appRouter

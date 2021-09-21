@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
-import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl, View, Alert } from 'react-native'
+import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl,  Alert } from 'react-native'
 import { Button, IndexPath, Input, Select, SelectItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon, MenuItem, Spinner } from '@ui-kitten/components';
@@ -11,7 +11,8 @@ import { Divider,
     Flex,
     Text,
     Heading,
-    Box
+    Box,
+    View
      } from "native-base"
 import { AuthContext } from '../App';
 
@@ -116,7 +117,7 @@ const Loin =({navigation,route})=>{
                             <View style={{flexDirection: 'row', alignItems: 'center',width:250,marginTop:10}}>
                                 <View style={{flex:1, height: 0.7, backgroundColor: 'white'}} />
                                 <View>
-                                    <Text style={{width: 100, textAlign: 'center',marginLeft:5,marginRight:5,color:'white'}}>
+                                    <Text style={{width: 120, textAlign: 'center',marginLeft:5,marginRight:5,color:'white'}}>
                                         Witout account
                                     </Text>
                                 </View>
@@ -147,53 +148,42 @@ const MenuUserType =({navigation})=>{
         <View>
             <ImageBackground source={require('../assets/img/summer-composition-with-ingredients-blank-space.jpg')} resizeMode="cover"  style={styles.image} > 
             <View style={styles.filter} />
-                <View style={{display:'flex',alignItems:'center',marginTop:20,justifyContent:'center',borderWidth:2}}>
-                <Box w={260}>
-                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
-                <Button
-                        appearance='outline'                 
-                        style={styles.button} 
-                        onPress={()=> navigation.navigate('customer',{userType:'customer'})} 
-                    >          
-                    <View style={{display:'flex',flexDirection:'row',justifyContent:'center',width:502,height:542,borderWidth:2}}>
-                    <Icon name='arrow-forward-outline' fill='#ffff' style={{width:10,height:32}} />
-                        <Text style={{color:'#ffff',fontWeight:'bold',fontSize:4}}>
-                                ลูกค้าทั่วไป
-                        </Text>
-                            <Icon name='arrow-forward-outline' fill='#ffff' style={{width:10,height:32}} />
-                    </View>               
-                            
-                                                                                         
-                    </Button>
-                     
-                </Heading>
-                <Divider my={3} />
-                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
-                <Button
-                        appearance='outline'
-                        accessoryLeft={person}   
-                        style={styles.buttonLogin} 
-                        onPress={()=> navigation.navigate('student',{userType:'student'})}
-                    >                           
-                            <Text >
-                                นักศึกษา 
-                            </Text>                                                                                      
-                    </Button>
-                </Heading>
-                <Divider my={2} />
-                <Heading mx={3} d="flex" alignItems="center" flexDirection="row">
-                <Button 
-                        appearance='outline'
-                        accessoryLeft={home} 
-                        style={styles.buttonLogin} 
-                        onPress={()=> navigation.navigate('store',{userType:'store'})}  
-                        >
-                            <Text>
-                                ร้านค้า
-                            </Text>
-                    </Button>
-                </Heading>
-                </Box>               
+                <View style={{display:'flex',alignItems:'center',marginTop:20,justifyContent:'center'}}>
+                <View flexDirection='column' alignItems='center'  mt={4} w='100%' h='60%' >
+                               <TouchableOpacity
+                                    onPress={()=> navigation.navigate('customer',{userType:'customer'})}
+                                    style={styles.userTypeButton}
+                               >
+                                    <Text color="white" >
+                                        ลูกค้าทั่วไป    
+                                    </Text>
+                                    <View position='absolute' top={7} right={2} >
+                                        <Icon style={styles.icon} fill='white' name='arrow-ios-forward-outline' />
+                                    </View>
+                                </TouchableOpacity>   
+                               <TouchableOpacity
+                                    onPress={()=> navigation.navigate('student',{userType:'student'})}
+                                    style={styles.userTypeButton}
+                               >
+                                    <Text color="white" >
+                                        นักศึกษา    
+                                    </Text>
+                                    <View position='absolute' top={7} right={2} >
+                                        <Icon style={styles.icon} fill='white' name='arrow-ios-forward-outline' />
+                                    </View>
+                                </TouchableOpacity>   
+                               <TouchableOpacity
+                                    onPress={()=> navigation.navigate('store',{userType:'store'})} 
+                                    style={styles.userTypeButton}
+                               >
+                                    <Text color="white" >
+                                        ร้านค้า    
+                                    </Text>
+                                    <View position='absolute' top={7} right={2} >
+                                        <Icon style={styles.icon} fill='white' name='arrow-ios-forward-outline' />
+                                    </View>
+                                </TouchableOpacity>   
+                            </View>               
                 </View>                
             </ImageBackground>          
         </View>
@@ -220,35 +210,45 @@ const styles = StyleSheet.create({
         bottom:0,
         width:'100%',
         height:'50%'
-      },
+    },
     buttonLogin:{
         marginTop: 15,
         width:'50%',
         borderRadius:20, 
-      },
-      icon: {
-        width: 32,
-        height: 20,
-        color:"black"
-      },
-      textInButton:{
-          display:'flex',
-          alignItems:'center',
-          justifyContent:"center",
-          width:160,
-          marginLeft:20
-      },
-      filter:{
-          position:'absolute',
-        backgroundColor:"black",
-        width:'100%',
-        height:'100%',
-        opacity:0.25
-      },
-      button:{
-        marginTop: 15,
-        width:200,
-        borderRadius:20, 
-      },
+    },
+    icon: {
+    width: 32,
+    height: 20,
+    color:"black"
+    },
+    textInButton:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:"center",
+        width:160,
+        marginLeft:20
+    },
+    filter:{
+    position:'absolute',
+    backgroundColor:"black",
+    width:'100%',
+    height:'100%',
+    opacity:0.25
+    },
+    button:{
+    marginTop: 15,
+    width:200,
+    borderRadius:20, 
+    },
+    userTypeButton:{
+    position:'relative',
+    borderWidth:1,
+    borderRadius:10,
+    height:'30%',
+    width:'100%',
+    borderColor:'white',
+    justifyContent:'center',
+    alignItems:'center',
+    }
 })
 

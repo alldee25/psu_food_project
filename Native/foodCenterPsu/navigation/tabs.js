@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Customer&StudentScreens/HomeScreen';
-import MenuScreen from '../Customer&StudentScreens/MenuScreen';
 import ProfileScreen from '../Customer&StudentScreens/ProfileScreen';
 import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { AuthContext } from '../App';
@@ -9,7 +8,9 @@ import OrdersScreen from '../StoreScreens/OrdersScreen';
 import ManageScreen from '../StoreScreens/ManageScreen';
 import { Icon } from '@ui-kitten/components';
 import HomeStoreScreen from '../StoreScreens/HomeStoreScreen';
-import stackMenuManageScreen from '../StoreScreens/Addmenu/MenuList';
+import stackMenuManageScreen from '../StoreScreens/Menumanage/MenuList';
+import FoodScreen from '../Customer&StudentScreens/FoodScreen';
+import InfomationScreen from '../Customer&StudentScreens/InfomationScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -19,86 +20,108 @@ const Tabs = () =>{
 
     return(
         userType !== 'store' ? (     
-        <Tab.Navigator
-        initialRouteName="เมนู" 
-            screenOptions={{
-                tabBarShowLabel: false,
-                tabBarStyle: {
-                    backgroundColor:'transparent',
-                    position:'absolute',
-                    bottom: 20,
-                    left:20,
-                    right:20,
-                    elevation:0,
-                    backgroundColor:'#ffff',
-                    borderRadius:15,
-                    height:60,
-                    opacity:0.5,
-                    ...styles.shadow
-                }
-            }}
-            >
-            <Tab.Screen name="Profile" component={ProfileScreen} 
-                options={{
-                    tabBarIcon: ({focused}) => (
-                        <View style={{alignItems:'center',justifyContent:'center',top:5}}>
-                            <Image source={require('../assets/img/pngkey.com-profile-icon-png-2024691.png')}
-                            resizeMode='contain'
-                            style={{width:20,height:25,tintColor: focused ?'#e32f45' : '#748c94'}} />
-                            <Text key='1' style={{color: focused ?'#e32f45' : '#748c94',fontSize:12}} >
-                                Profile
-                            </Text>
-                        </View>
-                    )
-                }}    
-            /> 
-            <Tab.Screen name="เมนู" component={HomeScreen} 
-                options={{
-                    headerStyle:{
-                        backgroundColor: '#f4511e',
-                        borderBottomRightRadius: 20,
-                        height:130
-                    },
-                    tabBarIcon: ({focused}) => (
-                        <View style={{alignItems:'center',justifyContent:'center',top:5}}>
-                            <Image source={require('../assets/img/meal-food.png')}
-                            resizeMode='contain'
-                            style={{width:20,height:25,tintColor: focused ?'#e32f45' : '#748c94'}} />
-                            <Text key='2' style={{color: focused ?'#e32f45' : '#748c94',fontSize:12}} >
-                                เมนู
-                            </Text>
-                        </View>
-                    )
-                }}    
-            />         
-            <Tab.Screen name="รายการ" component={MenuScreen}
-            screenOptions={{ headerShown: false }}
-            options={{
-                headerShown: false,
-                tabBarIcon: ({focused}) => (
-                    <View style={{
-                        borderColor:'#800000',
-                        borderWidth:1.5,
-                        position:'absolute',                                      
-                        alignItems:'center',
-                        justifyContent:'center',
-                        backgroundColor: focused ? '#00CED1' : '#ffFFFF',
-                        width:60,
-                        height:40,
-                        borderRadius:80/2,
-                        shadowColor:'#DC143C',                                 
+            <Tab.Navigator
+            sceneContainerStyle={{backgroundColor: '#2F1050'}}
+                screenOptions={{
+                    color:'#2F1050',
+                    headerShown: false,
+                    tabBarShowLabel: false,
+                    tabBarStyle: {
+                        shadowColor:'#DC143C',
+                        backgroundColor:'transparent',                                 
                         shadowOpacity:1,
                         shadowRadius:20,                                  
-                        elevation:7
-                        }}>
-                        <Image source={require('../assets/img/menu.png')}
+                        backgroundColor:'transparent',
+                        elevation:0,                      
+                        height:70,
+                                            
+                    }
+                }}
+                >
+                <Tab.Screen name="Home" component={HomeScreen} 
+                    options={{
+                        tabBarIcon: ({focused}) => (
+                            <View style={{                              
+                                position:'absolute',                                      
+                                alignItems:'center',
+                                justifyContent:'center',
+                                backgroundColor: focused ? '#00CED1' : '#ffFFFF',
+                                width:60,
+                                height:40,
+                                borderRadius:15,
+                                shadowColor:'#DC143C',                                 
+                                shadowOpacity:1,
+                                shadowRadius:20,                                  
+                                elevation:7
+                                }}>
+                                <Icon name='home-outline'
+                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                />                              
+                            </View>
+                        )
+                    }}    
+                /> 
+                <Tab.Screen name="Orders" component={FoodScreen} 
+                    options={{
+                        headerShown: false,
+                        headerStyle:{
+                            borderBottomRightRadius: 20,
+                            height:130,                         
+                        },
+                        headerTitle:(props) => (<View>
+                          <Image 
                         resizeMode='contain'
-                        style={{width:25.5,height:25.5,tintColor: focused ?'#e32f45' : '#748c94'}} />                       
-                    </View>
-                )
-            }} 
-            />      
-        </Tab.Navigator>
+                        style={{zIndex:-1,width:350,borderBottomRightRadius: 20,marginLeft:20}}
+                        source={require('../assets/img/AdobeStock_249134444_Preview.jpeg')} />  
+                        </View>
+                        ),                    
+                        headerTitleStyle: { flex: 1, textAlign: 'center' },
+                        tabBarIcon: ({focused}) => (
+                            <View style={{                                    
+                                        position:'absolute',                                      
+                                        alignItems:'center',
+                                        justifyContent:'center',
+                                        backgroundColor: focused ? '#00CED1' : '#ffFFFF',
+                                        width:60,
+                                        height:40,
+                                        borderRadius:15,
+                                        shadowColor:'#DC143C',                                 
+                                        shadowOpacity:1,
+                                        shadowRadius:20,                                  
+                                        elevation:7
+                                        }}>
+                                <Icon name='menu-2-outline'
+                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                />                                                                                        
+                            </View>
+                        )
+                    }}    
+                />         
+                <Tab.Screen name="Information" component={InfomationScreen}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <View style={{                        
+                            position:'absolute',                                      
+                            alignItems:'center',
+                            justifyContent:'center',
+                            backgroundColor: focused ? '#00CED1' : '#ffFFFF',
+                            width:60,
+                            height:40,
+                            borderRadius:15,
+                            shadowColor:'#DC143C',                                 
+                            shadowOpacity:1,
+                            shadowRadius:20,                                  
+                            elevation:7,                           
+                            }}>
+                            <Icon name='grid-outline'
+                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                            />
+                        </View>
+                    )
+                }} 
+                />       
+            </Tab.Navigator>
     
         ):(
             <Tab.Navigator
@@ -222,7 +245,7 @@ const Tabs = () =>{
                             }}>
                             <Icon name='grid-outline'
                                     style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />
+                            />
                         </View>
                     )
                 }} 

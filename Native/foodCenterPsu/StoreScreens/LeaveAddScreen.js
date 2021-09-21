@@ -1,12 +1,13 @@
 import { Datepicker, Icon, Input, IndexPath, SelectItem, Select } from '@ui-kitten/components'
 import * as Progress from 'react-native-progress';
 import { Formik } from 'formik'
-import { Button, ScrollView, Text, View, } from 'native-base'
+import { Button, ScrollView, Text, Toast, useToast, View, } from 'native-base'
 import React, { useContext, useState } from 'react'
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import axios from 'axios';
 import { AuthContext } from '../App';
 import Moment from 'moment';
+import { addLeaveValidate } from '../Validation';
 
 const data = [
     'ลาป่วย',
@@ -14,14 +15,16 @@ const data = [
   ];
 
 export default function LeaveScreen({navigation}) {
+
     Moment.locale('en')
     const [process, setProcess] = useState(false);
     const {userData} = useContext(AuthContext)
-    const [from,setFrom] = useState(new Date()) 
+    const [from,setFrom] = useState('') 
     const [to,setTo] = useState('')
     const [toMin,setToMin] = useState('')
     const [toMax,setToMax] = useState('')
     const [detial,setDetial] = useState('')
+    const toast = useToast()
     const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
     const now = new Date();
     const fromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() +4);
@@ -39,28 +42,46 @@ export default function LeaveScreen({navigation}) {
     const setDateTo =(value)=>{
         setTo(value)
         }
-    const addLeave =()=>{
-
-        axios.post('http://192.168.1.102:3001/InsertLeave',{
-            ownerId:userData.usersData[0].id,
-            title:displayValue,
+    const addLeave =async()=>{
+        let formDate ={
+            displayValue:displayValue,
             detial:detial,
-            dateFrom:Moment(from).format('YYYY-MM-DD'),
-            dateTo:Moment(to).format('YYYY-MM-DD'),
-            dateWrite:Moment(today).format('YYYY-MM-DD'),
-            status:'รอดำเนินการ'
-        }).then(res=>{
-            if (res.data.err) {
-              Alert.alert(
-                res.data.err 
-            )  
-            } else {
-                Alert.alert(
-                    res.data.message 
-                ) 
-                navigation.goBack()  
+            from:Moment(from).format('YYYY-MM-DD'),
+            to:Moment(to).format('YYYY-MM-DD'),
+            today:Moment(today).format('YYYY-MM-DD')
+        }
+        if (await addLeaveValidate.isValid(formDate)) {
+                axios.post('http://192.168.1.102:3001/InsertLeave',{
+                    ownerId:userData.usersData[0].id,
+                    title:displayValue,
+                    detial:detial,
+                    dateFrom:Moment(from).format('YYYY-MM-DD'),
+                    dateTo:Moment(to).format('YYYY-MM-DD'),
+                    dateWrite:Moment(today).format('YYYY-MM-DD'),
+                    status:'รอดำเนินการ'
+                }).then(res=>{
+                    if (res.data.err) {
+                        Alert.alert(
+                        'ผิดผลาด' 
+                    )  
+                    } else {
+                        toast.show({
+                title: "รอผู้ดูแลตรวจสอบ",
+                status: "success",
+                description: "โปรดตรวจสอบข้อมูลอีกครั้ง",
+              })
+                navigation.goBack()   
             }
-        })
+            })
+            
+        } else { 
+            toast.show({
+                title: "ข้อมูลไม่ครบถ้วน",
+                status: "warning",
+                description: "โปรดตรวจสอบข้อมูลอีกครั้ง",
+              }) 
+        }
+         
     }
     const displayValue = data[selectedIndex.row];
 
@@ -100,6 +121,7 @@ export default function LeaveScreen({navigation}) {
                 accessoryRight={<Icon fill='#DADADA' name='calendar' style={styles.icon} />}
             />        
             <Datepicker
+                disabled={from == ''}
                 style={styles.Input}
                 label='ถึงวันที่'
                 caption='Caption'

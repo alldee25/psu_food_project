@@ -3,7 +3,7 @@ import { Icon,Tab,TabView, Toggle, Layout } from '@ui-kitten/components';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/core'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { StyleSheet, SafeAreaView, Image,Animated, Dimensions , TouchableOpacity, Alert, ImageBackground } from 'react-native'
+import { StyleSheet, SafeAreaView, Image,ScrollView, Dimensions , TouchableOpacity, Alert, ImageBackground } from 'react-native'
 import { AuthContext } from '../../App';
 import ButtonTop from './ButtonAdd';
 import {
@@ -34,6 +34,7 @@ export default function stackMenuManageScreen(){
 }
 
 const  MenuManage =({navigation})=> {
+
     const isFocus = useIsFocused()
     const HEIGHT = Dimensions.get('window').height
     const { isOpen, onOpen, onClose } = useDisclose()
@@ -50,7 +51,12 @@ const  MenuManage =({navigation})=> {
     const [position, setPosition] = React.useState("auto")
 
     
-
+    navigation.setOptions({
+        headerRight: () => (
+            <ButtonTop ref={changModalStatus}
+            />   
+        ),
+      });
 
     const changModalStatus =()=>{
         onOpen() 
@@ -72,7 +78,45 @@ const  MenuManage =({navigation})=> {
         }).then((res)=>{
             if (res.data.err) {
                 Alert.alert(
-                    res.data.err,
+                    'ลองใหม่อีกครั้ง',
+                    'ไม่สามารถดำเนินการ'
+                )
+            } else {
+                Alert.alert(
+                'ลบเรียบร้อย',
+                'ลบเรียบร้อย'
+               
+            )
+             setEffect(!effect)
+        }
+        })
+    }
+    const deleteSOption =(id)=>{
+        axios.post('http://192.168.1.102:3001/deleteSpOption',{
+            sOption:id
+        }).then((res)=>{
+            if (res.data.err) {
+                Alert.alert(
+                    'ลองใหม่อีกครั้ง',
+                    'ไม่สามารถดำเนินการ'
+                )
+            } else {
+                Alert.alert(
+                'ลบเรียบร้อย',
+                'ลบเรียบร้อย'
+               
+            )
+             setEffect(!effect)
+        }
+        })
+    }
+    const deleteNOption =(id)=>{
+        axios.post('http://192.168.1.102:3001/deleteNOption',{
+            nOption:id
+        }).then((res)=>{
+            if (res.data.err) {
+                Alert.alert(
+                    'ลองใหม่อีกครั้ง',
                     'ไม่สามารถดำเนินการ'
                 )
             } else {
@@ -121,9 +165,7 @@ const  MenuManage =({navigation})=> {
                 isClose={onClose}
                 userEffect={setEffect} 
             />    
-            <ButtonTop 
-                ref={changModalStatus}
-            />
+
             <Actionsheet isOpen={isOpen} onClose={onClose}>
                 <Actionsheet.Content>
                     <Divider borderColor="gray.300" />
@@ -189,11 +231,11 @@ const  MenuManage =({navigation})=> {
                                         }}
                                         source={{uri:`http://192.168.1.102:3001/userUploaded/${item.food_img}`}}                           
                                     />
-                                    <View style={{marginLeft:10,width:'60%'}}>
+                                    <View style={{marginLeft:10,width:'60%',flex:1,alignItems:'flex-start'}}>
                                         <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
                                             อาหาร: {item.food_name}
                                         </Text> 
-                                        <Divider my={2} w='100%' bgColor='#888888' alignSelf='center' />
+                                        <Divider w='100%' bgColor='#888888' alignSelf='center' />
                                         <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                             ประเภท: {item.food_type}
                                         </Text> 
@@ -267,7 +309,27 @@ const  MenuManage =({navigation})=> {
                                         <Text style={{fontSize:18}}>
                                             ราคา: {item.price} บาท
                                         </Text>  
-                                    </View>                         
+                                    </View>
+                                    <Menu
+                                        style={{marginRight:10}}
+                                        shouldOverlapWithTrigger={shouldOverlapWithTrigger} 
+                                        placement={position == "auto" ? undefined : position}
+                                        trigger={(triggerProps) => {
+                                        return (
+                                        <Text style={{position:'absolute',top:10,right:5}}>
+                                            <TouchableOpacity alignSelf="center" variant="solid" {...triggerProps}>                                        
+                                                <Icon name='more-vertical-outline' fill='#F08080' style={styles.icon} />                                   
+                                            </TouchableOpacity>
+                                            </Text>
+                                        )
+                                        }}
+                                    >                                       
+                                            <Menu.Item
+                                                onPress={()=> deleteSOption(item.id)}
+                                            >
+                                                ลบ
+                                            </Menu.Item>
+                                        </Menu>                         
                                 </View>                                
                                 }
                             />        
@@ -297,7 +359,25 @@ const  MenuManage =({navigation})=> {
                                         <Text style={{fontSize:22}}>
                                            {item.option_name}
                                         </Text>                                                                             
-                                    </View>                         
+                                    </View>
+                                    <Menu
+                                        style={{marginRight:10}}
+                                        shouldOverlapWithTrigger={shouldOverlapWithTrigger} 
+                                        placement={position == "auto" ? undefined : position}
+                                        trigger={(triggerProps) => {
+                                        return (
+                                        <Text style={{position:'absolute',top:10,right:5}}>
+                                            <TouchableOpacity alignSelf="center" variant="solid" {...triggerProps}>                                        
+                                                <Icon name='more-vertical-outline' fill='#F08080' style={styles.icon} />                                   
+                                            </TouchableOpacity>
+                                            </Text>
+                                        )
+                                        }}
+                                    >
+                                            <Menu.Item
+                                                onPress={()=> deleteNOption(item.id)}
+                                            >ลบ</Menu.Item>
+                                        </Menu>                         
                                 </View>                                
                                 }
                             />        
@@ -320,7 +400,7 @@ const styles = StyleSheet.create({
     },
     menuList:{
         width:'100%',
-        height:'96.6%'
+        height:'84%'
     },
     close:{
         flex:1,

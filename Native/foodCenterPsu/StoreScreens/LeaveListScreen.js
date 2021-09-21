@@ -2,10 +2,10 @@ import { useIsFocused } from '@react-navigation/core'
 import { Icon } from '@ui-kitten/components'
 import axios from 'axios'
 import { Divider, FlatList, Heading, Menu, ScrollView, Text, View } from 'native-base'
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Alert, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native'
 import { AuthContext } from '../App'
-import ButtonTop from './Addmenu/ButtonAdd'
+import ButtonTop from './Menumanage/ButtonAdd'
 import Moment from 'moment';
 
 export default function LeaveListScreen({navigation}) {
@@ -18,17 +18,19 @@ export default function LeaveListScreen({navigation}) {
     const [leaveDataList,setLeaveDataList] = useState([])
     const [shouldOverlapWithTrigger] = React.useState(false)
     const [position, setPosition] = React.useState("auto")
-    const [status, setStatus] = useState('') 
+    const moviesRef = useRef(null)
+    const [isload, setIsload] = useState(false) 
 
-    const Add =()=>{
-           
-        if (!status) {
-            Alert.alert(
+    
+
+    const AddLeave =()=>{
+        if (moviesRef.current) {
+            navigation.navigate('เพิ่มลาพักจำหน่ายอาหาร') 
+        } else {
+          Alert.alert(
                 'ไม่สามารถเพิ่มได้',
                 'คุณมีรายการที่รอดำเนินการอยู่แล้ว'
-            )
-        } else {
-           navigation.navigate('เพิ่มลาพักจำหน่ายอาหาร') 
+            ) 
         }
         
     }
@@ -47,40 +49,41 @@ export default function LeaveListScreen({navigation}) {
                 'ลบเรียบร้อย',
                 'ลบเรียบร้อย'
             )
-            isFocused
+            setIsload(!isload)
         }
         }) 
     }
     useEffect(() => {
-
-        let isMounted = (axios.post('http://192.168.1.102:3001/getLeaveList',{
+        navigation.setOptions({
+        headerRight: () => (
+            <ButtonTop ref={AddLeave}
+            />   
+        ),
+      });
+            
+      let isMounted = (axios.post('http://192.168.1.102:3001/getLeaveList',{
         userId:userData.usersData[0].id
         }).then((res)=>{
-            setLeaveDataList(res.data) 
-             setStatus(res.data.every((data)=>{
+           moviesRef.current = res.data.every((data)=>{
                 return data.status !== 'รอดำเนินการ'
-            }));       
+            })
+            setLeaveDataList(res.data)       
         }).catch(error =>{
             console.log(error);
             throw error;
-        }))
-        
-        return () => {
-            isMounted = false
-        }
-    },[isFocused])
+        })) 
+        return () => { isMounted = false } 
+    },[isFocused,isload])
 
     return (
        
         <SafeAreaView
-        style={{backgroundColor:'#F8F1FF'}}
+        style={{
+                backgroundColor:'#F8F1FF',
+                width:'100%',
+                height:'100%'}}
         >
-            <ButtonTop 
-                ref={Add}
-                status={status}
-            />
-            <View style={styles.menuList}>  
-            {leaveDataList == '' ? <Heading flex={1} alignSelf='center' top='50%' fontSize={20}>--ไม่มีราการลา--</Heading> : 
+            <View style={styles.menuList}>                           
                 <FlatList 
                     data={leaveDataList}
                     keyExtractor={(item) => item.leaveStoreId}
@@ -92,13 +95,9 @@ export default function LeaveListScreen({navigation}) {
                     <View style={{flexDirection:'row',
                         marginTop:8,
                         padding:10,
-                        backgroundColor:'#00FFFF',
-                        borderRadius:5,
-                        marginBottom:5,
-                        shadowColor:'#FF0000',
-                        shadowOpacity:1,
-                        shadowRadius:20,                                  
-                        elevation:7
+                        backgroundColor:'#FFFF',
+                        borderRadius:10,
+                        
                     }}>                        
                         <View style={{marginLeft:10,width:'100%'}}>
                             <Text style={{fontSize:20}}>
@@ -138,7 +137,7 @@ export default function LeaveListScreen({navigation}) {
                             </Menu>                                                            
                     </View>                                
                     }
-                />}        
+                />        
             </View>
         </SafeAreaView>
     )
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     },
     menuList:{
         width:'100%',
-        height:'99.9%'
+        height:'100%'
     },
     close:{
         flex:1,

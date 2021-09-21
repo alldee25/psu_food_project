@@ -9,13 +9,22 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { AuthContext } from '../../App';
 import { Divider,
     Actionsheet,
+    useToast,
     useDisclose } from 'native-base';
-
+import { editMenuValidate } from '../../Validation';
+const dataType = [
+    'ตามสั่ง',
+    'ข้าวแกง',
+    'อาหารกินเล่น',
+    'ก๋วยเตี๋ยว',
+    'น้ำ',
+  ]
 export default function FormEditMenu({navigation,route}) {
 
 const {userData} =  useContext(AuthContext);
 const HEIGHT = Dimensions.get('window').height
 const [optionDataList,setOptionDatalist] = useState([]);
+const [selectedIndex, setSelectedIndex] = React.useState([]);
 const [specialOptionDataList,setSpecialOptionDataList] = useState([]);
 const [process, setProcess] = React.useState(false); 
 const [multiSelectedIndex, setMultiSelectedIndex] = React.useState([]);
@@ -24,6 +33,7 @@ const [imagePreview, setImagePreview] = React.useState(null);
 const [image, setImage] = React.useState(null);
 const { isOpen, onOpen, onClose } = useDisclose()
 const form = new FormData();
+const toast = useToast() 
 
   const selectImage =()=> {
     ImagePicker.openPicker({
@@ -36,20 +46,21 @@ const form = new FormData();
       });
       onClose()
 }
-  const openCamera =()=> {
-      ImagePicker.openCamera({
-          width: 400,
-          height: 400,
-          cropping: true,
-        }).then(images => {
-          console.log(images);
-        }).then(onClose)
-  }
-  const addMenu = (values) =>{ 
+  const addMenu = async(values) =>{ 
+    let formAddmenu = {
+        foodName:values.foodName,
+        foodType:foodType,
+        foodPrice:values.foodPrice
+    
+      }
+      if (await editMenuValidate.isValid(formAddmenu)) {
+          
+      
     form.append('foodId',route.params.foodId)
     form.append('foodName',values.foodName)
-    form.append('foodType',values.foodType)
+    form.append('foodType',foodType)
     form.append('foodPrice',values.foodPrice)
+
       if (image !== null ) {
     
         form.append('file', {
@@ -99,7 +110,13 @@ const form = new FormData();
             
     }) 
     } else {
-        axios.post('http://192.168.1.102:3001/udateWithoutFoodMenu',form).then((res)=>{
+        axios.post('http://192.168.1.102:3001/udateWithoutFoodMenu',{
+            foodId:route.params.foodId,
+            foodName:values.foodName,
+            foodType:foodType,
+            foodPrice:values.foodPrice,
+        }).then((res)=>{
+            
             if (res.data.err) {
                 toast.show({
                     title: "Something went wrong",
@@ -137,7 +154,13 @@ const form = new FormData();
             
     })  
       }
-              
+    } else {
+        toast.show({
+            title: "ข้อมูลไม่ครบถ้วน",
+            status: "warning",
+            description: "โปรดตรวจสอบข้อมูลอีกครั้ง",
+          }) 
+      }          
   }
 const specialOptionDisplayValues = multiSelectedIndex.map(index => {
   const groupTitle = Object.keys(specialOptionDataList)[index.row];
@@ -154,6 +177,7 @@ const freebiesDisplayValues = freebiesmultiSelectedIndex.map(index => {
   return optionDataList[groupTitle].option_name;
  
 });
+const foodType = dataType[selectedIndex.row];
 
 const freebiesValues = freebiesmultiSelectedIndex.map(index => {
   const groupTitle = Object.keys(optionDataList)[index.row];
@@ -161,6 +185,9 @@ const freebiesValues = freebiesmultiSelectedIndex.map(index => {
  
 });
 
+const renderType = (title) => (
+    <SelectItem key={title} title={title}/>
+  );
 
   const renderOption = (title) => (
       <SelectItem key={specialOptionDataList[title].id} title={specialOptionDataList[title].special_option_name}/>
@@ -170,6 +197,7 @@ const freebiesValues = freebiesmultiSelectedIndex.map(index => {
     );
 
   useEffect(()=>{
+      console.log('111');
     let isMounted = true; 
     setImagePreview(`http://192.168.1.102:3001/userUploaded/${route.params.imagePreview}`)
       axios.post('http://192.168.1.102:3001/getOption',{
@@ -214,7 +242,7 @@ const freebiesValues = freebiesmultiSelectedIndex.map(index => {
         <ScrollView style={{width:'100%',height:'100%'}}>                                   
         <Formik 
             onSubmit={(values) => addMenu(values)}
-            initialValues={{foodName:route.params.foodName, foodType:route.params.foodType, foodPrice:route.params.foodprice}}
+            initialValues={{foodName:route.params.foodName, foodPrice:route.params.foodprice}}
         >
         {({ handleChange, handleSubmit, values }) =>(
             <View style={{width:'100%',height:'50%',display:'flex',alignItems:'center'}}>
@@ -254,15 +282,16 @@ const freebiesValues = freebiesmultiSelectedIndex.map(index => {
                 type="text"                                      
                 onChangeText={handleChange('foodName')}                      
             />                   
-            <Input                    
-                status='primary'
+            <Select
+                style={styles.Input}
                 placeholder='ประเภทเมนู'
-                style={styles.Input}              
-                value={values.foodType}
-                type="text"
-                onChangeText={handleChange('foodType')}                      
-            />
-            <Input                    
+                value={foodType}
+                selectedIndex={selectedIndex}
+                onSelect={index => setSelectedIndex(index)}>
+                {dataType.map(renderType)}
+            </Select>
+            <Input
+
                 status='primary'
                 placeholder='ราคา'
                 style={styles.Input}               
