@@ -11,6 +11,7 @@ import HomeStoreScreen from '../StoreScreens/HomeStoreScreen';
 import stackMenuManageScreen from '../StoreScreens/Menumanage/MenuList';
 import FoodScreen from '../Customer&StudentScreens/FoodScreen';
 import InfomationScreen from '../Customer&StudentScreens/InfomationScreen';
+import Ordered from '../Customer&StudentScreens/Ordered';
 
 
 const Tab = createBottomTabNavigator();
@@ -21,9 +22,7 @@ const Tabs = () =>{
     return(
         userType !== 'store' ? (     
             <Tab.Navigator
-            sceneContainerStyle={{backgroundColor: '#2F1050'}}
                 screenOptions={{
-                    color:'#2F1050',
                     headerShown: false,
                     tabBarShowLabel: false,
                     tabBarStyle: {
@@ -90,13 +89,38 @@ const Tabs = () =>{
                                         shadowRadius:20,                                  
                                         elevation:7
                                         }}>
-                                <Icon name='menu-2-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                <Image source={require('../assets/img/meal-food.png')}
+                                    style={{width:27,height:27,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
                                 />                                                                                        
                             </View>
                         )
                     }}    
-                />         
+                />
+                 <Tab.Screen name="Ordered" component={Ordered}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({focused}) => (
+                        <View style={{                        
+                            position:'absolute',                                      
+                            alignItems:'center',
+                            justifyContent:'center',
+                            backgroundColor: focused ? '#00CED1' : '#ffFFFF',
+                            width:60,
+                            height:40,
+                            borderRadius:15,
+                            shadowColor:'#DC143C',                                 
+                            shadowOpacity:1,
+                            shadowRadius:20,                                  
+                            elevation:7,                           
+                            }}>
+                            <Image
+                                source={require('../assets/img/cloche.png')} 
+                                style={{width:33,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                            />
+                        </View>
+                    )
+                }} 
+                />        
                 <Tab.Screen name="Information" component={InfomationScreen}
                 options={{
                     headerShown: false,

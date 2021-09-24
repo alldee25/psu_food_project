@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     borderRadius:20, 
     },
     userTypeButton:{
+    backgroundColor:'#049A9E',
     position:'relative',
     borderWidth:1,
     borderRadius:10,
@@ -249,6 +250,7 @@ const styles = StyleSheet.create({
     borderColor:'white',
     justifyContent:'center',
     alignItems:'center',
+    opacity:0.7
     }
 })
 

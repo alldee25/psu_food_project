@@ -5,6 +5,7 @@ import { Divider, FlatList, Heading, Image, Text, View, ScrollView, Input } from
 import React, { useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import FoodDetialScreen from './FoodDetialScreen';
+import OrderConferm from './OrderConferm';
 
 export default function FoodScreen() {
     const FoodStack = createStackNavigator()
@@ -12,20 +13,30 @@ export default function FoodScreen() {
         <FoodStack.Navigator>
             <FoodStack.Screen
             options={{
-                headerShown:false
+                headerShown:false,
             }} 
             name='เมนู' 
             component={FoodList} 
             
             />
-            <FoodStack.Screen name='รายละเอียดเมนู' component={FoodDetialScreen} />
+            <FoodStack.Screen 
+                name='รายละเอียดเมนู'
+                options={{
+                    headerShown:false,
+                }} 
+                component={FoodDetialScreen} 
+            />
+            <FoodStack.Screen 
+                name='conferm'
+                component={OrderConferm} 
+            />
         </FoodStack.Navigator>
     )
 }
 const FoodList =({navigation})=>{
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
-    const [foodDataList,setFoodDataList] = useState();
+    const [foodDataList,setFoodDataList] = useState([]);
 
     useEffect(()=>{
         let isMounted = (
@@ -46,7 +57,11 @@ const FoodList =({navigation})=>{
             w={W}
             backgroundColor='#0B2B53'
         >
-        
+        <View
+            w='100%'
+            flexDirection='row'
+            justifyContent='space-between'
+        >
             <Heading
                 fontFamily='IBMPlexSansThai-SemiBold'
                 m={2}
@@ -56,18 +71,42 @@ const FoodList =({navigation})=>{
                 กินอะไรดี 
             </Heading>
             <View
+                m={2}
+                mr={4}
+            >
+                <TouchableOpacity
+                    onPress={()=> navigation.navigate('conferm')}
+                >
+                    <Image
+                        source={require('../assets/img/shopping-bag-rounnd.png')}
+                        alt='cart'
+                        style={styles.iconBack}
+                    >
+
+                    </Image>
+            </TouchableOpacity>
+                
+            </View>
+            
+        </View>
+            
+            <View
              width={W} alignItems='center'
             >
-            <Input w={'95%'} size="xs" placeholder="ค้นหา" borderRadius={20} />
+            <Input
+                color='white' 
+                w={'95%'} 
+                size="xs" 
+                placeholder="ค้นหา" 
+                borderRadius={20} 
+            />
             </View>          
-            <View
-                
+            <View               
                 flexDirection='row'
                 justifyContent='space-around'
                 width={W}
                 flex={1}
-            >
-                
+            > 
                 <ScrollView 
                     contentContainerStyle={{alignItems:'center'}}         
                     width={W}
@@ -143,6 +182,7 @@ const FoodList =({navigation})=>{
                 backgroundColor='white'
                 flex={5}
                 borderTopRadius={15}
+                mb={10}
             >
                 
                     <FlatList 
@@ -154,18 +194,46 @@ const FoodList =({navigation})=>{
                         }}
                         renderItem={({item})=>
                         <TouchableOpacity
-                            onPress={()=>{navigation.navigate('รายละเอียดเมนู',{id:item.id}) }}
+                            style={{
+                                marginTop:8
+                            }}
+                            onPress={()=>{navigation.navigate('รายละเอียดเมนู',
+                            {
+                                id:item.id,
+                                sId:item.sId,
+                                food_img:item.food_img,
+                                food_name:item.food_name,
+                                food_price:item.food_price,
+                                store_name:item.store_name,
+                            }) 
+                        }}
                         >
-                        <View style={{flexDirection:'row',
-                            marginTop:8,
+                         {/* {item.food_status == !1 ? (<View 
+                            position='absolute'
+                            alignItems='center'
+                            justifyContent='center'
+                            w={'100%'}
+                            h='100%'
+                            zIndex={1}
+                            opacity={0.5}
+                            backgroundColor='black'
+                            borderRadius={20}
+                            
+                            ><Heading
+                                color='white'
+                            >
+                                หมดแล้ว
+                            </Heading></View>):(<></>)} */}   
+                        <View style={{
+                            flexDirection:'row',
                             padding:10,
                             backgroundColor:'#E4E4F4',
                             borderRadius:20,
-                            marginBottom:5,
-                            
                         }}>
+                            
                             <Image
-                                style={{width:120,               
+                                style={{
+                                    width:120,               
                                     height:120,
                                     marginLeft:5,
                                     borderRadius:20,                                                                                                                     
@@ -174,28 +242,28 @@ const FoodList =({navigation})=>{
                                 source={{uri:`http://192.168.1.102:3001/userUploaded/${item.food_img}`}}                           
                             />
                             <View style={{marginLeft:10,width:'60%',flex:1,alignItems:'flex-start'}}>
-                                <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
-                                    {item.food_name}
-                                </Text> 
+                               
+                                    <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
+                                        {item.food_name} 
+                                    </Text>                              
                                 <Divider w='100%' bgColor='#888888' alignSelf='center' />
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                     ประเภท: {item.food_type}
+                                </Text>
+                                <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
+                                        ร้าน : {item.store_name} 
                                 </Text> 
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                     ราคา: {item.food_price} บาท
-                                </Text>
-                                <View flexDirection='row'>
-                                    <Text fontFamily='IBMPlexSansThai-Regular'>สถานะ : </Text>{item.food_status == 1 ? (<Text fontFamily='IBMPlexSansThai-Regular'>มี</Text>) :  (<Text fontFamily='IBMPlexSansThai-Regular'>หมดแล้ว</Text>)}                                      
-                                </View>                                       
+                                </Text>                                                                     
                             </View>
-                            <View h={'100%'} justifyContent='center'>
-                            <Icon style={styles.icon} fill='#888888' name='arrow-ios-forward-outline' />
+                            <View  justifyContent='center' >
+                                <Icon style={styles.icon} fill='#888888' name='arrow-ios-forward-outline' />
                             </View>                                                            
                         </View>
                         </TouchableOpacity>                                 
                         }
-                    /> 
-                             
+                    />           
             </View>
         </View>
     )
@@ -208,7 +276,7 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:20,
         width:100,
-        height:70,
+        height:50,
         margin:10,
         backgroundColor:'#F8F1FF'
     },
@@ -217,4 +285,9 @@ const styles = StyleSheet.create({
         height: 30,
         color:"black"
         },
+    iconBack: {
+        width: 42,
+        height: 40,
+        },
+        
 })

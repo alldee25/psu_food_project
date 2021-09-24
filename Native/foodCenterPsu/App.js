@@ -11,10 +11,11 @@ import LoginScreen from './Authentication/LoginScreen';
 import axios from 'axios';
 import 'react-native-gesture-handler';
 import { Heading, HStack, NativeBaseProvider, Spinner } from 'native-base';
+import { Provider } from 'react-redux';
+import { Store } from './src/redux/store';
 
-
-const data = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "สำนักงานสมอลแอร์อาคารเกรท ชั้นสองซอยลาดพร้าว 1", "dob": "2001-07-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 38, "idcard": "1940500129878", "idend": "2021-07-29", "idstart": "2021-07-09", "lastname": "", "name": "Yameelah ", "nationality": "Thai", "password": "", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 37}, {"adress": "l", "dob": "l", "email": "l", "gender": "l", "id": 33, "idcard": "l", "idend": "l", "idstart": "l", "lastname": "l", "name": "l", "nationality": "l", "password": "Audi", "phone": "l", "race": "l", "religion": "l", "store_id": 37}]}
 const AuthContext = React.createContext();
+const data = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "สำนักงานสมอลแอร์อาคารเกรท ชั้นสองซอยลาดพร้าว 1", "dob": "2001-07-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 38, "idcard": "1940500129878", "idend": "2021-07-29", "idstart": "2021-07-09", "lastname": "", "name": "Yameelah ", "nationality": "Thai", "password": "", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 37}, {"adress": "l", "dob": "l", "email": "l", "gender": "l", "id": 33, "idcard": "l", "idend": "l", "idstart": "l", "lastname": "l", "name": "l", "nationality": "l", "password": "Audi", "phone": "l", "race": "l", "religion": "l", "store_id": 37}]}
 const dataCustomer = {"UserType": "customer", "logedIn": true, "usersData": [{"email": "1234", "id": 4, "img": "", "lastname": "a", "name": "a", "password": "$2b$10$IcMBuX.sUst8kvZNd3J.4OHwee0Bg48PTdYwDbWNMhpBhF6GjxAr2", "phone": "1234", "username": "a"}], "usersImg": ""}
 
 export default function App() {
@@ -23,13 +24,12 @@ export default function App() {
   const [userData, setUserData] = useState(dataCustomer);
   const [userImg, setUserImg] = useState('');
   const [userType, setUserType] =  useState('customer');
-  const  [isload, setIsload] = useState(true)
+  const  [isload, setIsload] = useState(false)
 
   const apiGetSession =()=>{
     axios.get('http://192.168.1.102:3001/getSession').then((res)=>{
       if(res.data.logedIn === true){
         setUserData(res.data);
-        console.log(res.data);
         setUserImg(res.data.usersImg);
         setUserType(res.data.UserType);
         setIsload(false)               
@@ -59,25 +59,29 @@ export default function App() {
 
   React.useEffect(()=>{
     SplashScreen.hide() 
-    /* let isMounted = (
-      apiGetSession()
-    ) */
+    let isMounted = (
+      true
+      /* apiGetSession() */
+    )
     return () => { isMounted = false}; 
       },[auth]) 
 
   if ((userData !== null) && ((userType == 'customer') || (userType == 'student'))) {
     return (
     <>
-    <NativeBaseProvider>
-      <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <AuthContext.Provider value={{ auth, setAuth, setIsload, userImg, userType, userData}}>
-          <NavigationContainer>        
-            <Tabs />                                               
-          </NavigationContainer>
-        </AuthContext.Provider>
-      </ApplicationProvider>
-    </NativeBaseProvider>  
+    <Provider store={Store} >
+      <NativeBaseProvider>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <AuthContext.Provider value={{ auth, setAuth, setIsload, userImg, userType, userData}}>
+            <NavigationContainer>        
+              <Tabs />                                               
+            </NavigationContainer>
+          </AuthContext.Provider>
+        </ApplicationProvider>
+      </NativeBaseProvider>  
+    </Provider>
+      
   </>
   );
   } else if(userData !== null && userType == 'store' ) {

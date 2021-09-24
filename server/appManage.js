@@ -336,7 +336,7 @@ appRouter.post('/deleteMenu',(req,res)=>{
                 if (err) {
                     console.log(err);
                 } else {
-                  db.query('DELETE FROM food_and_option_mix WHERE food_id=?',[menuId],async(err)=>{
+                  db.query('DELETE FROM food_and_option_mix WHERE food_id=?',[menuId],(err)=>{
                         if (err) {
                             console.log(err);
                         } else {
@@ -395,13 +395,76 @@ appRouter.post('/ComplaintList',(req,res)=>{
 })
 
 appRouter.get('/getFoodMenuListCustomer',(req,res)=>{
-    const store_id = req.body.storeId
-    db.query('SELECT * FROM food_menu',[store_id],(err,result)=>{
+    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId
+    FROM food_menu
+    INNER JOIN store ON store.id = food_menu.store_id
+    `,[],(err,result)=>{
         if (err) {
             console.log(err);
         } else {
             res.send(result);
         }
     })
+})
+appRouter.post('/getOptionMixByfoodid',(req,res)=>{
+    const fooId = req.body.fooId
+    db.query(`SELECT food_option.option_name AS name,food_and_option_mix.option_id AS id
+    FROM food_and_option_mix 
+    INNER JOIN food_option ON food_option.id = food_and_option_mix.option_id
+    WHERE food_and_option_mix.food_id = ?`,[fooId],(err,result)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+appRouter.post('/getSpecialOptionMixByfoodid',(req,res)=>{
+    const fooId = req.body.fooId
+    db.query(`SELECT food_special_option.special_option_name AS name,food_and_special_option_mix.special_option_id AS id
+    FROM food_and_special_option_mix 
+    INNER JOIN food_special_option ON food_special_option.id = food_and_special_option_mix.special_option_id
+    WHERE food_and_special_option_mix.food_id = ?`,[fooId],(err,result)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+appRouter.post('/getAnnounCustomer',(req,res)=>{
+    db.query(`SELECT * From announce`,(err,result)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+appRouter.post('/insertOrder',(req,res)=> {
+    const orderId = req.body.orderFoodId
+    const customerId = req.body.customerId
+    const Date = req.body.Date
+    const data = req.body.data
+    db.query(`INSERT INTO order_food (id,customer_id,date) VALUES(?,?,?) `,[orderId,customerId,Date],async(err)=>{
+        if (err) {
+            console.log(err);
+        } else {
+         
+            const promises = data.map(data => {
+             db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
+               VALUES(?,?,?,?,?)`,[orderId,data.id,data.text,data.option,data.count],(err)=>{
+                   if (err) {
+                       console.log(err);
+                   } 
+               }) 
+                  
+           })
+            
+           await Promise.all(promises)
+            res.send({message:'เรียบร้อย'})     
+        }
+    })
+    
 })
 module.exports = appRouter

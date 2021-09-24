@@ -14,10 +14,6 @@ import { Divider,
   } from 'native-base';
 import { addMenuValidate } from '../../Validation';
 
-const person = (props) => (
-    <Icon {...props} name='person'/>
-  );
-
 const dataType = [
   'ตามสั่ง',
   'ข้าวแกง',
