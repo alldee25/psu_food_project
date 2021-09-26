@@ -1,11 +1,22 @@
 import { Container, Heading, View } from 'native-base'
-import React from 'react'
-import { Dimensions, ImageBackground, Text, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect } from 'react'
+import { Alert, Dimensions, ImageBackground, Text, TouchableOpacity } from 'react-native';
+import { io } from 'socket.io-client';
+import { AuthContext } from '../App';
 
 export default function OrdersScreen() {
 
+    const {userData} = useContext(AuthContext);
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
+    const socket = io('http://192.168.1.102:3001')
+    
+
+    useEffect(()=>{
+        socket.on('jjj',() => {
+            console.log('Audi');
+        })
+    })
     return (
         
         <ImageBackground

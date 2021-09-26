@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Icon, SelectItem, Select, Input } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDataCart } from '../src/redux/actions';
+import { v4 as uuidv4 } from 'uuid';
 
 const packaging = [
     'ห่อ',
@@ -12,10 +13,10 @@ const packaging = [
 ];
   
 export default function FoodDetialScreen({navigation,route}) {
-    
     const W = Dimensions.get('window').width
     const H = Dimensions.get('window').height
     const dispatch = useDispatch()
+    const {cart} = useSelector(state => state.userReducer)
     const [optionDataList, setOptionList] = React.useState([])
     const [selectedIndex, setSelectedIndex] = React.useState([]);
     const [selectedIndexPack, setSelectedIndexPack] = React.useState([]);
@@ -28,8 +29,10 @@ export default function FoodDetialScreen({navigation,route}) {
     ])
 
     const conferm =(page)=>{
+        const uid = uuidv4();
         if (page == 'addToCart') {
             dispatch(setDataCart({
+                id:uid,
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
@@ -39,7 +42,8 @@ export default function FoodDetialScreen({navigation,route}) {
                 count:count,
             }))
         } else {
-            navigation.navigate('conferm',('data',{
+            navigation.navigate('conferm',('data',[{
+                id:uid,
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
@@ -47,7 +51,7 @@ export default function FoodDetialScreen({navigation,route}) {
                 text:text,
                 option:option,
                 count:count,
-            }))  
+            }]))  
         }
         
 
@@ -91,7 +95,6 @@ export default function FoodDetialScreen({navigation,route}) {
             h={'100%'}
             justifyContent='flex-end'
         >
-            
             <View
             style={{
                 alignItems:'center',
@@ -113,15 +116,51 @@ export default function FoodDetialScreen({navigation,route}) {
             }}
             >
                 <TouchableOpacity
-                onPress={()=>{ navigation.goBack()}}
-                style={{
-                    position:'absolute',
-                    top:10,
-                    left:20,
-                    zIndex:5,
-                    backgroundColor:'#888888',
-                    borderRadius:20/2
-                }}
+                    onPress={()=> navigation.navigate('cart')}
+                    style={{
+                        zIndex:45,
+                        position:'absolute',
+                        right:20,
+                        top:5,
+                        justifyContent:'center',
+                        alignItems:'center'
+                    }}
+                >
+                <View
+                    w={7}
+                    justifyContent='center'
+                    alignItems='center'                   
+                    position='absolute'
+                    olor='black'
+                    top={4}
+                    zIndex={3}
+                >
+                    <Text>
+                        {cart.reduce((sum, item)=> sum + item.count, 0)}
+                    </Text>
+                </View>
+                    
+                    <Image
+                        mt={0.3}
+                        source={require('../assets/img/Asset.png')}
+                        alt='cart'
+                        style={styles.iconBack}
+                    >
+
+                    </Image>
+            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={()=>{ navigation.goBack()}}
+                    style={{
+                        position:'absolute',
+                        width:30,
+                        height:30,
+                        top:10,
+                        left:20,
+                        zIndex:5,
+                        backgroundColor:'#888888',
+                        borderRadius:30/2
+                    }}
             >
                 <Icon style={styles.icon} fill='white' name='arrow-ios-back-outline' />
             </TouchableOpacity>
@@ -151,7 +190,7 @@ export default function FoodDetialScreen({navigation,route}) {
                             w={'90%'}
                             
                         >
-                            <ScrollView
+                            <View
                                 h={80}
                             >
                             <View 
@@ -275,7 +314,7 @@ export default function FoodDetialScreen({navigation,route}) {
                             <Button w='49%' onPress={conferm}>สั่งซื้อ</Button> 
                             <Button w='49%'onPress={() => conferm("addToCart")}>Add to cart</Button>   
                         </View>                        
-                    </ScrollView>
+                    </View>
                 </View>     
             </View>      
         </View>
@@ -328,6 +367,10 @@ const styles = StyleSheet.create({
           width: 32,
           height: 32,
           zIndex:5
+        },
+        iconBack: {
+            width: 30,
+            height: 40,
         },
 
 })

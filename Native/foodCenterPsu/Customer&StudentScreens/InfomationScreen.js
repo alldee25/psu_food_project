@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Text, View, Image, Divider } from 'native-base';
+import { Text, View, Image, Divider, Button } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useEffect } from 'react';
@@ -26,7 +26,12 @@ export default function InfomationScreen() {
     )
 }
 const ListMenu =({navigation})=> {
-    const {userType} = useContext(AuthContext);
+    const {userType, setAuth} = useContext(AuthContext);
+    const logout =()=>{
+        axios.get('http://192.168.1.102:3001/logout').then(
+            setAuth('logout')
+        )
+    }
     return(
         <SafeAreaView style={styles.container}>
             <View
@@ -55,8 +60,7 @@ const ListMenu =({navigation})=> {
                 </>
             ):(<></>)} 
             <MenuItem style={styles.MenuItem} title='ประวัติการซื้อ' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
-
-            
+            <Button disabled={groupValues == ''} w='90%' onPress={()=> logout}>Log out</Button>  
         </SafeAreaView>
     )
 }

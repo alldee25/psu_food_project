@@ -6,6 +6,7 @@ const adminRouter = require('./adminManage')
 const usersRouter = require('./userManage')
 const appRouter = require('./appManage')
 const path = require('path')
+const socket = require('socket.io')
 
 
 app.use(authRouter,adminRouter,usersRouter,appRouter)
@@ -17,9 +18,11 @@ db = mysql.createConnection({
     password:"",
     database:"food_center_psu_pn"
 })
-app.listen(3001,() => {
+const server = app.listen(3001,() => {
     console.log("connect sucsessful!");
 })
+io = socket(server)
 
+module.exports = app;
 
 

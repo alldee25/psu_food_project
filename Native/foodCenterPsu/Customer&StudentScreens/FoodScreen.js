@@ -4,11 +4,15 @@ import axios from 'axios';
 import { Divider, FlatList, Heading, Image, Text, View, ScrollView, Input } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux';
+import CartScreen from './CartScreen';
 import FoodDetialScreen from './FoodDetialScreen';
 import OrderConferm from './OrderConferm';
 
 export default function FoodScreen() {
+    
     const FoodStack = createStackNavigator()
+    
     return(
         <FoodStack.Navigator>
             <FoodStack.Screen
@@ -30,12 +34,17 @@ export default function FoodScreen() {
                 name='conferm'
                 component={OrderConferm} 
             />
+            <FoodStack.Screen 
+                name='cart'
+                component={CartScreen} 
+            />
         </FoodStack.Navigator>
     )
 }
 const FoodList =({navigation})=>{
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
+    const {cart} = useSelector(state => state.userReducer)
     const [foodDataList,setFoodDataList] = useState([]);
 
     useEffect(()=>{
@@ -75,10 +84,25 @@ const FoodList =({navigation})=>{
                 mr={4}
             >
                 <TouchableOpacity
-                    onPress={()=> navigation.navigate('conferm')}
+                    onPress={()=> navigation.navigate('cart')}
                 >
+                <View
+                    w={7}
+                    position='absolute'
+                    zIndex={2}
+                    justifyContent='center'
+                    alignItems='center'                   
+                    top={4}
+                    olor='black'
+                >
+                    <Text>
+                        {cart.reduce((sum, item)=> sum + item.count, 0)}
+                    </Text>
+                </View>
+                    
                     <Image
-                        source={require('../assets/img/shopping-bag-rounnd.png')}
+                        mt={0.3}
+                        source={require('../assets/img/Asset.png')}
                         alt='cart'
                         style={styles.iconBack}
                     >
@@ -87,9 +111,7 @@ const FoodList =({navigation})=>{
             </TouchableOpacity>
                 
             </View>
-            
         </View>
-            
             <View
              width={W} alignItems='center'
             >
@@ -148,40 +170,13 @@ const FoodList =({navigation})=>{
                    เมนูน้ำ
                 </Text>
             </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
             </ScrollView> 
             </View>
             
             <View
                 backgroundColor='white'
                 flex={5}
-                borderTopRadius={15}
+                borderTopRadius={20}
                 mb={10}
             >
                 
@@ -189,8 +184,8 @@ const FoodList =({navigation})=>{
                         data={foodDataList}
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={{
-                        paddingLeft:10,
-                        paddingRight:10
+                        paddingLeft:7,
+                        paddingRight:7
                         }}
                         renderItem={({item})=>
                         <TouchableOpacity
@@ -286,7 +281,7 @@ const styles = StyleSheet.create({
         color:"black"
         },
     iconBack: {
-        width: 42,
+        width: 30,
         height: 40,
         },
         

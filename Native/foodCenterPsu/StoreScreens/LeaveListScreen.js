@@ -61,7 +61,8 @@ export default function LeaveListScreen({navigation}) {
         ),
       });
             
-      let isMounted = (axios.post('http://192.168.1.102:3001/getLeaveList',{
+      let isMounted = (
+          axios.post('http://192.168.1.102:3001/getLeaveList',{
         userId:userData.usersData[0].id
         }).then((res)=>{
            moviesRef.current = res.data.every((data)=>{

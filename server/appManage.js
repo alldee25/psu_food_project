@@ -9,7 +9,6 @@ const path = require('path')
 let fs = require('fs');
 const multer = require('multer')
 
-
 appRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -441,7 +440,7 @@ appRouter.post('/getAnnounCustomer',(req,res)=>{
         }
     })
 })
-appRouter.post('/insertOrder',(req,res)=> {
+/* appRouter.post('/insertOrder',(req,res)=> {
     const orderId = req.body.orderFoodId
     const customerId = req.body.customerId
     const Date = req.body.Date
@@ -449,22 +448,52 @@ appRouter.post('/insertOrder',(req,res)=> {
     db.query(`INSERT INTO order_food (id,customer_id,date) VALUES(?,?,?) `,[orderId,customerId,Date],async(err)=>{
         if (err) {
             console.log(err);
+            res.send({err:'ไม่สามารสั่งได้'})
         } else {
-         
-            const promises = data.map(data => {
+         db.query(`SELECT store.id 
+         FROM store
+            INNER JOIN food_menu ON food_menu.store_id = store.id
+            INNER JOIN order_food_detial ON order_food_detial.food_id = food_id
+            INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+            WHERE order_food.id = ?
+            GROUP BY store.id
+         `,[orderId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 result.map((data)=>{
+                     
+                     io.on("connection", (socket) => {
+                    socket.to(data).emit
+                })
+                 })
+                
+               const promises = data.map(data => {
              db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
                VALUES(?,?,?,?,?)`,[orderId,data.id,data.text,data.option,data.count],(err)=>{
                    if (err) {
                        console.log(err);
+                       res.send({err:'ไม่สามารสั่งได้'})
                    } 
                }) 
                   
            })
-            
+           io.emit
            await Promise.all(promises)
-            res.send({message:'เรียบร้อย'})     
+            res.send({message:'เรียบร้อย'})    
+             }
+         })
+               
         }
     })
+    
+}) */
+appRouter.get('/test',(req,res)=>{
+    
+        
+    io.emit('jjj')
+    res.send('ok')
+   
     
 })
 module.exports = appRouter
