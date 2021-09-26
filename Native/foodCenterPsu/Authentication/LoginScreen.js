@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
-import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl,  Alert } from 'react-native'
+import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl,TouchableWithoutFeedback,  Alert } from 'react-native'
 import { Button, IndexPath, Input, Select, SelectItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon, MenuItem, Spinner } from '@ui-kitten/components';
@@ -51,12 +51,34 @@ export default function LoginScreen() {
         </selectUserStack.Navigator>
     )
 }
+const AlertIcon = (props) => (
+    <Icon {...props} name='alert-circle-outline'/>
+  );
 const Loin =({navigation,route})=>{
 
     const {setAuth,auth} = React.useContext(AuthContext)
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [process, setProcess] = React.useState(false);
+    const [secureTextEntry, setSecureTextEntry] = React.useState(true);
+
+    const toggleSecureEntry = () => {
+        setSecureTextEntry(!secureTextEntry);
+    };
+
+    const renderCaption = () => {
+        return (
+          <View style={styles.captionContainer}>
+            {AlertIcon(styles.captionIcon)}
+            <Text style={styles.captionText}>Should contain at least 8 symbols</Text>
+          </View>
+        )
+      }
+    const renderIcon = (props) => (
+        <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+            <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'}/>
+        </TouchableWithoutFeedback>
+    );
 
     const login =()=>{
         
@@ -100,7 +122,15 @@ const Loin =({navigation,route})=>{
             >
                     <View style={styles.filter} /> 
                         <View style={styles.formInput}>                                
-                            <Input value={username} placeholder='Username' onChangeText={nextValue => setUsername(nextValue)} size="medium" style={styles.input}/>
+                            <Input 
+                                value={username} 
+                                placeholder='Username' 
+                                onChangeText={nextValue => setUsername(nextValue)} 
+                                size="medium" style={styles.input}
+                                caption={renderCaption}
+                                accessoryRight={renderIcon}
+                                secureTextEntry={secureTextEntry}
+                            />
                             <Input value={password} placeholder='Password' onChangeText={nextValue => setPassword(nextValue)} size="medium" style={styles.input}/>         
                             <View style={{display:'flex',alignItems:'center',width:'80%'}}>
                                 <Button 
@@ -251,6 +281,22 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
     opacity:0.7
-    }
+    },
+    captionIcon: {
+    width: 10,
+    height: 10,
+    marginRight: 5
+    },
+    captionText: {
+    fontSize: 12,
+    fontWeight: "400",
+    fontFamily: "opensans-regular",
+    color: "#8F9BB3",
+    },
+    captionContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
 })
 

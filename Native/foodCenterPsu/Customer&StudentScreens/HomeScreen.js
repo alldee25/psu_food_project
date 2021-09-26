@@ -13,13 +13,21 @@ const images = [
 export default function HomeScreen() {
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
-    const {userData} = useContext(AuthContext)
+    const {userData,socket,callNotifitionUser} = useContext(AuthContext)
+    const userId = userData.usersData[0].id
     const [annonment,setAnnounment]= useState([])
+    
 
     useEffect(()=>{
-        axios.post(`http://192.168.1.102:3001/getAnnounCustomer`).then((res)=>{
+
+        let isMounted = (
+            socket.off(`withCus-id-${userId}`).on(`withCus-id-${userId}`,()=> {callNotifitionUser()}),
+             axios.post(`http://192.168.1.102:3001/getAnnounCustomer`).then((res)=>{
             setAnnounment(res.data)
         })
+        )
+       
+        return ()=> { isMounted = false }
     },[])
 
     return (
@@ -30,8 +38,8 @@ export default function HomeScreen() {
              
             <View
                 flexDirection='column'
-                height={H}
-                width={W}
+                height={'100%'}
+                width={'100%'}
             >
                 <Container
                     flexDirection='row'
@@ -86,9 +94,9 @@ export default function HomeScreen() {
                     <View
                         mt={4} 
                         bg='#FFFFFF' 
-                        borderRadius={30} 
+                        borderTopRadius={30} 
                         width='100%' 
-                        height={400}                    
+                        height={'70%'}                    
                     >
                         
                         <Heading fontFamily='IBMPlexSansThai-Bold' size="md" ml={6} mt={4}>

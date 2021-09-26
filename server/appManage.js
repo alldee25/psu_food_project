@@ -9,7 +9,6 @@ const path = require('path')
 let fs = require('fs');
 const multer = require('multer')
 
-
 appRouter.use(cors({
     origin:['http://localhost:3000'],
     methods:['GET', 'POST'],
@@ -395,9 +394,11 @@ appRouter.post('/ComplaintList',(req,res)=>{
 })
 
 appRouter.get('/getFoodMenuListCustomer',(req,res)=>{
-    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId
+    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId,store.status AS s_status,leave_store.to_date,leave_store.frome_date 
     FROM food_menu
     INNER JOIN store ON store.id = food_menu.store_id
+    INNER JOIN store_owner ON store.id = store_owner.store_id
+   	LEFT JOIN leave_store ON leave_store.store_owner_id = store_owner.id AND leave_store.date_write = (SELECT MAX(leave_store.date_write) FROM leave_store)
     `,[],(err,result)=>{
         if (err) {
             console.log(err);
@@ -449,22 +450,192 @@ appRouter.post('/insertOrder',(req,res)=> {
     db.query(`INSERT INTO order_food (id,customer_id,date) VALUES(?,?,?) `,[orderId,customerId,Date],async(err)=>{
         if (err) {
             console.log(err);
+            res.send({err:'ไม่สามารสั่งได้'})
         } else {
          
-            const promises = data.map(data => {
-             db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
-               VALUES(?,?,?,?,?)`,[orderId,data.id,data.text,data.option,data.count],(err)=>{
+               const promises = data.map(data => {
+                db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
+                VALUES(?,?,?,?,?)`,[orderId,data.fId,data.text,data.option,data.count],(err)=>{
                    if (err) {
                        console.log(err);
+                       res.send({err:'ไม่สามารสั่งได้'})
                    } 
                }) 
                   
            })
-            
+
            await Promise.all(promises)
-            res.send({message:'เรียบร้อย'})     
+           db.query(`SELECT store.id, order_food.id AS oid, order_food.date,customer.name
+           FROM store 
+           INNER JOIN food_menu ON food_menu.store_id = store.id 
+           INNER JOIN order_food_detial ON order_food_detial.food_id = food_menu.id 
+           INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+           INNER JOIN	customer ON customer.id = order_food.customer_id
+           WHERE order_food.id = ? GROUP BY store.id`,[orderId],(err,result)=>{
+                    if (err) {
+                        console.log(err);
+                    } else {
+                       result.map((data)=>{
+                       io.emit(`withUser-id-${data.id}`,data);
+                       })
+                   res.send({message:'เรียบร้อย'})      
+                   }
+           })
+               
         }
     })
     
+})
+appRouter.post('/getOrder',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT order_food.id AS oid, order_food.date,customer.name,customer.id AS cid
+    FROM store 
+    INNER JOIN food_menu ON food_menu.store_id = store.id 
+    INNER JOIN order_food_detial ON order_food_detial.food_id = food_menu.id 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    INNER JOIN	customer ON customer.id = order_food.customer_id
+    WHERE store.id = ? AND date(order_food.date) = ?
+    GROUP BY order_food.id
+    ORDER BY order_food.date ASC 
+    `,[storeId,date],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                res.send(result)
+                }
+            })  
+})
+appRouter.post('/getOrderDetial',(req,res)=>{
+    const oid = req.body.oid
+    const sid = req.body.sid
+    db.query(`SELECT order_food_detial.*,food_menu.food_name,food_option.option_name
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id 
+    LEFT JOIN food_option ON food_option.id = order_food_detial.food_option_id
+    WHERE order_food.id = ? AND food_menu.store_id = ?`,[oid,sid],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                res.send(result)
+                }
+            })  
+})
+appRouter.post('/updateStatusOrder',(req,res)=>{
+    const id = req.body.id
+    const status = req.body.status
+    const cid = req.body.cid
+    db.query(`UPDATE order_food_detial SET status = ? WHERE id = ?`,[status,id],(err)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 db.query(`SELECT order_food_detial.* FROM order_food_detial WHERE id = ?`,[id],(err,result)=>{
+                     if (err) {
+                         console.log(err);
+                         res.send(err)
+                     } else {
+                        io.emit(`withCus-id-${cid}`,result);
+                        res.send({maessage:'เรียบร้อย'})
+                     }
+                 })
+                }
+            })  
+})
+appRouter.post('/getOrderUserList',(req,res)=>{
+    const userId = req.body.userId
+    db.query(`SELECT order_food.* FROM order_food 
+    INNER JOIN order_food_detial ON order_food_detial.order_food_id = order_food.id
+    WHERE order_food.customer_id = ? 
+    GROUP BY order_food.id`,[userId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 res.send(result)
+                }
+        })  
+})
+appRouter.post('/getOrderUserDetial',(req,res)=>{
+    const userId = req.body.userId
+    const oid = req.body.oid
+    db.query(`SELECT order_food_detial.*,food_menu.food_name,food_option.option_name,store.store_name
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN store ON store.id = food_menu.store_id 
+    LEFT JOIN food_option ON food_option.id = order_food_detial.food_option_id
+    WHERE order_food.id = ? AND order_food.customer_id = ?`,[oid,userId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 res.send(result)
+                }
+            })  
+})
+appRouter.post('/getStoreStatus',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT status FROM store WHERE store.id = ?`,[storeId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 res.send(result[0].status)
+                }
+            })  
+})
+appRouter.post('/ChangStoreStatus',(req,res)=>{
+    
+    const storeId = req.body.storeId
+    const status = req.body.status
+    db.query(`UPDATE store SET status = ? WHERE store.id = ?`,[status,storeId],(err)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                db.query(`SELECT status FROM store WHERE store.id = ?`,[storeId],(err,result)=>{
+                    if (err) {
+                        console.log(err);
+                    } else {
+                      res.send(result[0].status)  
+                    }
+                })
+                 
+                }
+            })  
+})
+appRouter.post('/getsellInfomation',(req,res)=>{
+    
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT MAX(MaxOrder) AS quantity,food_name,orderToday 
+        FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
+        INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+        WHERE food_menu.store_id = ?) AS orderToday
+        FROM order_food_detial 
+        INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+        INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+        WHERE food_menu.store_id = ? AND date(order_food.date) = ?
+        GROUP BY food_menu.food_name) MaxOrder
+    `,[storeId,storeId,date],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {             
+                res.send(result)  
+            }
+    })  
+})
+//----------------------------------------------------------Just Test-----------------------------------------------
+appRouter.get('/test',(req,res)=>{
+    const userId = 4
+    db.query(`SELECT order_food_detial.* FROM order_food_detial WHERE id = ?`,[134],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send(err)
+        } else {
+            io.emit(`withCus-id-${userId}`,result);
+           res.send({maessage:'เรียบร้อย'})
+          
+        }
+
+
+    })  
 })
 module.exports = appRouter

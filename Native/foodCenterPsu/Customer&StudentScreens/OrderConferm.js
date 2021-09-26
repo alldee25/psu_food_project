@@ -16,9 +16,12 @@ import {
 import React, { useContext, useEffect, useState } from 'react'
 import { Alert, Dimensions, StyleSheet } from 'react-native';
 import { AuthContext } from '../App';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { DeleteManyDataCart } from '../src/redux/actions';
 
 export default function OrderConferm({route,navigation}) {
+    
+    const dispatch = useDispatch()
     let [sum, setSum] = useState(0);
     const H = Dimensions.get('window').height
     const [data,setData] = useState([])
@@ -29,6 +32,11 @@ export default function OrderConferm({route,navigation}) {
     
     
     const Ordered =()=> {
+      const idValue = data.map((item)=>{
+      return item.id
+      })
+
+      
         axios.post('http://192.168.1.102:3001/insertOrder',{
             orderFoodId:uuidv4(),
             customerId:userData.usersData[0].id,
@@ -39,24 +47,27 @@ export default function OrderConferm({route,navigation}) {
                 if (res.data.err) {
                     console.log(err);
                 } else {
-                    
+                  toast.show({
+                    title: "สั่งแรียบร้อย",
+                    status: "success",
+                    description: "รอสักครู่",
+                  })
+                  dispatch(DeleteManyDataCart(
+                      idValue
+                    ))
+                   navigation.navigate('เมนู') 
                 }
-                navigation.goBack()
+                
             }
         )
     }
 
-    useEffect(()=>{
+    useEffect(()=>{  
         if (route.params) {
-            setData([route.params])
-            setSum(route.params.food_price)
-        } else {
-            setData(cart)
-            cart.forEach(price => {
-            setSum(sum+=price.food_price)
-        });
-        }
-        
+            setData(route.params)
+            let allprice = route.params.reduce((sum, item)=> sum + item.food_price, 0)
+            setSum(allprice)
+        }       
     },[])
 
     return (

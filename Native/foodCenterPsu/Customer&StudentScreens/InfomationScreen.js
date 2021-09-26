@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
-import { Text, View, Image, Divider } from 'native-base';
-import { TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react'
+import { Text, View, Image, Divider, Button, Heading } from 'native-base';
+import { Dimensions, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useEffect } from 'react';
 import {  SafeAreaView, StyleSheet } from 'react-native'
@@ -16,6 +16,7 @@ const ForwardIcon = (props) => (
 );
 
 export default function InfomationScreen() {
+
     const ManageStack = createStackNavigator();
     return (
         <ManageStack.Navigator>
@@ -26,28 +27,54 @@ export default function InfomationScreen() {
     )
 }
 const ListMenu =({navigation})=> {
-    const {userType} = useContext(AuthContext);
+    const {userType,setAuth,userData} = useContext(AuthContext);
+    const [loading,setLoading] = useState(false)
+    const logout =()=>{
+        setLoading(true)
+        setAuth('logout')
+        axios.get('http://192.168.1.102:3001/logout').then((res)=>{
+            console.log(res.data);
+        })
+    }
     return(
         <SafeAreaView style={styles.container}>
             <View
+           
                 w='95%'
-                h={16}
+                h='9%'
             >
                 <TouchableOpacity
                     onPress={()=>{navigation.navigate('Cart')}}
                 >
-                    <Image 
+                <View
+                    
+                    flexDirection='row'
+                >
+                    <Image                  
                         alt='img'
                         w={50}
-                        h={50}
+                        h={45}
                         resizeMode='contain'
                         source={require('../assets/img/user.png')}
-                    />  
+                    />
+                    <View
+                        ml={5}
+                        w='50%'
+                        alignItems='flex-start'
+                        flexDirection='column'
+                    >
+                        <Text>
+                            {userData.usersData[0].name}
+                        </Text>
+                     <Text>
+                        โปรไฟล์
+                    </Text>   
+                    </View>                     
+                </View>    
                 </TouchableOpacity>
-                
             </View>
             
-            <Divider w='100%' bgColor='#888888' alignSelf='center' />
+            <Divider w='90%' bgColor='#888888' alignSelf='center' />
             {userType == 'student' ? (
                 <>
                 <MenuItem style={styles.MenuItem} title='detial' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
@@ -55,8 +82,23 @@ const ListMenu =({navigation})=> {
                 </>
             ):(<></>)} 
             <MenuItem style={styles.MenuItem} title='ประวัติการซื้อ' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
-
-            
+           <View
+                position='absolute'
+                alignItems='center'
+                bottom='3%'
+                mt={4}
+                w='100%'
+                flexDirection='column'
+           >
+             <Button  
+                w='90%'
+                onPress={()=> logout()}
+                isLoading={loading} 
+                isLoadingText="Loging out..."
+            >
+                Log out
+            </Button>   
+           </View>
         </SafeAreaView>
     )
 }
@@ -64,7 +106,8 @@ const styles = StyleSheet.create({
     container:{
         display:'flex',
         alignItems:"flex-end",
-        marginTop:10
+        marginTop:10,
+        height:'100%'
     },
     MenuItem:{
         fontWeight:'bold',

@@ -2,13 +2,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
 import { Divider, FlatList, Heading, Image, Text, View, ScrollView, Input } from 'native-base'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux';
+import { AuthContext } from '../App';
+import CartScreen from './CartScreen';
 import FoodDetialScreen from './FoodDetialScreen';
 import OrderConferm from './OrderConferm';
 
 export default function FoodScreen() {
+    
     const FoodStack = createStackNavigator()
+    
     return(
         <FoodStack.Navigator>
             <FoodStack.Screen
@@ -30,13 +35,23 @@ export default function FoodScreen() {
                 name='conferm'
                 component={OrderConferm} 
             />
+            <FoodStack.Screen 
+                name='cart'
+                component={CartScreen} 
+            />
         </FoodStack.Navigator>
     )
 }
 const FoodList =({navigation})=>{
+
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
     const [foodDataList,setFoodDataList] = useState([]);
+    const {userData} = useContext(AuthContext);
+    const {cart} = useSelector(state => state.userReducer)
+    const cartFilter = cart.filter(data => data.userId == userData.usersData[0].id)
+    const today = new Date();
+    
 
     useEffect(()=>{
         let isMounted = (
@@ -75,10 +90,25 @@ const FoodList =({navigation})=>{
                 mr={4}
             >
                 <TouchableOpacity
-                    onPress={()=> navigation.navigate('conferm')}
+                    onPress={()=> navigation.navigate('cart')}
                 >
+                <View
+                    w={7}
+                    position='absolute'
+                    zIndex={2}
+                    justifyContent='center'
+                    alignItems='center'                   
+                    top={4}
+                    olor='black'
+                >
+                    <Text>
+                        {cartFilter.reduce((sum, item)=> sum + item.count, 0)}
+                    </Text>
+                </View>
+                    
                     <Image
-                        source={require('../assets/img/shopping-bag-rounnd.png')}
+                        mt={0.3}
+                        source={require('../assets/img/Asset.png')}
                         alt='cart'
                         style={styles.iconBack}
                     >
@@ -87,9 +117,7 @@ const FoodList =({navigation})=>{
             </TouchableOpacity>
                 
             </View>
-            
         </View>
-            
             <View
              width={W} alignItems='center'
             >
@@ -148,59 +176,37 @@ const FoodList =({navigation})=>{
                    เมนูน้ำ
                 </Text>
             </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
-            <TouchableOpacity 
-                style={styles.buttonTypy}
-            >
-                <Text
-                    color='#1D1F20'
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
             </ScrollView> 
             </View>
             
-            <View
-                backgroundColor='white'
-                flex={5}
-                borderTopRadius={15}
-                mb={10}
-            >
-                
+                <View
+                    
+                    borderWidth={1}
+                    backgroundColor='white'
+                    flex={5}
+                    borderTopRadius={20}
+                    mb={'17%'}
+                >
+
                     <FlatList 
                         data={foodDataList}
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={{
-                        paddingLeft:10,
-                        paddingRight:10
+                            paddingLeft:7,
+                            paddingRight:7,
+                            marginBottom:300
                         }}
                         renderItem={({item})=>
                         <TouchableOpacity
+                            disabled={item.food_status == !1 || item.s_status  == 'ปิด' || (new Date(item.to_date).getTime() > today.getTime() && today.getTime() > new Date(item.frome_date).getTime())}
                             style={{
                                 marginTop:8
                             }}
                             onPress={()=>{navigation.navigate('รายละเอียดเมนู',
                             {
-                                id:item.id,
+                                fId:item.id,
                                 sId:item.sId,
+                                userId:userData.usersData[0].id,
                                 food_img:item.food_img,
                                 food_name:item.food_name,
                                 food_price:item.food_price,
@@ -208,7 +214,7 @@ const FoodList =({navigation})=>{
                             }) 
                         }}
                         >
-                         {/* {item.food_status == !1 ? (<View 
+                         {item.food_status == !1 || item.s_status  == 'ปิด' || (new Date(item.to_date).getTime() > today.getTime() && today.getTime() > new Date(item.frome_date).getTime()) ? (<View 
                             position='absolute'
                             alignItems='center'
                             justifyContent='center'
@@ -219,18 +225,35 @@ const FoodList =({navigation})=>{
                             backgroundColor='black'
                             borderRadius={20}
                             
-                            ><Heading
-                                color='white'
                             >
-                                หมดแล้ว
-                            </Heading></View>):(<></>)} */}   
+                                { item.s_status  == 'ปิด' && (new Date(item.to_date).getTime() > today.getTime() && today.getTime() > new Date(item.frome_date).getTime()) == false ? 
+                                <Heading
+                                    color='white'
+                                > 
+                                    ร้านปิดแล้ว
+                                </Heading> 
+                            :
+                            (new Date(item.to_date).getTime() > today.getTime() && today.getTime() > new Date(item.frome_date).getTime()) == true ?
+                            <Heading
+                                color='white'
+                            > 
+                                ร้านเปิดวันที่ {item.to_date} 
+                            </Heading>
+                            
+                        :
+                        <Heading
+                                color='white'
+                            > 
+                                หมด 
+                            </Heading>
+                        }
+                            </View>):(<></>)}   
                         <View style={{
                             flexDirection:'row',
                             padding:10,
                             backgroundColor:'#E4E4F4',
                             borderRadius:20,
-                        }}>
-                            
+                        }}>                      
                             <Image
                                 style={{
                                     width:120,               
@@ -248,10 +271,10 @@ const FoodList =({navigation})=>{
                                     </Text>                              
                                 <Divider w='100%' bgColor='#888888' alignSelf='center' />
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
-                                    ประเภท: {item.food_type}
+                                   {item.food_type}
                                 </Text>
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
-                                        ร้าน : {item.store_name} 
+                                    ร้าน : {item.store_name} 
                                 </Text> 
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                     ราคา: {item.food_price} บาท
@@ -286,7 +309,7 @@ const styles = StyleSheet.create({
         color:"black"
         },
     iconBack: {
-        width: 42,
+        width: 30,
         height: 40,
         },
         

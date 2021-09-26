@@ -51,12 +51,6 @@ const  MenuManage =({navigation})=> {
     const [position, setPosition] = React.useState("auto")
 
     
-    navigation.setOptions({
-        headerRight: () => (
-            <ButtonTop ref={changModalStatus}
-            />   
-        ),
-      });
 
     const changModalStatus =()=>{
         onOpen() 
@@ -132,6 +126,12 @@ const  MenuManage =({navigation})=> {
 
     useEffect(()=>{
         let isMounted = true;
+        navigation.setOptions({
+            headerRight: () => (
+                <ButtonTop ref={changModalStatus}
+                />   
+            ),
+          });
             axios.post('http://192.168.1.102:3001/getFoodMenuList',{
             storeId:userData.usersData[0].store_id
         }).then((res)=>{

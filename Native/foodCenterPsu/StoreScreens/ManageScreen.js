@@ -1,12 +1,11 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { Icon, MenuItem,Layout,Tab,TabView } from '@ui-kitten/components';
 import axios from 'axios';
-import { View } from 'native-base';
+import { View,Button} from 'native-base';
 import React, { createRef, useContext, useEffect, useRef, useState } from 'react'
 import { StyleSheet, SafeAreaView, Text, ImageBackground } from 'react-native'
 import { AuthContext } from '../App';
 import imagBack from '../assets/img/v748-toon-106.jpg'
-import ButtonTop from './Menumanage/ButtonAdd';
 import CleaneseLevelDetial from './CleaneseLevelDetial';
 import CleaneseLevelList from './CleaneseLevelList';
 import ComplaintList from './ComplaintList';
@@ -34,6 +33,17 @@ export default function ManageScreen() {
     )
 }
 const stackScreen =({navigation})=>{
+
+    const {setAuth} = useContext(AuthContext)
+    const [loading,setLoading] = useState(false)
+    const logout =()=>{
+        setLoading(true)
+        setAuth('logout')
+        axios.get('http://192.168.1.102:3001/logout').then((res)=>{
+            console.log(res.data);
+        })
+    }
+
     return (
         <ImageBackground
             resizeMode='cover'
@@ -45,8 +55,26 @@ const stackScreen =({navigation})=>{
                 <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} />           
+                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} /> 
+                         
             </SafeAreaView>
+            <View
+                    position='absolute'
+                    alignItems='center'
+                    bottom='1%'
+                    mt={4}
+                    w='100%'
+                    flexDirection='column'
+                >
+                <Button  
+                    w='90%'
+                    onPress={()=> logout()}
+                    isLoading={loading} 
+                    isLoadingText="Loging out..."
+                >
+                    Log out
+                </Button>  
+                </View> 
         </ImageBackground>
 
     )
@@ -64,7 +92,7 @@ const styles = StyleSheet.create({
         marginTop:5,
         borderRadius:10,
         width:'97%',
-        height:90,
+        height:60,
         shadowColor:'#DC143C',                                 
         shadowOpacity:1,
         elevation:7,

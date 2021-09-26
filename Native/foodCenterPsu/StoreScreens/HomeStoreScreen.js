@@ -1,13 +1,50 @@
-import { Icon } from '@ui-kitten/components';
+import { Icon, Toggle } from '@ui-kitten/components';
+import axios from 'axios';
 import { Center, Container, Divider, Heading, Link, ScrollView, Text, View, Image } from 'native-base'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App'
+import Moment from 'moment';
 
 export default function HomeStoreScreen() {
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
     const {userData} = useContext(AuthContext)
+    const [storeStatus,setStoreStatus] = useState('')
+    const [sellInfo,setSellInfo] = useState([])
+    Moment.locale('en')
+    let date = new Date();
+    
+    const onCheckedChange =()=> {
+        setStoreStatus(!storeStatus)
+        axios.post('http://192.168.1.102:3001/ChangStoreStatus',{
+            storeId:userData.usersData[0].store_id,
+            status:!storeStatus
+        }).then(
+            (res)=> {
+                setStoreStatus(res.data)
+            }
+        )
+    }
+    useEffect(()=>{
+        axios.post('http://192.168.1.102:3001/getStoreStatus',{
+            storeId:userData.usersData[0].store_id
+        }).then(
+            (res)=> {
+                   setStoreStatus(res.data) 
+            }      
+        ).then(
+            axios.post('http://192.168.1.102:3001/getsellInfomation',{
+                storeId:userData.usersData[0].store_id,
+                date:Moment(date).format('YYYY-MM-DD')
+            }).then(
+                (res)=> {
+                    setSellInfo(res.data)
+                    console.log(res.data);
+                }
+            )
+        )
+    },[])
     return (
         <ImageBackground
             source={require('../assets/img/v748-toon-106.jpg')}
@@ -29,7 +66,33 @@ export default function HomeStoreScreen() {
                     <Heading fontFamily='SanFranciscoDisplayUltralight' color="#1D1F20" pl={4}>
                             {userData.usersData[0].name}
                     </Heading>
+                    <View
+                        w='100%'
+                        alignItems='flex-end'
+                    >
+                    <Toggle
+                        style={{marginTop:5,width:300}} 
+                        status='success' 
+                        checked={storeStatus == true } 
+                        onChange={()=>{onCheckedChange()}}              
+                    >
+                        <View
+                            flexDirection='row'
+                        >
+                            <Text fontFamily='IBMPlexSansThai-Bold'>ร้าน : </Text>
+                                <View width={10} justifyContent='center' >
+                                    {storeStatus == true ? <Text fontFamily='IBMPlexSansThai-Bold'>เปิด </Text> 
+                                    : 
+                                    <Text fontFamily='IBMPlexSansThai-Bold'>
+                                        ปิด
+                                    </Text>}
+                                </View>
+                        </View>
+                    </Toggle>
+                </View>
                 </Container>
+                
+                
                 <View 
                                      
                     alignItems='center'                   
@@ -37,6 +100,7 @@ export default function HomeStoreScreen() {
                     height={H}
                                 
                 >
+                    
                 <View              
                 width='90%' 
                 flexDirection="row"
@@ -62,13 +126,17 @@ export default function HomeStoreScreen() {
                                 เมนูยอดนิยม    
                             </Heading>
                             <Text mt={2} fontFamily='IBMPlexSansThai-Regular' fontSize="md">
-                                เนื้อแดง
+                                {sellInfo.map((data)=>(
+                                    data.food_name
+                                ))}
                             </Text>
                             <Heading fontFamily='IBMPlexSansThai-Regular' mt={2}>
-                                25
+                                {sellInfo.map((data)=>(
+                                    data.quantity
+                                ))}
                             </Heading>
                             <Text fontFamily='IBMPlexSansThai-Regular' mt={2} fontSize="md">
-                                ออร์เดอร์
+                                ออรเดอร์
                             </Text> 
                                
                         </TouchableOpacity>                                              
@@ -87,8 +155,10 @@ export default function HomeStoreScreen() {
                             <Text fontFamily='IBMPlexSansThai-Regular' mt={2} fontSize="md">
                                 วันนี้
                             </Text>
-                            <Heading  fontFamily='IBMPlexSansThai-Regular'mt={2}>
-                                25
+                            <Heading  fontFamily='IBMPlexSansThai-Regular'mt={2}>                           
+                                {sellInfo.map((data)=>(
+                                    data.orderToday
+                                ))} 
                             </Heading>
                             <Text mt={2} fontFamily='IBMPlexSansThai-Regular' fontSize="md">
                                 ออร์เดอร์

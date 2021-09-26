@@ -1,70 +1,53 @@
-import { 
-    Text,
-    Box,
-    FlatList,
-    Heading,
-    Avatar,
-    HStack,
-    VStack,
-    Spacer } from 'native-base'
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react';
+import { Dimensions, TouchableOpacity } from 'react-native';
 
-export default function CartScreen() {
+import {
+  Box,
+  View,
+  Text,
+  Pressable,
+  HStack,
+  Checkbox,
+  VStack,
+  Spacer,
+  Button
+} from 'native-base';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { Icon } from '@ui-kitten/components';
+import { useDispatch, useSelector } from 'react-redux';
+import { DeleteDataCart } from '../src/redux/actions';
+import { AuthContext } from '../App';
 
-    const data = [
-        {
-          id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-          fullName: "Aafreen Khan",
-          timeStamp: "12:47 PM",
-          recentText: "Good Day!",
-          avatarUrl:
-            "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        },
-        {
-          id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-          fullName: "Sujitha Mathur",
-          timeStamp: "11:11 PM",
-          recentText: "Cheer up, there!",
-          avatarUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-        },
-        {
-          id: "58694a0f-3da1-471f-bd96-145571e29d72",
-          fullName: "Anci Barroco",
-          timeStamp: "6:22 PM",
-          recentText: "Good Day!",
-          avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-        },
-        {
-          id: "68694a0f-3da1-431f-bd56-142371e29d72",
-          fullName: "Aniket Kumar",
-          timeStamp: "8:56 PM",
-          recentText: "All the best",
-          avatarUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-        },
-        {
-          id: "28694a0f-3da1-471f-bd96-142456e29d72",
-          fullName: "Kiara",
-          timeStamp: "12:47 PM",
-          recentText: "I will call today.",
-          avatarUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-        },
-      ]
+export default function CartScreen({navigation}) {
 
-    return (
-        <Box
-          w={{
-            base: "100%",
-            md: "25%",
-          }}
-        >
+    const {userData} = useContext(AuthContext)
+    const [mode, setMode] = useState('Basic');
+    const dispatch = useDispatch()
+    const {cart} = useSelector(state => state.userReducer) 
+    const cartFilter = cart.filter(data => data.userId == userData.usersData[0].id) 
+    const H = Dimensions.get('window').height
+    const W = Dimensions.get('window').width
+    const [groupValues, setGroupValues] = React.useState([])
+    
 
-          <FlatList
-            data={data}
-            renderItem={({ item }) => (
-              <Box
+    
+    const Ordered =()=> {
+      let orderData = []
+      groupValues.map((data)=>{
+        orderData.push(cart.find((item) => item.id == data)) 
+        })
+        navigation.navigate('conferm',orderData)
+
+  }
+    const deleteCart =(value)=>{
+    const data = groupValues.filter((item)=> item !== value)
+    setGroupValues(data)
+      dispatch(DeleteDataCart(
+        value))
+    }
+    const renderItem = ({ item, index }) => (
+      <Box
+                bgColor='#ffff'
                 borderBottomWidth={1}
                 _dark={{
                   borderColor: "gray.600",
@@ -74,14 +57,40 @@ export default function CartScreen() {
                 pr="5"
                 py="2"
               >
-                <HStack space={3} justifyContent="space-between">
-                  <Avatar
-                    size="48px"
-                    source={{
-                      uri: item.avatarUrl,
-                    }}
-                  />
-                  <VStack>
+                <HStack space={3} flexDirection="row"  alignContent="space-between" w='100%' >
+                
+                
+                  <View
+                    alignItems='center'
+                    justifyContent='center'
+                    w={10}
+                    h={10}
+                  >
+                  <Checkbox.Group
+                    onChange={setGroupValues}
+                    value={groupValues}>
+                      <Checkbox value={item.id} accessibilityLabel="This is a dummy checkbox" />
+                  </Checkbox.Group>
+                    </View>
+                    <View
+                        alignItems='center'
+                        justifyContent='center'
+                        w={10}
+                        h={10}
+                        borderWidth={1}
+                        borderRadius={5}
+                        borderColor='#7FE1F4'
+                    >
+                      <Text
+                      color="coolGray.600"
+                      _dark={{
+                        color: "warmGray.200",
+                      }}
+                    >
+                      {item.count}x
+                    </Text>
+                    </View>
+                  <View>
                     <Text
                       _dark={{
                         color: "warmGray.50",
@@ -89,7 +98,7 @@ export default function CartScreen() {
                       color="coolGray.800"
                       bold
                     >
-                      {item.fullName}
+                      {item.food_name}
                     </Text>
                     <Text
                       color="coolGray.600"
@@ -97,25 +106,69 @@ export default function CartScreen() {
                         color: "warmGray.200",
                       }}
                     >
-                      {item.recentText}
+                    ร้าน : {item.store_name}
                     </Text>
-                  </VStack>
-                  <Spacer />
-                  <Text
-                    fontSize="xs"
-                    _dark={{
-                      color: "warmGray.50",
-                    }}
-                    color="coolGray.800"
-                    alignSelf="flex-start"
+                  </View>
+                  <View
+              
+                    right={0}
+                    position='absolute'
                   >
-                    {item.timeStamp}
-                  </Text>
+                  </View>
+                  <Spacer />
                 </HStack>
               </Box>
-            )}
-            keyExtractor={(item) => item.id}
+    );
+
+    const renderHiddenItem = (data, rowMap) => (
+      <HStack pl="2">
+        <Pressable
+          w={70}
+          ml="auto"
+          bg="red.500"
+          justifyContent="center"
+          onPress={() => deleteCart(data.item.id)}
+          _pressed={{
+            opacity: 0.5,
+          }}>
+          <VStack alignItems="center" justifyContent='center' space={2} w='100%' h='100%'>
+            <View
+            >
+              <Icon name='trash-outline' style={{width:20,height:20}} fill='#ffff' />
+            </View>
+            <Text fontSize="xs" fontWeight="medium" color="white">
+              Delete
+            </Text>
+          </VStack>
+        </Pressable>
+      </HStack>
+    );
+
+    return (
+
+      <View h={H} w={W} >
+        <View mt={2} bg="white" safeArea >
+          <SwipeListView
+            data={cartFilter}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-130}
+            previewRowKey={'0'}
+            previewOpenValue={-30}
+            previewOpenDelay={3000}
           />
-        </Box>
+        </View>
+        <View
+                position='absolute'
+                alignItems='center'
+                bottom='22%'
+                mt={4}
+                w='100%'
+                flexDirection='column'
+            >
+                <Button disabled={groupValues == ''} w='90%' onPress={()=> Ordered()}>สั่งซื้อ</Button>  
+            </View>
+      </View>
+      
       )
 }
