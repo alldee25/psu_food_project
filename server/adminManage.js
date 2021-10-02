@@ -519,6 +519,7 @@ adminRouter.get("/getYearsOfClean",(req, res) => {
         }
     }))
 })
+
 adminRouter.post("/getCleanListByYearAndMonth",(req, res) => {
     const year = req.body.yearToday
     const month = req.body.month
@@ -760,5 +761,58 @@ adminRouter.post('/InsertStoreListLeaveDetialAdmin2',(req, res)=>{
         }
     })
 })
+adminRouter.post('/insertRen',(req, res)=>{
+    const adminId = req.body.adminId
+    const sroreId = req.body.sroreId
+    const date = req.body.date
+    const price = req.body.price
+    db.query('INSERT INTO rent_fel (store_id,admin_id,date,price) VALUES(?,?,?,?)',[sroreId,adminId,date,price],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err})
+        } else {
+         res.send({message:'เรียบร้อย'})   
+        }
+    })
+})
+adminRouter.post("/getRenListByYearAndMonth",(req, res) => {
+    const year = req.body.yearToday
+    const month = req.body.month
+    db.query(`SELECT store.store_name,store.id AS s_id,rent_fel.*,admin.name 
+    FROM ((store 
+    LEFT JOIN rent_fel ON rent_fel.store_id = store.id AND year(rent_fel.date) = ? AND month(rent_fel.date) = ?)
+    LEFT JOIN admin ON admin.id = rent_fel.admin_id)`,[year,month],((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    })
+    )
+})
+adminRouter.post('/insertStatusRen',(req, res)=>{
+    const status = req.body.status
+    const sroreId = req.body.sroreId
+    const datePay = req.body.datePay
+    db.query('UPDATE rent_fel SET status=?,date_pay=? WHERE store_id=?',[status,datePay,sroreId],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err})
+        } else {
+         res.send({message:'เรียบร้อย'})   
+        }
+    })
+})
+adminRouter.get("/getYearsOfRen",(req, res) => {
+    db.query(`SELECT year(date) AS Year FROM rent_fel`,((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})  
 
 module.exports = adminRouter

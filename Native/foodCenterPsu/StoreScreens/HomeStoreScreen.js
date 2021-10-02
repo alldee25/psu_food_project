@@ -27,7 +27,8 @@ export default function HomeStoreScreen() {
         )
     }
     useEffect(()=>{
-        axios.post('http://192.168.1.102:3001/getStoreStatus',{
+        let isMounted = (
+           axios.post('http://192.168.1.102:3001/getStoreStatus',{
             storeId:userData.usersData[0].store_id
         }).then(
             (res)=> {
@@ -39,11 +40,12 @@ export default function HomeStoreScreen() {
                 date:Moment(date).format('YYYY-MM-DD')
             }).then(
                 (res)=> {
-                    setSellInfo(res.data)
-                    console.log(res.data);
+                    setSellInfo(res.data)               
                 }
             )
+        ) 
         )
+        return () => { isMounted = false }
     },[])
     return (
         <ImageBackground
@@ -70,25 +72,12 @@ export default function HomeStoreScreen() {
                         w='100%'
                         alignItems='flex-end'
                     >
-                    <Toggle
-                        style={{marginTop:5,width:300}} 
-                        status='success' 
-                        checked={storeStatus == true } 
-                        onChange={()=>{onCheckedChange()}}              
+                    <TouchableOpacity
+                        style={{marginTop:5,width:260}} 
+                        onChange={()=>{navigation.navigate('profile')}}              
                     >
-                        <View
-                            flexDirection='row'
-                        >
-                            <Text fontFamily='IBMPlexSansThai-Bold'>ร้าน : </Text>
-                                <View width={10} justifyContent='center' >
-                                    {storeStatus == true ? <Text fontFamily='IBMPlexSansThai-Bold'>เปิด </Text> 
-                                    : 
-                                    <Text fontFamily='IBMPlexSansThai-Bold'>
-                                        ปิด
-                                    </Text>}
-                                </View>
-                        </View>
-                    </Toggle>
+                        <Icon name='person-outline'  fill='black' style={{with:30,height:30}}/>
+                    </TouchableOpacity>
                 </View>
                 </Container>
                 

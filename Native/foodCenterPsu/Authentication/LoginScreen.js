@@ -66,14 +66,6 @@ const Loin =({navigation,route})=>{
         setSecureTextEntry(!secureTextEntry);
     };
 
-    const renderCaption = () => {
-        return (
-          <View style={styles.captionContainer}>
-            {AlertIcon(styles.captionIcon)}
-            <Text style={styles.captionText}>Should contain at least 8 symbols</Text>
-          </View>
-        )
-      }
     const renderIcon = (props) => (
         <TouchableWithoutFeedback onPress={toggleSecureEntry}>
             <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'}/>
@@ -127,16 +119,22 @@ const Loin =({navigation,route})=>{
                                 placeholder='Username' 
                                 onChangeText={nextValue => setUsername(nextValue)} 
                                 size="medium" style={styles.input}
-                                caption={renderCaption}
+                               
+                            />
+                            <Input 
+                                value={password} 
+                                placeholder='Password' 
+                                onChangeText={nextValue => setPassword(nextValue)} 
                                 accessoryRight={renderIcon}
                                 secureTextEntry={secureTextEntry}
-                            />
-                            <Input value={password} placeholder='Password' onChangeText={nextValue => setPassword(nextValue)} size="medium" style={styles.input}/>         
+                                size="medium" 
+                                style={styles.input}/>         
                             <View style={{display:'flex',alignItems:'center',width:'80%'}}>
                                 <Button 
                                     size='small' 
                                     style={styles.buttonLogin}
                                     onPress={login}
+                                    
                                     
                                 >
                                     {process ? (<Progress.Circle size={30} indeterminate={true} color="white" />):(<Text>Log in</Text>)}                                              
@@ -271,16 +269,17 @@ const styles = StyleSheet.create({
     borderRadius:20, 
     },
     userTypeButton:{
-    backgroundColor:'#049A9E',
+    backgroundColor:'#0B2B53',
     position:'relative',
     borderWidth:1,
     borderRadius:10,
     height:'30%',
-    width:'100%',
+    width:'80%',
     borderColor:'white',
     justifyContent:'center',
     alignItems:'center',
-    opacity:0.7
+    opacity:0.7,
+    marginTop:10
     },
     captionIcon: {
     width: 10,

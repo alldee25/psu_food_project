@@ -1,17 +1,16 @@
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
 import { Center, Container, Divider, Heading, Link, ScrollView, Text, View, Image } from 'native-base'
 import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App';
+import ProfileScreen from './ProfileScreen';
 
-const images = [
-    'https://www.omipharma.vn/files/banner/2020-07/xit-chong-nang-lishan-nhat-ban-spf-50-pa-huong-tinh-dau-thien-nhien.jpg',
-    'https://www.omipharma.vn/files/banner/2020-06/omi-pharma-thau-hieu-hon-moi-ngay.jpg',
-    'https://www.omipharma.vn/files/banner/2020-06/omi-pharma-thau-hieu-nhu-cau-dan-dau-lua-chon.jpg'
-  ]
-export default function HomeScreen() {
-    const W = Dimensions.get('window').width;
+const stackHome = createStackNavigator()
+
+const HomeData =({navigation})=> {
+        const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
     const {userData,socket,callNotifitionUser} = useContext(AuthContext)
     const userId = userData.usersData[0].id
@@ -52,9 +51,20 @@ export default function HomeScreen() {
                     <Heading fontFamily='SanFranciscoDisplayUltralight' color="#1D1F20" pl={4}>
                             {userData.usersData[0].name}
                     </Heading>
+                    <View
+                        w='90%'
+                        alignItems='flex-end'
+                    >
+                    <TouchableOpacity
+                        status='success' 
+                        onPress={()=> navigation.navigate('Profile')}              
+                    >
+                        <Icon name='person-outline'  fill='black' style={{with:30,height:30}}/>
+                    </TouchableOpacity>
+                </View>
                 </Container>
-                <View 
-                                     
+                
+                <View                  
                     alignItems='center'                   
                     width={W}
                     height={H}
@@ -120,6 +130,19 @@ export default function HomeScreen() {
             </View>
         </ImageBackground>
     )
+}
+export default function HomeScreen() {
+    return(
+        <stackHome.Navigator>
+            <stackHome.Screen name='home' component={HomeData} 
+                options={{
+                    headerShown:false
+                }}
+            />
+            <stackHome.Screen name='Profile' component={ProfileScreen} />
+        </stackHome.Navigator>
+    )
+    
 }
 const styles = StyleSheet.create({
     container: {

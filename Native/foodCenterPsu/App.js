@@ -100,7 +100,7 @@ export default function App() {
     return (
     <>
     <Provider store={Store} >
-      <NativeBaseProvider>
+      <NativeBaseProvider >
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <AuthContext.Provider value={{ auth,socket,callNotifitionUser, setAuth, setIsload, userImg, userType, userData}}>

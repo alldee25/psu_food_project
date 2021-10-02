@@ -1,28 +1,61 @@
-import * as React from 'react';
-import { Text, View } from 'react-native'
-import { Button, Icon, MenuItem } from '@ui-kitten/components';
+import { Avatar, Divider, Image, Text, View } from 'native-base';
+import React from 'react';
+import { useContext } from 'react';
+import {  Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../App';
-import axios from 'axios';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import MenuManage from '../StoreScreens/Menumanage/MenuList';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Drawer = createDrawerNavigator();
-
-const ProfileScreen =({navigation},props)=>{
-
-    const {setAuth,auth} = React.useContext(AuthContext)
-    const Logout =()=>{
-     axios.get('http://192.168.1.102:3001/logout').then(setAuth('logout'))
-    }
-    
+export default function ProfileScreen() {
+    const W = Dimensions.get('window').width
+    const {userData,userImg} = useContext(AuthContext)
+    console.log(userImg);
     return(
-        <SafeAreaView>
-            <Text>
-                Audi
-            </Text>
-        </SafeAreaView>
-    )
+        <View 
+        w={W}
+        h='100%'
+        alignItems='center'
+        justifyContent='flex-end'
+        borderWidth={1}
+        >
+            <View borderWidth={1} style={styles.drawerContent}>
+            <Avatar
+                position='absolute'
+                top={-50}
+                bg="amber.500"
+                size="xl"
+                source={{
+                uri: `http://192.168.1.102:3001/userUploaded/${userImg}`
+                }}
+            >
+                AK
+            </Avatar>
+            <View
+                height="20%"
+                w='90%'
+            >
+                <Divider w='100%' bgColor='#888888' />
+            </View>
+            <View
+                w='90%'
+            >
+              <Text>{userData.usersData[0].store_name}</Text>    
+            </View>
+                  
+            </View>
+        </View>
+    );
 }
 
-export default ProfileScreen
+const styles = StyleSheet.create({
+    drawerContent: {
+      width:'90%',
+      height:'80%',
+      borderTopLeftRadius:15,
+      borderTopRightRadius:15,
+      alignItems:'center',
+      flexDirection:'column',
+      backgroundColor:"#FFFF",
+      shadowColor:'gray',
+      shadowOpacity:0.5,
+      elevation:10
+    },
+  });

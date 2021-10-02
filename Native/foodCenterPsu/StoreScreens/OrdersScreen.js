@@ -27,20 +27,25 @@ const orderScreen = ({navigation}) => {
     const [orderList, setOrderList] = useState([]);
     let dt = new Date();
     const userId = userData.usersData[0].store_id
+
     
  
     useEffect(()=>{
-       
-            socket.off(`withUser-id-${userId}`).on(`withUser-id-${userId}`,(data) => {
+            let isMounted = (
+                socket.off(`withUser-id-${userId}`).on(`withUser-id-${userId}`,(data) => {
                     setOrderList(orderList=> [...orderList,data])
                     callNotifition()
-                })
-            axios.post('http://192.168.1.102:3001/getOrder',{
+                }),
+               axios.post('http://192.168.1.102:3001/getOrder',{
                 storeId:userId,
                 date:Moment(dt).format('YYYY-MM-DD')
             }).then((res)=> {
                 setOrderList(res.data)
-            })       
+            }) 
+            )
+            
+             
+            return () => {  isMounted = false,socket.off()}      
     },[])
     return (
         <ImageBackground

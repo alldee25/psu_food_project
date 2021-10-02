@@ -27,54 +27,19 @@ export default function InfomationScreen() {
     )
 }
 const ListMenu =({navigation})=> {
-    const {userType,setAuth,userData} = useContext(AuthContext);
+    const {userType,setAuth,userData,socket} = useContext(AuthContext);
     const [loading,setLoading] = useState(false)
     const logout =()=>{
         setLoading(true)
         setAuth('logout')
         axios.get('http://192.168.1.102:3001/logout').then((res)=>{
             console.log(res.data);
+            socket.off()
         })
     }
     return(
         <SafeAreaView style={styles.container}>
-            <View
-           
-                w='95%'
-                h='9%'
-            >
-                <TouchableOpacity
-                    onPress={()=>{navigation.navigate('Cart')}}
-                >
-                <View
-                    
-                    flexDirection='row'
-                >
-                    <Image                  
-                        alt='img'
-                        w={50}
-                        h={45}
-                        resizeMode='contain'
-                        source={require('../assets/img/user.png')}
-                    />
-                    <View
-                        ml={5}
-                        w='50%'
-                        alignItems='flex-start'
-                        flexDirection='column'
-                    >
-                        <Text>
-                            {userData.usersData[0].name}
-                        </Text>
-                     <Text>
-                        โปรไฟล์
-                    </Text>   
-                    </View>                     
-                </View>    
-                </TouchableOpacity>
-            </View>
             
-            <Divider w='90%' bgColor='#888888' alignSelf='center' />
             {userType == 'student' ? (
                 <>
                 <MenuItem style={styles.MenuItem} title='detial' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
@@ -113,9 +78,10 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         fontSize:21,
         marginTop:5,
-        borderRadius:10,
+        borderTopLeftRadius:10,
+        borderBottomLeftRadius:10,
         width:'97%',
-        height:90,
+        height:60,
         shadowColor:'#DC143C',                                 
         shadowOpacity:1,
         elevation:7,

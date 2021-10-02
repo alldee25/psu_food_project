@@ -16,7 +16,7 @@ export default function CleaneseLevelList({navigation}) {
 
         let isMounted = (
             axios.post('http://192.168.1.102:3001/getCleaneseLevelList',{
-        storeId:userData.usersData[0].id
+        storeId:userData.usersData[0].store_id
         }).then((res)=>{
             setCleanDataList(res.data)       
         }).catch(error =>{

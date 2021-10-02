@@ -546,8 +546,10 @@ appRouter.post('/getOrderUserList',(req,res)=>{
     const userId = req.body.userId
     db.query(`SELECT order_food.* FROM order_food 
     INNER JOIN order_food_detial ON order_food_detial.order_food_id = order_food.id
-    WHERE order_food.customer_id = ? 
-    GROUP BY order_food.id`,[userId],(err,result)=>{
+    WHERE order_food.customer_id = ?
+    GROUP BY order_food.id
+    ORDER BY date ASC
+    `,[userId],(err,result)=>{
              if (err) {
                  console.log(err);
              } else {
@@ -608,13 +610,14 @@ appRouter.post('/getsellInfomation',(req,res)=>{
     db.query(`SELECT MAX(MaxOrder) AS quantity,food_name,orderToday 
         FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
         INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
-        WHERE food_menu.store_id = ?) AS orderToday
+        INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+        WHERE food_menu.store_id = ? AND date(order_food.date) = ?) AS orderToday
         FROM order_food_detial 
         INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
         INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
         WHERE food_menu.store_id = ? AND date(order_food.date) = ?
         GROUP BY food_menu.food_name) MaxOrder
-    `,[storeId,storeId,date],(err,result)=>{
+    `,[storeId,date,storeId,date],(err,result)=>{
              if (err) {
                  console.log(err);
              } else {             
@@ -622,20 +625,29 @@ appRouter.post('/getsellInfomation',(req,res)=>{
             }
     })  
 })
+appRouter.post('/getRenList',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT * FROM rent_fel WHERE store_id = ?`,[storeId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+
+            res.send(results);   
+        }
+    })
+})
+
 //----------------------------------------------------------Just Test-----------------------------------------------
 appRouter.get('/test',(req,res)=>{
     const userId = 4
-    db.query(`SELECT order_food_detial.* FROM order_food_detial WHERE id = ?`,[134],(err,result)=>{
-        if (err) {
-            console.log(err);
-            res.send(err)
-        } else {
-            io.emit(`withCus-id-${userId}`,result);
+    
+            io.emit(`withCus-id-${userId}`,'555');
            res.send({maessage:'เรียบร้อย'})
           
-        }
+        
 
 
-    })  
+     
 })
 module.exports = appRouter

@@ -17,9 +17,9 @@ import { addMenuValidate } from '../../Validation';
 const dataType = [
   'ตามสั่ง',
   'ข้าวแกง',
-  'อาหารกินเล่น',
-  'ก๋วยเตี๋ยว',
-  'น้ำ',
+  'เมนูทานเล่น',
+  'เมนูเส้น',
+  'เมนูน้ำ',
 ];
 export default function FormAddMenu({navigation}) {
 

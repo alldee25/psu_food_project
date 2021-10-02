@@ -13,7 +13,13 @@ const stackOrder = createStackNavigator()
 export default function Ordered() {
     return (
         <stackOrder.Navigator>
-            <stackOrder.Screen name='orderedUserList' component={orderListUser} />
+            <stackOrder.Screen 
+                name='orderedUserList' 
+                component={orderListUser}
+                options={{
+                    headerShown:false
+                }} 
+            />
             <stackOrder.Screen name='OrderDetialcusScreen' component={OrderDetialcusScreen} />
         </stackOrder.Navigator>
     )
@@ -45,21 +51,31 @@ const orderListUser = ({navigation}) => {
             source={require('./../assets/img/v748-toon-106.jpg')}
             style={{width:(W),height:(H)}}
         >
-            <Image 
-                position='absolute'
-                top={2}
-                left={5}
-                alt='Cute_woman_chef_logo_cartoon_art_illustration'
-                w={20}
-                h={20}
-                source={require('./../assets/img/Cute_woman.png')}
-            />
+            <View
+                flex={1}
+                justifyContent="flex-start"
+                height={100}
+            >
+                <View
+                    w='40%'
+                    mt={1}
+                >
+                    <Image 
+                    resizeMode='contain'
+                    alt='Cute_woman_chef_logo_cartoon_art_illustration'                
+                    h={100}
+                    source={require('./../assets/img/Cute_woman.png')}
+                />
+                </View>
+                
+            </View>
+            
             <View
                 backgroundColor='white'
                 flex={5}
                 borderTopRadius={20}
                 mb={10}
-                mt={'30%'}
+                
             >
                     <FlatList 
                         data={orderList}
@@ -89,7 +105,7 @@ const orderListUser = ({navigation}) => {
                             <View style={{marginLeft:10,width:'60%',flex:1,alignItems:'flex-start'}}>
     
                                 <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
-                                    ออร์เอดร์หมายเลย {index+1} 
+                                    ออรเอดร์หมายเลย {item.number_order} 
                                 </Text>                                                                                                                                  
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                     เวลา {Moment(item.date).format('HH:mm')} 

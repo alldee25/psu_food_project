@@ -21,6 +21,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import Grow from '@material-ui/core/Grow';
 import CleanlinessLevel from "./CleanlinessLevelList";
+import RentalFeeList from "./RentalFeeList";
 
 //for MUI---------------------------------------------------------functons out----------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -129,7 +130,7 @@ export default function HomeStore(props) {
             <Link onClick={() => togleTab(2)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
           </div>
           <div className={togle === 3 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(3)} to={`${url}/CheckApplication`}>ตรวจสอบการชำระ</Link>
+            <Link onClick={() => togleTab(3)} to={`${url}/RentalFeeList`}>ตรวจสอบการชำระค่าเช่า</Link>
           </div>
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(4)} to={`${url}/LeaveList`}>ตรวรวสอบการลา</Link>
@@ -146,7 +147,7 @@ export default function HomeStore(props) {
           
             <div className="content">             
                 <Route exact path={`${path}`} component={DataListAnnounce} />
-                <Route exact path={`${path}/CheckApplication`}component={CheckApplication} />
+                <Route exact path={`${path}/RentalFeeList`}component={RentalFeeList} />
                 <Route exact  path={`${path}/InterView`} component={InterView} />
                 <Route  exact path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
                 <Route  exact path={`${path}/StoreInformation`} component={StoreInformation} />

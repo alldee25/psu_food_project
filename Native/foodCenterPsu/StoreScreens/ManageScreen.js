@@ -12,6 +12,7 @@ import ComplaintList from './ComplaintList';
 import ComplaintListDetial from './ComplaintListDetial';
 import LeaveScreen from './LeaveAddScreen';
 import LeaveListScreen from './LeaveListScreen';
+import RenScreen from './RenScreen';
 
 const ForwardIcon = (props) => (
     <Icon {...props} name='arrow-ios-forward'/>
@@ -26,6 +27,7 @@ export default function ManageScreen() {
             <stackManage.Screen name='รายการลา' component={LeaveListScreen} />                    
             <stackManage.Screen name='ระดับคุณภาพความสะอาด' component={CleaneseLevelList} />           
             <stackManage.Screen name='รายละเอียดระดับคุณภาพความสะอาด' component={CleaneseLevelDetial} />           
+            <stackManage.Screen name='รายการชำระค่าเช่า' component={RenScreen} />           
             <stackManage.Screen name='การแจ้งเตือนความผิด' component={ComplaintList} />           
             <stackManage.Screen name='รายละเอียดการแจ้งเตือน' component={ComplaintListDetial} />           
             <stackManage.Screen name='เพิ่มลาพักจำหน่ายอาหาร' component={LeaveScreen} />           
@@ -53,7 +55,7 @@ const stackScreen =({navigation})=>{
             <SafeAreaView style={styles.container}> 
                 <MenuItem style={styles.MenuItem} title='ลาพักจำหน่ายอาหาร' onPress={()=> navigation.navigate('รายการลา')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการชำระค่าเช่า')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} /> 
                          
@@ -90,7 +92,8 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         fontSize:21,
         marginTop:5,
-        borderRadius:10,
+        borderTopLeftRadius:10,
+        borderBottomLeftRadius:10,
         width:'97%',
         height:60,
         shadowColor:'#DC143C',                                 

@@ -16,7 +16,6 @@ export default function OrderDetialcusScreen ({route}){
     const userId = userData.usersData[0].id 
 
     socket.off(`withCus-id-${userId}`).on(`withCus-id-${userId}`,(data) => { 
-        callNotifitionUser()
         objIndex = orderDetialUser.findIndex(obj => obj.id == data[0].id);
         if (objIndex !== -1) {
         let newData = [...orderDetialUser]
@@ -30,17 +29,17 @@ export default function OrderDetialcusScreen ({route}){
         })
     
     useEffect(()=>{  
-         
-        let isMounted = true 
-        setOpen(true)  
+        let isMounted = (
+        
+        setOpen(true),  
                 axios.post('http://192.168.1.102:3001/getOrderUserDetial',{
             userId:userId,
             oid:route.params.id,
         }).then((res)=>{
             setOrderDetialUser(res.data)
         }) 
-
-       return ()=> { isMounted = false,setOpen(false) } 
+        )
+       return ()=> { isMounted = false,setOpen(false),socket.off() } 
         
     },[])
     return (

@@ -138,18 +138,18 @@ function CleanlinessLevel() {
               <div style={{marginLeft:'10px'}}>
                 <InputLabel  id="demo-simple-select-outlined-label" >เดือน</InputLabel>
                 <Select value={month} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByMonth(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
-                  <MenuItem value={1}>มกราคม</MenuItem>
-                  <MenuItem value={2}>กุมภาพันธ์</MenuItem>
-                  <MenuItem value={3}>มีนาคม</MenuItem>
-                  <MenuItem value={4}>เมษายน</MenuItem>
-                  <MenuItem value={5}>พฤษภาคม</MenuItem>
-                  <MenuItem value={6}>มิถุนายน</MenuItem>
-                  <MenuItem value={7}>กรกฎาคม</MenuItem>
-                  <MenuItem value={8}>สิงหาคม</MenuItem>
-                  <MenuItem value={9}>กันยายน</MenuItem>
-                  <MenuItem value={10}>ตุลาคม</MenuItem>
-                  <MenuItem value={11}>พฤศจิกายน</MenuItem>
-                  <MenuItem value={12}>ธันวาคม</MenuItem>
+                  <MenuItem disabled={month < 1} value={1}>มกราคม</MenuItem>
+                  <MenuItem disabled={month < 2} value={2}>กุมภาพันธ์</MenuItem>
+                  <MenuItem disabled={month < 3} value={3}>มีนาคม</MenuItem>
+                  <MenuItem disabled={month < 4} value={4}>เมษายน</MenuItem>
+                  <MenuItem disabled={month < 5} value={5}>พฤษภาคม</MenuItem>
+                  <MenuItem disabled={month < 6} value={6}>มิถุนายน</MenuItem>
+                  <MenuItem disabled={month < 7} value={7}>กรกฎาคม</MenuItem>
+                  <MenuItem disabled={month < 8} value={8}>สิงหาคม</MenuItem>
+                  <MenuItem disabled={month < 9} value={9}>กันยายน</MenuItem>
+                  <MenuItem disabled={month < 10} value={10}>ตุลาคม</MenuItem>
+                  <MenuItem disabled={month < 11} value={11}>พฤศจิกายน</MenuItem>
+                  <MenuItem disabled={month < 12} value={12}>ธันวาคม</MenuItem>
               </Select> 
             </div>
           <div style={{marginLeft:'10px'}}>
@@ -201,7 +201,8 @@ function CleanlinessLevel() {
         <div style={{marginTop:'50px'}}>
           <CleanlinessLevelForm active={id} forDate={yearToday+'-'+monthT+'-'+'01'} open={open}/>
           </div> 
-      </Dialog>  
+      </Dialog> 
+       
     </div>
     )
 }

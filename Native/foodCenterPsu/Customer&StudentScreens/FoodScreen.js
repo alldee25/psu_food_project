@@ -51,13 +51,55 @@ const FoodList =({navigation})=>{
     const {cart} = useSelector(state => state.userReducer)
     const cartFilter = cart.filter(data => data.userId == userData.usersData[0].id)
     const today = new Date();
+    const [search, setSearch] = useState('')
+    const [searchType, setSearchType] = useState('')
+    const [foodFileterDataList, setFoodFileterDataList] = useState([]);
     
-
+    const searchFilter=(textValue)=> {
+        if (textValue) {
+            const newData = foodDataList.filter((item)=> {
+                const itemData = item.food_name ? 
+                                    item.food_name.toUpperCase() 
+                                    : ''.toUpperCase();
+                const textData = textValue.toUpperCase();
+                return itemData.indexOf(textData) > -1; 
+                })
+                setFoodFileterDataList(newData);
+                setSearch(textValue)
+                      
+             } else {
+                setFoodFileterDataList(foodDataList)
+                setSearch(textValue)
+                }
+           
+    }
+    const searchFilterType=(textValue)=> {
+        console.log(textValue);
+        if (textValue) {
+            const newData = foodDataList.filter((item)=> {
+                const itemData = item.food_type ? 
+                                    item.food_type.toUpperCase() 
+                                    : ''.toUpperCase();
+                const textData = textValue.toUpperCase();
+                return itemData.indexOf(textData) > -1; 
+                })
+                setFoodFileterDataList(newData);
+                setSearch(textValue)
+                setSearchType(textValue)
+                      
+             } else {
+                setFoodFileterDataList(foodDataList)
+                setSearch(textValue)
+                setSearchType(textValue)
+                }
+           
+    }
     useEffect(()=>{
         let isMounted = (
             axios.get('http://192.168.1.102:3001/getFoodMenuListCustomer').then(
                 (res) => {
                     setFoodDataList(res.data)
+                    setFoodFileterDataList(res.data)
                 }
             )
         )
@@ -122,11 +164,13 @@ const FoodList =({navigation})=>{
              width={W} alignItems='center'
             >
             <Input
+                value={search}
                 color='white' 
                 w={'95%'} 
                 size="xs" 
                 placeholder="ค้นหา" 
-                borderRadius={20} 
+                borderRadius={20}
+                onChangeText={(textValue)=> searchFilter(textValue)} 
             />
             </View>          
             <View               
@@ -140,40 +184,54 @@ const FoodList =({navigation})=>{
                     width={W}
                     horizontal={true} 
                 >
-                <TouchableOpacity
-                    style={styles.buttonTypy}
+                <TouchableOpacity                 
+                    style={searchType == 'ตามสั่ง' ? styles.buttonTypyActive : styles.buttonTypy}
+                    onPress={()=> searchFilterType('ตามสั่ง')}
                 >
                 <Text
-                    color='#1D1F20'
+                    color={searchType == 'ตามสั่ง' ? '#1D1F20' : '#FFFF'}
                 >
                    เมนูตามสั่ง 
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={styles.buttonTypy}
+                style={searchType == 'เมนูทานเล่น' ? styles.buttonTypyActive : styles.buttonTypy}
+                onPress={()=> searchFilterType('เมนูทานเล่น')}
             >
                 <Text
-                    color='#1D1F20'
+                    color={searchType == 'เมนูทานเล่น' ? '#1D1F20' : '#FFFF'}
                 >
                    เมนูทานเล่น
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={styles.buttonTypy}
+                style={searchType == 'ข้าวแกง' ? styles.buttonTypyActive : styles.buttonTypy}
+                onPress={()=> searchFilterType('ข้าวแกง')}
             >
                 <Text
-                    color='#1D1F20'
+                    color={searchType == 'ข้าวแกง' ? '#1D1F20' : '#FFFF'}
                 >
                    ข้าวแกง 
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity 
-                style={styles.buttonTypy}
+                onPress={()=> searchFilterType('เมนูน้ำ')}
+                style={searchType == 'เมนูน้ำ' ? styles.buttonTypyActive : styles.buttonTypy}
             >
                 <Text
-                    color='#1D1F20'
+                    color={searchType == 'เมนูน้ำ' ? '#1D1F20' : '#FFFF'}
                 >
                    เมนูน้ำ
+                </Text>
+            </TouchableOpacity> 
+            <TouchableOpacity 
+                onPress={()=> searchFilterType('เมนูเส้น')}
+                style={searchType == 'เมนูเส้น' ? styles.buttonTypyActive : styles.buttonTypy}
+            >
+                <Text
+                    color={searchType == 'เมนูเส้น' ? '#1D1F20' : '#FFFF'}
+                >
+                   เมนูเส้น
                 </Text>
             </TouchableOpacity> 
             </ScrollView> 
@@ -189,8 +247,8 @@ const FoodList =({navigation})=>{
                 >
 
                     <FlatList 
-                        data={foodDataList}
-                        keyExtractor={(item) => item.id}
+                        data={foodFileterDataList}
+                        keyExtractor={(item, index) => index}
                         contentContainerStyle={{
                             paddingLeft:7,
                             paddingRight:7,
@@ -301,7 +359,18 @@ const styles = StyleSheet.create({
         width:100,
         height:50,
         margin:10,
-        backgroundColor:'#F8F1FF'
+        
+    },
+    buttonTypyActive:{
+        justifyContent:'center',
+        alignItems:'center',
+        borderColor:'white',
+        borderWidth:1,
+        borderRadius:20,
+        width:100,
+        height:50,
+        margin:10,
+        backgroundColor:'#FFFF'
     },
     icon: {
         width: 42,
