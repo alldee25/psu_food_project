@@ -49,7 +49,6 @@ const FoodList =({navigation})=>{
     const {cart} = useSelector(state => state.userReducer)
     const [foodDataList,setFoodDataList] = useState([]);
     const {userData} = useContext(AuthContext);
-    const {cart} = useSelector(state => state.userReducer)
     const cartFilter = cart.filter(data => data.userId == userData.usersData[0].id)
     const today = new Date();
     const [search, setSearch] = useState('')
