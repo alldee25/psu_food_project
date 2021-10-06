@@ -6,10 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
-import RemoveRedEyeRoundedIcon from '@material-ui/icons/RemoveRedEyeRounded';
 import StoreInfornationDetial from './storeInfornationDetial';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,20 +16,22 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
-import { AuthContext } from '../../App';
+import swal from 'sweetalert';
+import { useHistory } from 'react-router';
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
-      fontSize: 14,    
+      fontSize: 14,   
     },
   }))(TableCell);
-  
+
+
   const StyledTableRow = withStyles((theme) => ({
     root: {
       '&:nth-of-type(odd)': {
@@ -58,8 +58,27 @@ function StoreInformation() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [id, setIid] = useState()
+    const history = useHistory()
     const [idRegis,setIdRegis] = useState();
 
+    const deletestore = (id) => {
+      swal("กด ok เพื่อยืนยันการบันทึก",{
+      }).then((value) => {
+        if (value) {
+              axios.post('http://localhost:3001/deleteStore',{
+                        storeId:id
+              }).then((res)=>{
+                if (res.data.err) {
+                  swal('ไม่สามารถลบได้','โปรดตรวจสอบข้อมูลอีกครั้ง','warnning')
+                } else {
+                  swal('ลบเรียบร้อย','Ok','success')
+                  history.push('/HomeStore/StoreInformation')
+                  history.go() 
+                }
+              })
+        }})
+      
+    }
     const handleClickOpen = (e) => {
         setIid(e)
         setOpen(true);
@@ -91,14 +110,16 @@ function StoreInformation() {
                 ไม่พบข้อมูลร้านค้า
               </h1>
             </div> :
-            <TableContainer component={Paper} >
+            <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                     <TableRow>
                         <StyledTableCell align="left">หมายเลขร้าน</StyledTableCell>
                         <StyledTableCell align="center" >ชื่อร้าน</StyledTableCell>
                         <StyledTableCell align="center">ชื่อเจ้าของร้าน</StyledTableCell>
+                        <StyledTableCell align="center">สถาณะ</StyledTableCell>
                         <StyledTableCell align="center">รายละเอียดร้าน</StyledTableCell>  
+                        <StyledTableCell align="center">ลบ</StyledTableCell>  
                     </TableRow>
                     </TableHead>
                     <TableBody>
@@ -107,7 +128,9 @@ function StoreInformation() {
                         <StyledTableCell  align="left" >{dataList.s_id}</StyledTableCell>
                         <StyledTableCell align="center" >{dataList.store_name}</StyledTableCell>
                         <StyledTableCell align="center" >{dataList.name}</StyledTableCell>
-                        <StyledTableCell align="center" ><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                        <StyledTableCell align="center" >{dataList.right_status == '' ? (<span>ยังไม่ยืนยัน</span>): (<span>ยืนยัน</span>)}</StyledTableCell>
+                        <StyledTableCell align="center" ><Button variant="contained" onClick={(e)=>handleClickOpen(dataList.store_id)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
+                        <StyledTableCell align="center" ><Button variant="contained" onClick={(e)=>deletestore(dataList.store_id)} style={{fontWeight:'bold'}}>ลบ</Button></StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>

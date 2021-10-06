@@ -1,6 +1,6 @@
 import { Heading, Text, View, Image, ScrollView,Divider, Checkbox, TextArea, Button } from 'native-base'
 import React ,{useEffect} from 'react'
-import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
+import { Alert, Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import axios from 'axios';
 import { Icon, SelectItem, Select, Input } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,16 +22,18 @@ export default function FoodDetialScreen({navigation,route}) {
     const [selectedIndex, setSelectedIndex] = React.useState([]);
     const [selectedIndexPack, setSelectedIndexPack] = React.useState([]);
     const [option, setOption] = React.useState('');
+    const [payment, setPayment] = React.useState([]);
     const [text, setText] = React.useState('');
     var [count, setCount] = React.useState(1);
     const [optionDisplay, setOptionDisplay] = React.useState('');
-    const [specialOptionList, setSpecialOptionList] = React.useState([
+    /* const [specialOptionList, setSpecialOptionList] = React.useState([
         {id:'',optionId:'',number:0}
-    ])
-    console.log(cartFilter);
-    const conferm =(page)=>{
+    ]) */
 
-        const uid = uuidv4();
+    const conferm =(page)=>{
+        console.log(selectPackage);
+        if (selectPackage !== undefined) {
+            const uid = uuidv4();
         if (page == 'addToCart') {
             dispatch(setDataCart({
                 id:uid,
@@ -40,7 +42,7 @@ export default function FoodDetialScreen({navigation,route}) {
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
-                selectPackage:selectPackage,
+                package:selectPackage,
                 text:text,
                 option:option,
                 count:count,
@@ -52,12 +54,18 @@ export default function FoodDetialScreen({navigation,route}) {
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
-                selectPackage:selectPackage,
+                package:selectPackage,
                 text:text,
                 option:option,
                 count:count,
             }]))  
         }
+        } else {
+            Alert.alert(
+                'ข้อมูลไม่ครบถ้วน'
+            )
+        }
+        
         
 
     }
@@ -86,12 +94,19 @@ export default function FoodDetialScreen({navigation,route}) {
             fooId:route.params.id
         }).then((res)=>{
             setOptionList(res.data) 
-        })
-        axios.post('http://192.168.1.102:3001/getSpecialOptionMixByfoodid',{
+        })/* .then(
+           axios.post('http://192.168.1.102:3001/getSpecialOptionMixByfoodid',{
             fooId:route.params.id
         }).then((res)=>{
             setSpecialOptionList(res.data)
+        })) */.then(
+            axios.post('http://192.168.1.102:3001/getPayment',{
+                storeId:route.params.sId
+        }).then((res)=>{
+            setPayment(res.data)
         })
+        )
+        
     },[])
 
     return (
@@ -107,7 +122,7 @@ export default function FoodDetialScreen({navigation,route}) {
                 zIndex:3,
                 position:'absolute',
                 width:'100%',               
-                height:'46%',
+                height:'45%',
                 top:0,
                 shadowOpacity:0.5,
                 shadowColor:'#000',
@@ -187,7 +202,7 @@ export default function FoodDetialScreen({navigation,route}) {
                 alignItems='center'
                 justifyContent='flex-end'
                 backgroundColor='#FFFFFF'
-                height={'70%'}
+                height={'60%'}
             >
                 
                         <View
@@ -202,7 +217,7 @@ export default function FoodDetialScreen({navigation,route}) {
                             flexDirection='row'
                             w='100%'
                             justifyContent='space-between'
-                            mt={3}   
+                            mt={2}   
                         >
                             <Heading
                                 size="lg"
@@ -243,8 +258,7 @@ export default function FoodDetialScreen({navigation,route}) {
                         
                         <View
                             w='100%'                      
-                            alignItems='center'
-                            mt={3}   
+                            alignItems='center'  
                         >                                  
                             <Select
                                 style={styles.Input}
@@ -255,6 +269,7 @@ export default function FoodDetialScreen({navigation,route}) {
                                 {optionDataList.map(renderOpttion)}
                             </Select>           
                         </View>
+
                         <View
                             w='100%'                      
                             alignItems='center'
@@ -284,40 +299,68 @@ export default function FoodDetialScreen({navigation,route}) {
                                 }}
                             />
                         </View>
-                        <View 
+                        <View
+                            mt={4}
+                            ml={1}
                             flexDirection='row'
-                            w='100%'
-                            justifyContent='space-between'
-                            alignItems='center'
-                            mt={3}   
                         >
-                            <Text>จำนวน</Text>                           
-                            <TouchableOpacity disabled={count<=1} style={{width:50}}  onPress={() => setCount(count=count-1)}>
-                                <Icon  style={{with:30,height:30}} fill='green'  name='minus-outline' />
-                            </TouchableOpacity>
-                            <Text>{count}</Text>
-                            <TouchableOpacity  style={{width:50}} onPress={() => setCount(count=count+1)}>
+                            <Text>ชำระเงิน :  </Text>
+                            {payment.map((data,index) => (
+                                 <Text key={data.id}> | {data.payment_name} </Text> 
+                            ))}
+                        </View>
+                        <View
+            
+                            mt={2} 
+                            w='100%'
+                            ml={1}
+                        >
+                            <View 
+                                flexDirection='row'
+                                w='100%'
+                                justifyContent='space-between'
+                                alignItems='center'                              
+                            >
                                 <View>
-                                    <Icon style={{with:30,height:30}} fill='green'  name='plus-outline' />
-                                </View>                  
-                            </TouchableOpacity>
-                        </View>                                   
+                                  <Text >จำนวน</Text>  
+                                </View>
+                                <View 
+                    
+                                    alignItems='center'
+                                    justifyContent='flex-end'
+                                    flexDirection='row'
+                                    w='95%'>
+                                    <TouchableOpacity disabled={count<=1} style={{width:80}}  onPress={() => setCount(count=count-1)}>
+                                        <Icon  style={{with:20,height:30}} fill='green'  name='minus-outline' />
+                                    </TouchableOpacity>
+                                    <Text>{count}</Text>
+                                    <TouchableOpacity  style={{width:80}} onPress={() => setCount(count=count+1)}>
+                                        <View>
+                                            <Icon style={{with:20,height:30}} fill='green'  name='plus-outline' />
+                                        </View>                  
+                                    </TouchableOpacity> 
+                                </View>
+                                
+                            </View>
+                        </View>
+                         
+                                                          
                         <View
                             flexDirection='row'
                             justifyContent='flex-end'
-                            mt={4}
                             w='100%'
                         >
+                                                      
                             <Text>รวม {route.params.food_price*count} บาท</Text>
                         </View> 
                             <View
-                            mt={4}
+                            mt={1}
                             w='100%'
                             flexDirection='row'
                             justifyContent='space-between'
                         >
-                            <Button w='49%' onPress={conferm}>สั่งซื้อ</Button> 
-                            <Button w='49%'onPress={() => conferm("addToCart")}>Add to cart</Button>   
+                            <Button w='49%' height={'85%'} borderRadius={10} onPress={conferm}>สั่งซื้อ</Button> 
+                            <Button w='49%' height={'85%'} borderRadius={10} onPress={() => conferm("addToCart")}>Add to cart</Button>   
                         </View>                        
                     </View>
                 </View>     

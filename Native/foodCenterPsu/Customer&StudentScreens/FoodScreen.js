@@ -243,7 +243,7 @@ const FoodList =({navigation})=>{
                     backgroundColor='white'
                     flex={5}
                     borderTopRadius={20}
-                    mb={'17%'}
+                    mb={'10%'}
                 >
 
                     <FlatList 
@@ -308,21 +308,20 @@ const FoodList =({navigation})=>{
                             </View>):(<></>)}   
                         <View style={{
                             flexDirection:'row',
-                            padding:10,
+                           
                             backgroundColor:'#E4E4F4',
                             borderRadius:20,
                         }}>                      
                             <Image
                                 style={{
                                     width:120,               
-                                    height:120,
-                                    marginLeft:5,
+                                    height:120,                                  
                                     borderRadius:20,                                                                                                                     
                                 }}
                                 alt={item.food_name}
                                 source={{uri:`http://192.168.1.102:3001/userUploaded/${item.food_img}`}}                           
                             />
-                            <View style={{marginLeft:10,width:'60%',flex:1,alignItems:'flex-start'}}>
+                            <View style={{marginLeft:10,marginTop:2,width:'60%',flex:1,alignItems:'flex-start'}}>
                                
                                     <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
                                         {item.food_name} 
@@ -335,8 +334,9 @@ const FoodList =({navigation})=>{
                                     ร้าน : {item.store_name} 
                                 </Text> 
                                 <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
-                                    ราคา: {item.food_price} บาท
-                                </Text>                                                                     
+                                    ราคา: {item.food_price} บาท 
+                                </Text> 
+                                                                                                  
                             </View>
                             <View  justifyContent='center' >
                                 <Icon style={styles.icon} fill='#888888' name='arrow-ios-forward-outline' />

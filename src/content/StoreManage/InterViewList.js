@@ -30,8 +30,8 @@ import InterViewDetial from './interViewFormDetial';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -66,13 +66,14 @@ export default function InterView() {
     const [open, setOpen] = React.useState(false);
     const [openDetil, setOpenDetial] = React.useState(false);
     const [id, setIid] = useState()
+    const [idLocation, setIdLocation] = useState()
     const {auth,setIsload} = useContext(AuthContext);
 
-    const handleClickOpen = (e) => {
-        setIid(e)
+    const handleClickOpen = (id,id_location) => {
+      setIdLocation(id_location);
+        setIid(id)
         setOpen(true);
       };
-
     const handleClickOpenDetial =(e)=>{
       setIid(e)
       setOpenDetial(true);
@@ -93,6 +94,7 @@ export default function InterView() {
           axios.post("http://localhost:3001/getStoreInterViewList",{
               date:ThisYears
           }).then((res)=>{
+           
             setDataApplicationList(res.data)   
           }).then(
               axios.get("http://localhost:3001/getYears").then((response)=>{               
@@ -111,7 +113,7 @@ export default function InterView() {
           axios.post("http://localhost:3001/getStoreInterViewList",{
               date:e.target.value
           }).then((res)=>{
-            console.log(res.data);
+          
               setDataApplicationList(res.data)
           })
       }
@@ -131,16 +133,16 @@ export default function InterView() {
               </Select>
             </div>
             <div style={{marginTop:'20px'}}>
-              <TableContainer component={Paper} >
+              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>
                       <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
                       <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
                       <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
-                      <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="left">สถานะ</StyledTableCell>
+                      <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="left">รายละเอียด</StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -150,9 +152,9 @@ export default function InterView() {
                         <StyledTableCell  align="left" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
                         <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ลงคะแนน</Button></StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.admin_name}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
                         <StyledTableCell align="left" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
+                        <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id!==null} variant="contained" onClick={()=>handleClickOpen(dataList.id,dataList.id_locations)} style={{fontWeight:'bold'}}>ลงคะแนน</Button></StyledTableCell>
                         <StyledTableCell align="left" width="10px"><Button disabled={dataList.admin_id==null} variant="contained" onClick={(e)=>handleClickOpenDetial(dataList.id)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -172,7 +174,7 @@ export default function InterView() {
                 </Toolbar>
               </AppBar>
               <div style={{marginTop:'50px'}}>
-                <InterViewForm active={id} open={open}/>
+                <InterViewForm active={id} id_locations={idLocation} open={open}/>
               </div> 
             </Dialog>
             <Dialog fullScreen open={openDetil} onClose={handleCloseDetial} TransitionComponent={Transition}>

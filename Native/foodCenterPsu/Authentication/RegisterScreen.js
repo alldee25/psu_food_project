@@ -47,12 +47,15 @@ export default function RegisterScreen() {
         <View>   
             <ImageBackground
                 blurRadius={15}
-                style={{width:'100%',height:'100%',display:'flex',justifyContent:'flex-end'}} 
+                style={{width:'100%',height:'100%',justifyContent:'flex-end'}} 
                 source={require('../assets/img/summer-composition-with-ingredients-blank-space.jpg')} 
             >
                 <View style={styles.formView}>
-                <ScrollView style={{width:'100%',height:'100%'}}>                 
-                    <Image 
+                <ScrollView style={{width:'100%',height:'80%'}}>
+                    <View
+                        style={{alignItems:'center',width:'100%',height:'100%',marginBottom:5}}
+                    >
+                       <Image 
                     source={require("../assets/img/pngkey.com-profile-icon-png-2024691.png")}
                     style={{width:50,height:50,tintColor:'blue',marginTop:30}}
                 />
@@ -60,16 +63,15 @@ export default function RegisterScreen() {
                     onSubmit={(values) => signup(values)}
                     initialValues={{name:'',lastname:'',username:'',password:'',phone:'',email:''}}
                 >
-                {({ handleChange, handleBlur, handleSubmit, values }) =>(
+                {({ handleChange, handleSubmit, values }) =>(
                     <View style={{width:'100%',height:'100%',display:'flex',alignItems:'center'}}>
-                <Input                    
+                    <Input                    
                         status='primary'
                         placeholder='First Name'
                         style={styles.Input}
                         accessoryLeft={person}
                         value={values.name}
-                        type="text"
-                        handleBlur="name"                      
+                        type="text"                     
                         onChangeText={handleChange('name')}                      
                     />                   
                     <Input                    
@@ -94,7 +96,7 @@ export default function RegisterScreen() {
                         status='primary'
                         placeholder='Password'
                         style={styles.Input}
-                        accessoryLeft={person} 
+                        accessoryLeft={<Icon name='lock-outline' fill='#B22234' style={{width:20,height:20}} />} 
                         value={values.password}
                         type="password"
                         onChangeText={handleChange('password')}                     
@@ -103,7 +105,7 @@ export default function RegisterScreen() {
                         status='primary'
                         placeholder='Phone'
                         style={styles.Input}
-                        accessoryLeft={person} 
+                        accessoryLeft={<Icon name='phone-outline' fill='#FCC65B' style={{width:20,height:20}} />} 
                         value={values.phone}
                         type="phone"
                         onChangeText={handleChange('phone')}                     
@@ -112,13 +114,12 @@ export default function RegisterScreen() {
                         status='primary'
                         placeholder='Email'
                         style={styles.Input}
-                        accessoryLeft={person} 
+                        accessoryLeft={<Icon name='email-outline' fill='#FFB0E6' style={{width:20,height:20}} />} 
                         value={values.email}
                         type="email"
                         onChangeText={handleChange('email')}                     
                     />
-                    <Button                       
-                        size='small' 
+                    <Button                                              
                         style={styles.buttonSignin}
                         type="submit" 
                         onPress={handleSubmit}                    
@@ -126,12 +127,14 @@ export default function RegisterScreen() {
                     >
                         {process ? (<Progress.Circle size={30} indeterminate={true} color="white" />)
                         :
-                        (<Text>Log in</Text>)}                       
+                        (<Text>Register</Text>)}                       
                     </Button>                        
                     </View>
 
                 )}
-                    </Formik>                                                                       
+                    </Formik> 
+                    </View>                 
+                                                                                           
                 </ScrollView>
             </View>
                 
@@ -141,12 +144,11 @@ export default function RegisterScreen() {
 }
 const styles = StyleSheet.create({
     Input:{
-        marginTop: 30,
+        marginTop: 23,
         width:'80%',
         borderRadius:15
     },
     formView:{
-        display:'flex',
         alignItems:'center',
         backgroundColor:'white',
         width:'100%',
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
         opacity:0.8
     },
     buttonSignin:{
-        marginTop: 30,
+        backgroundColor:'#6D5FC9',
+        marginTop: 20,
         width:'50%',
         borderRadius:20, 
       }

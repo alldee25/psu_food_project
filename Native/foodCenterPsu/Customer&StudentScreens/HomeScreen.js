@@ -52,12 +52,12 @@ const HomeData =({navigation})=> {
                             {userData.usersData[0].name}
                     </Heading>
                     <View
-                        w='90%'
+                        w='100%'
                         alignItems='flex-end'
                     >
                     <TouchableOpacity
-                        status='success' 
-                        onPress={()=> navigation.navigate('Profile')}              
+                        style={{marginTop:5,width:100}} 
+                        onPress={()=>{navigation.navigate('profileScreenCustomer')}}              
                     >
                         <Icon name='person-outline'  fill='black' style={{with:30,height:30}}/>
                     </TouchableOpacity>
@@ -139,7 +139,7 @@ export default function HomeScreen() {
                     headerShown:false
                 }}
             />
-            <stackHome.Screen name='Profile' component={ProfileScreen} />
+            <stackHome.Screen name='profileScreenCustomer' component={ProfileScreen} />
         </stackHome.Navigator>
     )
     

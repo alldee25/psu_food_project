@@ -16,10 +16,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import ApplicationDetial from './ApplicationFormCheck'
 import Dialog from '@material-ui/core/Dialog';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -32,8 +28,8 @@ import './ApplicationsList.css'
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -119,16 +115,15 @@ export default function CheckApplication(props) {
             </Select>
             </div>
             <div style={{marginTop:'20px'}}>
-              <TableContainer component={Paper} >
+              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}}>
                     <Table className={classes.table} aria-label="customized table">
-                      <TableHead>
+                      <TableHead >
                         <TableRow>
                           <StyledTableCell>ชื่อ-นามสกุล</StyledTableCell>
                           <StyledTableCell align="left">หมายเลขบัตรประชาชน</StyledTableCell>
                           <StyledTableCell align="left">สถานะ</StyledTableCell>
                           <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
                           <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
-                          <StyledTableCell align="left">แก้ไข</StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -139,28 +134,27 @@ export default function CheckApplication(props) {
                             <StyledTableCell align="left" width="100px">{dataList.status}</StyledTableCell>
                             <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
                             <StyledTableCell align="center" width="100px">{dataList.adminName}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
-                            <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==auth.usersData[0].name} variant="contained" style={{fontWeight:'bold'}}>แก้ไข</Button></StyledTableCell>
                           </StyledTableRow>
                         ))}
                       </TableBody>
                     </Table>
               </TableContainer>
             </div>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              รายละเอียดการสมัค
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <div style={{marginTop:'50px'}}>
-          <ApplicationDetial active={id}/>
-          </div> 
-      </Dialog>
+            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    รายละเอียดการสมัค
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <div style={{marginTop:'50px'}}>
+                <ApplicationDetial active={id}/>
+                </div> 
+            </Dialog>
     </div> 
         
     )

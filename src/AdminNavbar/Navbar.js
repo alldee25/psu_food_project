@@ -29,7 +29,7 @@ function Navbar (){
           }
     }, [])
         return(
-            <nav>
+            <nav style={{position:'relative'}}>
                 <ul>
                     <Profile />
                     <li className={Navbar === 1 ? 'active' : ''}>
@@ -105,7 +105,7 @@ function Navbar (){
                         </Link>  
                     </li> 
                 </ul>               
-                <div style={{display:'flex',justifyContent:'center'}}>
+                <div style={{display:'flex',justifyContent:'center',position:'absolute',bottom:'5%',left:'25%'}}>
                     <Logout/>
                 </div>
             </nav>

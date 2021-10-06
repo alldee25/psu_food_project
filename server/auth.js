@@ -111,7 +111,7 @@ authRouter.post("/store",(req, res)=> {//เข้าสู่ระบบโด
         }
         else if(result.length > 0){         
                 bcrypt.compare(Password, result[0].password,(error, response)=>{  
-                    if(true){                       
+                    if(response){                       
                         req.session.UserType = UserType;
                         req.session.user = result;
                         req.session.img = result[0].img;

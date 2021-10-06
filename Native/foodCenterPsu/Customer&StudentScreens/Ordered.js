@@ -47,10 +47,29 @@ const orderListUser = ({navigation}) => {
     return (
         
             
-        <ImageBackground
-            source={require('./../assets/img/v748-toon-106.jpg')}
+        <View
+            
             style={{width:(W),height:(H)}}
-        >
+        >   
+            <Image
+                top={-10}
+                width="100%"
+                height="25%"
+                resizeMode='contain'
+                position='absolute'
+                zIndex={-1}
+                alt='backorder' 
+                source={require('./../assets/img/S__2637832.jpg')}
+            />
+            <View
+                position='absolute'
+                width="100%"
+                height="100%"
+                opacity={0.5}
+                backgroundColor='#000'
+                zIndex={-1}
+            />
+          
             <View
                 flex={1}
                 justifyContent="flex-start"
@@ -58,12 +77,18 @@ const orderListUser = ({navigation}) => {
             >
                 <View
                     w='40%'
-                    mt={1}
+                    h={130}
+                    mb={3}
+                    borderTopRightRadius={80}
+                    borderBottomRightRadius={80}                   
+                    opacity={0.8}
+                    backgroundColor="#FFFF"
                 >
                     <Image 
                     resizeMode='contain'
                     alt='Cute_woman_chef_logo_cartoon_art_illustration'                
                     h={100}
+                    mt={2}
                     source={require('./../assets/img/Cute_woman.png')}
                 />
                 </View>
@@ -74,7 +99,7 @@ const orderListUser = ({navigation}) => {
                 backgroundColor='white'
                 flex={5}
                 borderTopRadius={20}
-                mb={10}
+                mb={10}   
                 
             >
                     <FlatList 
@@ -119,7 +144,7 @@ const orderListUser = ({navigation}) => {
                         }
                     />           
             </View>
-        </ImageBackground>
+        </View>
         
     )
 }

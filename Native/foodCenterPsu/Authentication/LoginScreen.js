@@ -1,37 +1,21 @@
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
-import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,RefreshControl,TouchableWithoutFeedback,  Alert } from 'react-native'
-import { Button, IndexPath, Input, Select, SelectItem } from '@ui-kitten/components';
+import { ImageBackground, StyleSheet, TextInput, TouchableOpacity,TouchableWithoutFeedback,  Alert } from 'react-native'
+import {   Input,} from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon, MenuItem, Spinner } from '@ui-kitten/components';
 import { useState } from 'react';
 import RegisterScreen from './RegisterScreen';
 import axios from 'axios';
 import { Divider,
-    Flex,
     Text,
-    Heading,
-    Box,
-    View
+    View,
+    Button
      } from "native-base"
 import { AuthContext } from '../App';
 
 
 const selectUserStack = createStackNavigator();
-
-const person = (props) => (
-    <Icon {...props} name='person'/>
-  );
-
-const home = (props) => (
-    <Icon {...props} name='home'/>
-  );
-
-const LoadingIndicator = (props) => (
-<View style={[props.style, styles.indicator]}>
-    <Spinner size='small'/>
-</View>
-);
 
 export default function LoginScreen() {
 
@@ -51,9 +35,7 @@ export default function LoginScreen() {
         </selectUserStack.Navigator>
     )
 }
-const AlertIcon = (props) => (
-    <Icon {...props} name='alert-circle-outline'/>
-  );
+
 const Loin =({navigation,route})=>{
 
     const {setAuth,auth} = React.useContext(AuthContext)
@@ -73,7 +55,6 @@ const Loin =({navigation,route})=>{
     );
 
     const login =()=>{
-        
         setProcess(true)
         axios.post(`http://192.168.1.102:3001/${route.params.userType}`,{
             userType:route.params.userType,
@@ -96,8 +77,8 @@ const Loin =({navigation,route})=>{
                   );
                   setProcess(false);
             } else {                 
-            setAuth('login')     
-        }
+                setAuth('login')     
+            }
         }).catch((error)=>{
             setProcess(false)
             console.log(error);
@@ -129,19 +110,23 @@ const Loin =({navigation,route})=>{
                                 secureTextEntry={secureTextEntry}
                                 size="medium" 
                                 style={styles.input}/>         
-                            <View style={{display:'flex',alignItems:'center',width:'80%'}}>
+                            <View style={{alignItems:'center',width:'80%',height:'20%'}}>
                                 <Button 
-                                    size='small' 
+                                    isLoading={process}
+                                    size="sm"
+                                    bgColor='#6D5FC9'
                                     style={styles.buttonLogin}
-                                    onPress={login}
-                                    
-                                    
+                                    onPress={login}                                  
                                 >
-                                    {process ? (<Progress.Circle size={30} indeterminate={true} color="white" />):(<Text>Log in</Text>)}                                              
+                                   {process == false ? (<Text
+                                        color='#ffff'
+                                    >
+                                        Login
+                                    </Text>) : <></> }                        
                                 </Button>
                             </View>
                             {route.params.userType == 'customer' ?  (
-                            <View  style={{marginTop:10,display:'flex',alignItems:"center",width:'100%'}}>
+                            <View  style={{marginTop:10,alignItems:"center",width:'100%'}}>
                             <View style={{flexDirection: 'row', alignItems: 'center',width:250,marginTop:10}}>
                                 <View style={{flex:1, height: 0.7, backgroundColor: 'white'}} />
                                 <View>
@@ -153,13 +138,14 @@ const Loin =({navigation,route})=>{
                             </View>
                             <View style={{display:'flex',alignItems:'center',width:'80%',marginTop:10}}>
                                 <Button 
-                                    status='control' 
-                                    size='small' 
+                                size="sm"
+                                variant="outline"
                                     style={styles.buttonLogin} 
-                                    appearance='outline'
                                     onPress={()=> navigation.navigate('Register')}
                                 >
-                                    <Text>
+                                    <Text
+                                        color='#ffff'
+                                    >
                                         Signup
                                     </Text>
                                 </Button>  
@@ -242,6 +228,7 @@ const styles = StyleSheet.create({
     buttonLogin:{
         marginTop: 15,
         width:'50%',
+        height:40,
         borderRadius:20, 
     },
     icon: {
@@ -272,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#0B2B53',
     position:'relative',
     borderWidth:1,
-    borderRadius:10,
+    borderRadius:15,
     height:'30%',
     width:'80%',
     borderColor:'white',

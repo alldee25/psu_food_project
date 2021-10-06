@@ -26,8 +26,8 @@ import Select from '@material-ui/core/Select';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+        backgroundColor: '#531061',
+        color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -124,7 +124,7 @@ function ComplaintList() {
             <div style={{marginTop:'20px'}}>
                 {complaintList == '' ? <div style={{position:'absolute',top:'50%',left:'40%'}}>
                 <h1>ไม่พบข้อร้องเรียน</h1>
-            </div> : <TableContainer component={Paper} >
+                </div> : <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                     <Table className={classes.table} aria-label="customized table">
                         <TableHead>
                             <TableRow>

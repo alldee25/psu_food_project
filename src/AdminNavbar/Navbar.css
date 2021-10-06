@@ -59,6 +59,7 @@ box-shadow:     6px 6px 15px #909090,
                 0px 0px 0px ;
 }
 .active{
+color: #FFFF;
 display: flex;
 align-items: center;
 justify-content: flex-end;
@@ -66,9 +67,11 @@ padding-right: 5%;
 margin: 10px 0px 35px 25px;
 height: 50px;
 border-style: solid;
-border-color:cadetblue;
-background-color:rgba(173, 216, 230, 0.848);
+background-color:#44CFCC;
 /* background: linear-gradient(to right, rgba(255, 255, 255, 0.441), rgba(173, 216, 230, 0.848));  */
+}
+.active a{
+    color: #FFFF;
 }
 nav ul li a{
 display: flex;

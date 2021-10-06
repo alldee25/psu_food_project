@@ -10,7 +10,7 @@ import { useState } from 'react';
 import LoginScreen from './Authentication/LoginScreen';
 import axios from 'axios';
 import 'react-native-gesture-handler';
-import { Heading, HStack, NativeBaseProvider, Spinner } from 'native-base';
+import { Heading, HStack, NativeBaseProvider, Spinner, extendTheme } from 'native-base';
 import { Provider } from 'react-redux';
 import { Store } from './src/redux/store';
 import PushNotification from 'react-native-push-notification';
@@ -20,6 +20,27 @@ const AuthContext = React.createContext();
 const data = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "สำนักงานสมอลแอร์อาคารเกรท ชั้นสองซอยลาดพร้าว 1", "dob": "2001-07-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 38, "idcard": "1940500129878", "idend": "2021-07-29", "idstart": "2021-07-09", "lastname": "", "name": "Yameelah ", "nationality": "Thai", "password": "", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 37}, {"adress": "l", "dob": "l", "email": "l", "gender": "l", "id": 33, "idcard": "l", "idend": "l", "idstart": "l", "lastname": "l", "name": "l", "nationality": "l", "password": "Audi", "phone": "l", "race": "l", "religion": "l", "store_id": 37}]}
 const dataCustomer = {"UserType": "customer", "logedIn": true, "usersData": [{"email": "1234", "id": 4, "img": "", "lastname": "a", "name": "a", "password": "$2b$10$IcMBuX.sUst8kvZNd3J.4OHwee0Bg48PTdYwDbWNMhpBhF6GjxAr2", "phone": "1234", "username": "a"}], "usersImg": ""}
 const dataStore = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "42 หมู่ 1 บ้านสังแกตำบลสะเดาอำเภอบัวเชดจังหว", "dob": "1990-11-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 31, "idcard": "1940500129879", "idend": "2021-08-07", "idstart": "2021-07-01", "lastname": "", "name": "Yasmin", "nationality": "Thai", "password": "1234", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 38}]}
+
+const theme = extendTheme({
+  fontConfig: {
+    IBMPlexSansThai: {
+      400: {
+        normal: 'IBMPlexSansThai-Regular',
+      },
+      500: {
+        normal: 'IBMPlexSansThai-Medium',
+      },
+      600: {
+        normal: 'IBMPlexSansThai-Bold',
+      },
+    },
+  },
+  fonts: {
+    heading: 'IBMPlexSansThai-Bold',
+    body: 'IBMPlexSansThai-SemiBold',
+    mono: 'IBMPlexSansThai-Regular',
+  },
+});
 
 export default function App() {
  
@@ -100,7 +121,7 @@ export default function App() {
     return (
     <>
     <Provider store={Store} >
-      <NativeBaseProvider >
+      <NativeBaseProvider theme={theme} >
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <AuthContext.Provider value={{ auth,socket,callNotifitionUser, setAuth, setIsload, userImg, userType, userData}}>
@@ -117,7 +138,7 @@ export default function App() {
   } else if(userData !== null && userType == 'store' ) {
     return(
       <>
-      <NativeBaseProvider >
+      <NativeBaseProvider theme={theme}>
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <AuthContext.Provider value={{ auth, socket, callNotifition, setAuth, setIsload, userImg, userType, userData}}>            
@@ -156,7 +177,7 @@ export default function App() {
   else {
     return(
       <>  
-      <NativeBaseProvider>
+      <NativeBaseProvider theme={theme}>
         <IconRegistry icons={EvaIconsPack} />
           <ApplicationProvider {...eva} theme={eva.light}> 
             <AuthContext.Provider value={{ setIsload, setAuth, }}>      

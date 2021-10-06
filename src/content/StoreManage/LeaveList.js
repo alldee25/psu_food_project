@@ -24,8 +24,8 @@ import LeaveForm from './LeaveForm';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -86,7 +86,7 @@ function LeaveList() {
                 </h1>
             </div>
             <div>
-                <TableContainer component={Paper} >
+                <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                     <TableRow>
@@ -104,7 +104,7 @@ function LeaveList() {
                         <StyledTableCell align="center" width="100px">{dataList.store_name}</StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.status}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button variant="contained" disabled={(auth.usersData[0].id == dataList.admin_id) || (auth.usersData[0].id == dataList.admin_id1)} onClick={(e)=>handleClickOpen(dataList.leaveStoreId)} style={{fontWeight:'bold'}}><RemoveRedEyeRoundedIcon/></Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button variant="contained" disabled={(auth.usersData[0].id == dataList.admin_id) || (auth.usersData[0].id == dataList.admin_id1)} onClick={(e)=>handleClickOpen(dataList.leaveStoreId)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>

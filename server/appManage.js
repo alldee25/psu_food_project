@@ -203,12 +203,34 @@ appRouter.post('/addOption',(req,res)=>{
         }
     })
 })
+appRouter.post('/InsertPayment',(req,res)=>{
+    const store_id = req.body.storeId
+    const paymentName = req.body.paymentName
+    db.query('INSERT INTO payment (store_id,payment_name) VALUES(?,?)',[store_id,paymentName],(err)=>{
+        if (err) {
+            res.send({err:err});
+        } else {
+            res.send({message:'เพิ่มเรียบร้อย'});
+        }
+    })
+})
 appRouter.post('/deleteSpOption',(req,res)=>{
     const sOption = req.body.sOption
     db.query(`DELETE food_special_option.*,food_and_special_option_mix.*
     FROM food_special_option
     INNER JOIN food_and_special_option_mix ON food_special_option.id = food_and_special_option_mix.special_option_id
     WHERE food_special_option.id = ?`,[sOption],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send({message:'เพิ่มเรียบร้อย'});
+        }
+    })
+})
+appRouter.post('/deletePayment',(req,res)=>{
+    const paymentId = req.body.paymentId
+    db.query(`DELETE payment.* FROM payment WHERE id = ?`,[paymentId],(err)=>{
         if (err) {
             console.log(err);
             res.send({err:err});
@@ -248,6 +270,17 @@ appRouter.post('/addSpecialOption',(req,res)=>{
 appRouter.post('/getOption',(req,res)=>{
     const store_id = req.body.storeId
     db.query('SELECT * FROM food_option WHERE store_id = ?',[store_id],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);
+        }
+    })
+})
+appRouter.post('/getPayment',(req,res)=>{
+    const store_id = req.body.storeId
+    db.query('SELECT * FROM payment WHERE store_id = ?',[store_id],(err,result)=>{
         if (err) {
             console.log(err);
             res.send({err:err});
@@ -394,11 +427,11 @@ appRouter.post('/ComplaintList',(req,res)=>{
 })
 
 appRouter.get('/getFoodMenuListCustomer',(req,res)=>{
-    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId,store.status AS s_status,leave_store.to_date,leave_store.frome_date 
+    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId,store.status AS s_status,leave_store.to_date,leave_store.frome_date
     FROM food_menu
     INNER JOIN store ON store.id = food_menu.store_id
     INNER JOIN store_owner ON store.id = store_owner.store_id
-   	LEFT JOIN leave_store ON leave_store.store_owner_id = store_owner.id AND leave_store.date_write = (SELECT MAX(leave_store.date_write) FROM leave_store)
+   	LEFT JOIN leave_store ON leave_store.store_owner_id = store_owner.id AND leave_store.date_write = (SELECT MAX(leave_store.date_write) FROM leave_store WHERE leave_store.status='อนุมัติ')
     `,[],(err,result)=>{
         if (err) {
             console.log(err);
@@ -434,7 +467,7 @@ appRouter.post('/getSpecialOptionMixByfoodid',(req,res)=>{
     })
 })
 appRouter.post('/getAnnounCustomer',(req,res)=>{
-    db.query(`SELECT * From announce`,(err,result)=>{
+    db.query(`SELECT * From announce WHERE type = 'general'`,(err,result)=>{
         if (err) {
             console.log(err);
         } else {
@@ -454,8 +487,8 @@ appRouter.post('/insertOrder',(req,res)=> {
         } else {
          
                const promises = data.map(data => {
-                db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
-                VALUES(?,?,?,?,?)`,[orderId,data.fId,data.text,data.option,data.count],(err)=>{
+                db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity,package) 
+                VALUES(?,?,?,?,?,?)`,[orderId,data.fId,data.text,data.option,data.count,data.package],(err)=>{
                    if (err) {
                        console.log(err);
                        res.send({err:'ไม่สามารสั่งได้'})
@@ -496,6 +529,26 @@ appRouter.post('/getOrder',(req,res)=>{
     INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
     INNER JOIN	customer ON customer.id = order_food.customer_id
     WHERE store.id = ? AND date(order_food.date) = ?
+    GROUP BY order_food.id
+    ORDER BY order_food.date ASC 
+    `,[storeId,date],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                res.send(result)
+                }
+            })  
+})
+appRouter.post('/getOrderOtherDay',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT order_food.id AS oid, order_food.date,customer.name,customer.id AS cid
+    FROM store 
+    INNER JOIN food_menu ON food_menu.store_id = store.id 
+    INNER JOIN order_food_detial ON order_food_detial.food_id = food_menu.id 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    INNER JOIN	customer ON customer.id = order_food.customer_id
+    WHERE store.id = ? AND date(order_food.date) != ?
     GROUP BY order_food.id
     ORDER BY order_food.date ASC 
     `,[storeId,date],(err,result)=>{
@@ -574,13 +627,29 @@ appRouter.post('/getOrderUserDetial',(req,res)=>{
                 }
             })  
 })
-appRouter.post('/getStoreStatus',(req,res)=>{
+appRouter.post('/getStoreStatusAndInfo',(req,res)=>{
     const storeId = req.body.storeId
-    db.query(`SELECT status FROM store WHERE store.id = ?`,[storeId],(err,result)=>{
+    db.query(`SELECT store.store_name,store.status,location.location AS location, store.log_id AS log_id
+    FROM store 
+    INNER JOIN location ON location.id = store.location_id 
+    INNER JOIN store_lock ON store_lock.id = store.log_id
+    WHERE store.id = ?`,[storeId],(err,result)=>{
              if (err) {
                  console.log(err);
              } else {
-                 res.send(result[0].status)
+                 res.send({name:result[0].store_name,status:result[0].status,log_id:result[0].log_id,location:result[0].location})
+                }
+            })  
+})
+appRouter.post('/getCustomerInfo',(req,res)=>{
+    const userId = req.body.userId
+    db.query(`SELECT *
+    FROM customer
+    WHERE id = ?`,[userId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 res.send(result)
                 }
             })  
 })
@@ -596,7 +665,7 @@ appRouter.post('/ChangStoreStatus',(req,res)=>{
                     if (err) {
                         console.log(err);
                     } else {
-                      res.send(result[0].status)  
+                      res.send({status:result[0].status})  
                     }
                 })
                  

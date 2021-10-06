@@ -1,9 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import { Icon, MenuItem,Layout,Tab,TabView } from '@ui-kitten/components';
 import axios from 'axios';
-import { View,Button} from 'native-base';
+import { View,Button,Text} from 'native-base';
 import React, { createRef, useContext, useEffect, useRef, useState } from 'react'
-import { StyleSheet, SafeAreaView, Text, ImageBackground } from 'react-native'
+import { StyleSheet, SafeAreaView,  ImageBackground } from 'react-native'
 import { AuthContext } from '../App';
 import imagBack from '../assets/img/v748-toon-106.jpg'
 import CleaneseLevelDetial from './CleaneseLevelDetial';
@@ -53,7 +53,8 @@ const stackScreen =({navigation})=>{
             source={imagBack}
         >
             <SafeAreaView style={styles.container}> 
-                <MenuItem style={styles.MenuItem} title='ลาพักจำหน่ายอาหาร' onPress={()=> navigation.navigate('รายการลา')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ลาพักจำหน่ายอาหาร' onPress={()=> navigation.navigate('รายการลา')} accessoryRight={ForwardIcon} >
+                </MenuItem>
                 <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการชำระค่าเช่า')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
@@ -68,7 +69,8 @@ const stackScreen =({navigation})=>{
                     w='100%'
                     flexDirection='column'
                 >
-                <Button  
+                <Button 
+                    borderRadius={15} 
                     w='90%'
                     onPress={()=> logout()}
                     isLoading={loading} 
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
         shadowOpacity:1,
         elevation:7,
         shadowRadius:20,
+        fontFamily:'IBMPlexSansThai-Regular'
     },
     menuList:{
         width:'100%',

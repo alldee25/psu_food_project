@@ -28,16 +28,18 @@
     width: 100%;
 }
 .initem{
-    background-color: #FFFFFF;
+    font-weight: bold;
+    padding-top: 10px;
+    background-color: #CFFDFF;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction:column;
     width: 29.5%;
     margin: 0px 10px 0px 10px;
-    border-radius: 10px; 
+    border-radius: 15px; 
     box-shadow:   5px 5px 20px #969696,
     0px 0px 0px ;
-    
-
+    justify-content:space-between;
 }
 .on{
     display: flex;
@@ -71,14 +73,32 @@
 .container2{
     display: flex;
     flex-wrap:wrap;
-    justify-content: center;
+    align-items: center;
     width: 37%;
     height: 93%;
     border-radius: 20px;
+    padding-top: 20px;
     margin-top: 20px;
     margin-right: 30px;
     background-color: #CFFDFF;
     box-shadow:   5px 5px 20px #969696,
     0px 0px 0px ;
+    flex-direction: column; 
+    overflow-y: scroll; 
+}
+.container2 span{
+    font-weight: bold;
+}
+
+.DachText{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color:#44CFCC;
+    width :60%;
+    height: 50%;                   
+    border-radius: 15px;
     
 }

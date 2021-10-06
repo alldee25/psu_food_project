@@ -127,10 +127,10 @@ export default function HomeStore(props) {
             </div> 
           </div>
           <div className={togle === 2 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(2)} to={`${url}/CleanlinessLevel`}>ตรวจสอบความสะอาด</Link>
+            <Link onClick={() => togleTab(2)} to={`${url}/CleanlinessLevel`}>สุขาภิบาล</Link>
           </div>
           <div className={togle === 3 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(3)} to={`${url}/RentalFeeList`}>ตรวจสอบการชำระค่าเช่า</Link>
+            <Link onClick={() => togleTab(3)} to={`${url}/RentalFeeList`}>การชำระค่าเช่า</Link>
           </div>
           <div className={togle === 4 ? "itemNaveactive-nave" : "itemNave"}>
             <Link onClick={() => togleTab(4)} to={`${url}/LeaveList`}>ตรวรวสอบการลา</Link>
@@ -148,6 +148,7 @@ export default function HomeStore(props) {
             <div className="content">             
                 <Route exact path={`${path}`} component={DataListAnnounce} />
                 <Route exact path={`${path}/RentalFeeList`}component={RentalFeeList} />
+                <Route exact path={`${path}/CheckApplication`}component={CheckApplication} />
                 <Route exact  path={`${path}/InterView`} component={InterView} />
                 <Route  exact path={`${path}/ApplicationAnnouncement`} component={ApplicationAnnouncement} />
                 <Route  exact path={`${path}/StoreInformation`} component={StoreInformation} />

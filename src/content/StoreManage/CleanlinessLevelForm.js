@@ -1,10 +1,7 @@
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import React, { useContext, useEffect, useState } from 'react'
 import './CleanlinessLevelForm.css'
 import axios from 'axios';
-import {adminSchema} from '../../users/Validation'
 import { Button } from '@material-ui/core';
 import swal from 'sweetalert';
 import {AuthContext} from '../../App'
@@ -12,14 +9,7 @@ import { useHistory } from 'react-router';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import { animated, useTransition } from 'react-spring';
-import { useLocation } from 'react-router-dom';
-
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';

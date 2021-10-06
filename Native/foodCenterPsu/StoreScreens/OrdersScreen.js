@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
-import { Container, FlatList, Heading, View, Divider } from 'native-base'
+import { Container, FlatList, Heading, View, Divider, Image } from 'native-base'
 import React, { useContext, useEffect, useState } from 'react'
 import { Alert, Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../App';
@@ -13,7 +13,12 @@ export default function OrdersScreen({navigation}) {
         
     return (
         <stackOrder.Navigator>
-            <stackOrder.Screen name='orderScreen' component={orderScreen} />
+            <stackOrder.Screen 
+                name='orderScreen'
+                options={{
+                    headerShown:false
+                }} 
+                component={orderScreen} />
             <stackOrder.Screen name='orderDetialScreen' component={OrderDetialScreen} />
         </stackOrder.Navigator>
         )
@@ -27,8 +32,29 @@ const orderScreen = ({navigation}) => {
     const [orderList, setOrderList] = useState([]);
     let dt = new Date();
     const userId = userData.usersData[0].store_id
+    const [dateOrder,setDateOrder] = useState('Today')
 
-    
+    const seleOrderBydate = (value) => {
+        console.log(value);
+        if (value == 'Today') {
+            setDateOrder(value)
+            axios.post('http://192.168.1.102:3001/getOrder',{
+            storeId:userId,
+            date:Moment(dt).format('YYYY-MM-DD')
+        }).then((res)=> {
+            setOrderList(res.data)
+        })
+        } else {
+            setDateOrder(value)
+            axios.post('http://192.168.1.102:3001/getOrderOtherDay',{
+            storeId:userId,
+            date:Moment(dt).format('YYYY-MM-DD')
+        }).then((res)=> {
+            setOrderList(res.data)
+        })
+        }
+        
+    }
  
     useEffect(()=>{
             let isMounted = (
@@ -48,50 +74,65 @@ const orderScreen = ({navigation}) => {
             return () => {  isMounted = false,socket.off()}      
     },[])
     return (
-        <ImageBackground
-            source={require('../assets/img/v748-toon-106.jpg')}
+        <View
             style={{width:(W),height:(H)}}
         >
+            <Image
+                top={-10}
+                width="100%"
+                height="30%"
+                resizeMode='contain'
+                position='absolute'
+                zIndex={-1}
+                alt='backorder' 
+                source={require('./../assets/img/S__2637832.jpg')}
+            />
             <View
+                position='absolute'
+                width="100%"
+                height="100%"
+                opacity={0.5}
+                backgroundColor='#000'
+                zIndex={-1}
+            />
+                
+            <View
+                alignItems='center'
                 justifyContent="center"
                 width='100%' 
                 flexDirection="row"
                 mt={4}
-                mb={4}     
+                mb={4}
+                flex={1.5}     
                 >
-                    <Container bg='#ffFFFF'  
-                        shadowColor='#DC143C'                                 
-                        shadowOpacity={1}
-                        elevation={7}
-                        shadowRadius={20}  
-                        borderRadius={10} 
+                    
+                    <Container 
+                        bg={dateOrder == 'Today' ? '#D8D8D8' : '#ffFFFF'}                                                
+                        borderRadius={15} 
                         width={150} 
                         height={50} 
                         alignItems='center'
                         mr={2}
                         >
                         <TouchableOpacity 
-                            onPress={()=> callNotifition()}
+                            onPress={()=> seleOrderBydate('Today')}
                             style={{flex:1,alignItems:'center',width:'100%'}}
                             >
                             <Heading size="md" m={3} >
-                                วันที่   
+                                วันนี้
                             </Heading> 
                         </TouchableOpacity>                        
                     </Container> 
-                    <Container bg='#ffFFFF'  
-                        shadowColor='#DC143C'                                 
-                        shadowOpacity={1}
-                        elevation={7}
-                        shadowRadius={20}  
-                        borderRadius={10} 
+                    <Container 
+                        bg={dateOrder == 'otherDay' ? '#D8D8D8' : '#ffFFFF'}   
+                        borderRadius={15} 
                         width={150} 
                         height={50} 
                         alignItems='center'
                         ml={2}
                         >
                         <TouchableOpacity 
-                            onPress={()=> callNotifition()}
+                            onPress={()=> seleOrderBydate('otherDay')}
                             style={{flex:1,alignItems:'center',width:'100%'}}
                             >
                             <Heading size="md" m={3} >
@@ -100,6 +141,7 @@ const orderScreen = ({navigation}) => {
                         </TouchableOpacity>                        
                     </Container>
                 </View>
+                
             <View
                 backgroundColor='white'
                 flex={5}
@@ -151,7 +193,7 @@ const orderScreen = ({navigation}) => {
                         }
                     />           
             </View>
-        </ImageBackground>
+        </View>
     )
 } 
 

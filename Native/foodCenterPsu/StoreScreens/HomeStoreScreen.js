@@ -1,40 +1,40 @@
-import { Icon, Toggle } from '@ui-kitten/components';
+import { Icon } from '@ui-kitten/components';
+import { createStackNavigator } from '@react-navigation/stack';
 import axios from 'axios';
 import { Center, Container, Divider, Heading, Link, ScrollView, Text, View, Image } from 'native-base'
 import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App'
 import Moment from 'moment';
+import ProfileStore from './ProfileStore';
+
+const stackHomeStore = createStackNavigator()
 
 export default function HomeStoreScreen() {
-    const W = Dimensions.get('window').width;
+    return (
+        <stackHomeStore.Navigator>
+            <stackHomeStore.Screen 
+                name='home' 
+                component={HomeStore} 
+                options={{
+                    headerShown:false
+                }}
+                />
+            <stackHomeStore.Screen name='profileScreenStore' component={ProfileStore} />
+        </stackHomeStore.Navigator>
+    )
+}
+const HomeStore =({navigation})=> {
+        const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
     const {userData} = useContext(AuthContext)
-    const [storeStatus,setStoreStatus] = useState('')
     const [sellInfo,setSellInfo] = useState([])
     Moment.locale('en')
     let date = new Date();
     
-    const onCheckedChange =()=> {
-        setStoreStatus(!storeStatus)
-        axios.post('http://192.168.1.102:3001/ChangStoreStatus',{
-            storeId:userData.usersData[0].store_id,
-            status:!storeStatus
-        }).then(
-            (res)=> {
-                setStoreStatus(res.data)
-            }
-        )
-    }
     useEffect(()=>{
         let isMounted = (
-           axios.post('http://192.168.1.102:3001/getStoreStatus',{
-            storeId:userData.usersData[0].store_id
-        }).then(
-            (res)=> {
-                   setStoreStatus(res.data) 
-            }      
-        ).then(
+           
             axios.post('http://192.168.1.102:3001/getsellInfomation',{
                 storeId:userData.usersData[0].store_id,
                 date:Moment(date).format('YYYY-MM-DD')
@@ -42,8 +42,7 @@ export default function HomeStoreScreen() {
                 (res)=> {
                     setSellInfo(res.data)               
                 }
-            )
-        ) 
+          )      
         )
         return () => { isMounted = false }
     },[])
@@ -73,23 +72,18 @@ export default function HomeStoreScreen() {
                         alignItems='flex-end'
                     >
                     <TouchableOpacity
-                        style={{marginTop:5,width:260}} 
-                        onChange={()=>{navigation.navigate('profile')}}              
+                        style={{marginTop:5,width:200}} 
+                        onPress={()=>{navigation.navigate('profileScreenStore')}}              
                     >
                         <Icon name='person-outline'  fill='black' style={{with:30,height:30}}/>
                     </TouchableOpacity>
                 </View>
-                </Container>
-                
-                
-                <View 
-                                     
+                </Container>                              
+                <View                                     
                     alignItems='center'                   
                     width={W}
-                    height={H}
-                                
-                >
-                    
+                    height={H}                              
+                >                  
                 <View              
                 width='90%' 
                 flexDirection="row"

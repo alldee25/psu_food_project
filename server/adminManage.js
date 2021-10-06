@@ -105,7 +105,23 @@ adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลปร
     const title = req.body.title
     const content = req.body.content 
     const date = req.body.Date 
-    db.query("INSERT INTO announce (Title,Content,date) VALUE (?,?,?)",[title,content,date],
+    const type = req.body.type 
+    db.query("INSERT INTO announce (Title,Content,date,type) VALUE (?,?,?,?)",[title,content,date,type],
+    (err) => {
+        if(err){
+            console.log(err);
+        }else{
+            res.send('Success for insert')
+        }
+    })
+})
+adminRouter.post("/updateAnnoun",(req,res)=>{//เพิ่มข้อมูลประกาศ
+    const title = req.body.title
+    const content = req.body.content 
+    const date = req.body.Date 
+    const type = req.body.type 
+    const id = req.body.id 
+    db.query("UPDATE announce SET Title=?,Content=?,date=?,type=? WHERE id = ?",[title,content,date,type,id],
     (err) => {
         if(err){
             console.log(err);
@@ -135,7 +151,7 @@ adminRouter.post("/UpdateStatusRegis",(req,res)=>{//ดึงข้อมูล�
         }
     }))
 })
-adminRouter.get("/getRegisStatus",(req,res)=>{//ดึงข้อมูลประกาศ
+adminRouter.get("/getRegisStatus",(req,res)=>{
     db.query("SELECT status FROM status WHERE status_name = ?",['regis_status'],((err,result)=>{
         if(err){
             console.log(err);
@@ -271,6 +287,7 @@ adminRouter.post("/getInterViewDetial",(req,res)=>{//ดึงรายละเ
         if(err){
             console.log(err);
         }else{
+    
             res.send(result)
         }
     }))
@@ -342,18 +359,21 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
     const bordOpenion = req.body.bordOpenion
     const bType = req.body.bType 
     const bLocation = req.body.bLocation
+    const storeLock = req.body.storeLock
     if (sum>=80 && bordOpenion) {
-        db.query("INSERT INTO store (regis_id,store_name,location_id,type_id,type1_id,promosion) VALUES (?,?,?,?,?,?)",[regisId,dataInterViewList[0].store_name,dataInterViewList[0].id_locations,dataInterViewList[0].id_type,dataInterViewList[0].id_type1,dataInterViewList[0].promosion],((err)=>{
+        db.query(`INSERT INTO store (regis_id,store_name,location_id,type_id,type1_id,promosion,log_id) VALUES (?,?,?,?,?,?,?)`,
+        [regisId,dataInterViewList[0].store_name,dataInterViewList[0].id_locations,dataInterViewList[0].id_type,dataInterViewList[0].id_type1,dataInterViewList[0].promosion,storeLock],((err)=>{
             if (err) {
                 console.log(err);
             }
             else{ 
-                bcrypt.hash(password, saltRounds, (err, hash) => {
+                bcrypt.hash(String(dataInterViewList[0].idcard), saltRounds, (err, hash) => {
+                    console.log(dataInterViewList[0].img);
                     if (err) {
                         console.log(err);
                     } else {
-                        db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,password) 
-                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                        db.query(`INSERT INTO store_owner (store_id,name,lastname,gender,dob,race,nationality,religion,idcard,idstart,idend,adress,phone,email,img,password) 
+                        VALUES ((SELECT id FROM store WHERE regis_id=?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
                         [regisId,
                         dataInterViewList[0].name,
                         dataInterViewList[0].lastname,
@@ -368,6 +388,7 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                         dataInterViewList[0].adress,
                         dataInterViewList[0].phone,
                         dataInterViewList[0].email,                                       
+                        dataInterViewList[0].img,                                       
                         hash],
                         ((err)=>{
                             if (err) {
@@ -395,7 +416,14 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
                                     console.log(err);
                                 }
                                 else{
-                                    res.send('Good Bye')
+                                    db.query(`UPDATE store_lock SET status=? WHERE id=?`,['ไม่ว่าง',storeLock],(err)=>{
+                                        if (err) {
+                                            console.log(err);
+                                        } else {
+                                            res.send('Good Bye')
+                                        }
+                                    })
+                                    
                                 }
                             }))
                         }
@@ -403,11 +431,11 @@ adminRouter.post("/insertInterview",(req,res)=>{//เพิ่มข้อมู
         }
     }))    
 })
-adminRouter.post("/UpdateRightStatus",(req,res)=>{
+adminRouter.post("/UpdateRightStatus",(req,res)=>{//อัพเดดสิทธการสมัคร
     const idCard = req.body.idCard
     const rightStatus = req.body.rightStatus
     if (rightStatus=='ยืนยัน') {
-        db.query(`UPDATE store SET right_status=?`,[rightStatus],((err,result)=>{
+        db.query(`UPDATE store SET right_status=?`,[rightStatus],((err)=>{
         if(err){
             console.log(err);
         }
@@ -419,7 +447,7 @@ adminRouter.post("/UpdateRightStatus",(req,res)=>{
         db.query(`DELETE store.*,store_owner.* 
         FROM store INNER JOIN store_owner 
         ON store_owner.store_id = store.id 
-        WHERE store_owner.idcard = ?`,[idCard],((err,result)=>{
+        WHERE store_owner.idcard = ?`,[idCard],((err)=>{
             if(err){
                 console.log(err);
             }
@@ -428,7 +456,20 @@ adminRouter.post("/UpdateRightStatus",(req,res)=>{
                     if (err) {
                         console.log(err);
                     } else {
-                        res.send({message:'ปฏิเสทเรียบร้อย'})
+                        db.query(`UPDATE store_lock
+                            INNER JOIN store_owner ON store_owner.idcard=?
+                            INNER JOIN store ON store.id = store_owner.store_id
+                            SET store_lock.status=''
+                            WHERE store_lock.id = store.log_id
+                            `,[idCard],(err)=>{
+                                if (err) {
+                                    res.send(err)
+                                    console.log(err);
+                                } else {
+                                 res.send({message:'ปฏิเสทเรียบร้อย'})
+                                }
+                            })
+                        
                     }
                 })              
             }
@@ -437,9 +478,10 @@ adminRouter.post("/UpdateRightStatus",(req,res)=>{
                   
 })
 adminRouter.post("/getStoreList",(req,res)=>{
-    db.query(`SELECT store.*,store.id AS s_id, store_owner.* 
-                FROM store 
-                INNER JOIN store_owner ON store_owner.store_id = store.id`,((err,result)=>{
+    db.query(`SELECT store.*,store.id AS s_id, store_owner.*,location.location 
+        FROM store 
+        INNER JOIN store_owner ON store_owner.store_id = store.id 
+        INNER JOIN location ON location.id = store.location_id`,((err,result)=>{
         if(err){
             console.log(err);
         }
@@ -463,6 +505,19 @@ adminRouter.post("/getTypeList",(req,res)=>{
 adminRouter.post("/getLocationList",(req,res)=>{
     db.query(`SELECT location.* 
                 FROM location `,((err,result)=>{
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        res.send(result)
+                    }
+                }))
+})
+adminRouter.post("/getlock",(req,res)=>{
+    const idLocation = req.body.idLocation
+    db.query(`SELECT * 
+            FROM store_lock 
+            WHERE store_lock.location_id = ? AND store_lock.status != 'ไม่ว่าง'`,[idLocation],((err,result)=>{
                     if(err){
                         console.log(err);
                     }
@@ -526,7 +581,8 @@ adminRouter.post("/getCleanListByYearAndMonth",(req, res) => {
     db.query(`SELECT store.store_name,store.id AS s_id,cleanliness_level.*,admin.name 
             FROM ((store 
             LEFT JOIN cleanliness_level ON cleanliness_level.store_id = store.id AND year(cleanliness_level.date) = ? AND month(cleanliness_level.date) = ?)
-            LEFT JOIN admin ON admin.id = cleanliness_level.admin_id)`,[year,month],((err, result)=>{
+            LEFT JOIN admin ON admin.id = cleanliness_level.admin_id)
+            WHERE store.right_status = 'ยืนยัน'`,[year,month],((err, result)=>{
         if(err){
             console.log(err);
         }
@@ -566,7 +622,8 @@ adminRouter.post("/InsertStoreCleanLevel",(req, res)=>{
 adminRouter.get('/getStoreOwnerList',(req,res)=>{
     db.query(`SELECT store_owner.name,store.store_name,store.id 
             FROM (store 
-            INNER JOIN store_owner ON store_owner.store_id = store.id)`,((err, result)=>{
+            INNER JOIN store_owner ON store_owner.store_id = store.id)
+            WHERE store.right_status = 'ยืนยัน'`,((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -591,7 +648,7 @@ adminRouter.post('/geStoreDetialBynameList',(req, res)=>{
 })
 adminRouter.post('/getStoreInfo',(req, res)=>{
     const storeId = req.body.id
-    db.query(`SELECT store_owner.name,location.location
+    db.query(`SELECT store_owner.name
             FROM ((store
             INNER JOIN store_owner ON store_owner.store_id = store.id)
             INNER JOIN location ON location.id = store.location_id)
@@ -633,7 +690,7 @@ adminRouter.get('/getAdminInfoAttendant',(req, res)=>{
     db.query(`SELECT role.role, admin.* FROM (role INNER JOIN admin ON admin.id_role = role.id) WHERE role.role = ?`,[storeId],((err, result)=>{
                 if (err) {
                     console.log(err);
-                } else {
+                } else {    
                     res.send(result)
                 }
             }))
@@ -671,7 +728,7 @@ adminRouter.post('/InsertDataofComplaint',(req, res)=>{
 })
 adminRouter.post('/getDataAnnounList',(req, res)=>{
     const yeartoday = req.body.yeartoday
-    db.query(`SELECT * FROM announce WHERE year(date) = ?`,[yeartoday],((err, result)=>{
+    db.query(`SELECT * FROM announce WHERE year(date) = ? AND type = 'general'`,[yeartoday],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -707,7 +764,7 @@ adminRouter.post('/getStoreListLeave',(req, res)=>{
     FROM leave_store
     INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id 
     INNER JOIN store ON store.id = store_owner.store_id
-    WHERE YEAR(leave_store.date_write) = ?`,[ThisYears],((err, result)=>{
+    WHERE YEAR(leave_store.date_write) = ? AND store.right_status = 'ยืนยัน'`,[ThisYears],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -781,7 +838,8 @@ adminRouter.post("/getRenListByYearAndMonth",(req, res) => {
     db.query(`SELECT store.store_name,store.id AS s_id,rent_fel.*,admin.name 
     FROM ((store 
     LEFT JOIN rent_fel ON rent_fel.store_id = store.id AND year(rent_fel.date) = ? AND month(rent_fel.date) = ?)
-    LEFT JOIN admin ON admin.id = rent_fel.admin_id)`,[year,month],((err, result)=>{
+    LEFT JOIN admin ON admin.id = rent_fel.admin_id)
+    WHERE store.right_status = 'ยืนยัน'`,[year,month],((err, result)=>{
         if(err){
             console.log(err);
         }
@@ -814,5 +872,92 @@ adminRouter.get("/getYearsOfRen",(req, res) => {
         }
     }))
 })  
-
+  
+adminRouter.post("/getDachboardInfomation",(req, res) => {
+    const date = '2021-10-04'
+    db.query(`SELECT MAX(MaxOrder) AS quantity,food_name,orderToday 
+    FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    WHERE date(order_food.date) = ?) AS orderToday
+    FROM order_food_detial 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    GROUP BY food_menu.food_name) MaxOrder`,[date,date],((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send({sum:result[0].orderToday,menuPop:result[0].food_name,numMenuPop:result[0].quantity})
+        }
+    }))
+}) 
+adminRouter.get("/getDataChart",(req, res) => {
+    db.query(`SELECT SUM(order_food_detial.quantity) AS quantity ,MONTH(order_food.date) month
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id 
+    GROUP BY MONTH(order_food.date)`,((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getFoodMenuListByAdmin",(req, res) => {
+    storeId = req.body.storeId
+    db.query(`SELECT food_menu.* FROM food_menu WHERE food_menu.store_id = ?`,[storeId],((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getLeaveByprecess",(req, res) => {
+    storeId = req.body.storeId
+    db.query(`SELECT leave_store.status AS SUMnoti,leave_store.store_owner_id,store_owner.name,store_owner.lastname,store.store_name
+    FROM leave_store 
+    INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id
+    INNER JOIN store ON store.id = store_owner.store_id
+    WHERE leave_store.status ='รอดำเนินการ'`,[storeId],((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/deleteStore",(req, res) => {
+    const storeId = req.body.storeId
+    db.query(`DELETE *
+    FROM store 
+    INNER JOIN store_owner ON store_owner.store_id = store.id
+    INNER JOIN food_menu ON food_menu.store_id = store.id
+    INNER JOIN food_option ON food_option.store_id = store.id
+    INNER JOIN food_special_option ON food_special_option.store_id = store.id
+    WHERE store.id = ?`,[storeId],((err)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            db.query(`UPDATE store_lock
+            INNER JOIN store ON store.log_id = store_lock.id
+            SET store_lock.status='ไม่ว่าง'
+            WHERE store.id = ?
+                `,[storeId],(err)=>{
+                    if (err) {
+                        res.send(err)
+                        console.log(err);
+                    } else {
+                    res.send('Deleted') 
+                    }
+                })       
+        }
+    }))
+})
 module.exports = adminRouter

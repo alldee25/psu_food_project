@@ -44,7 +44,7 @@ export default function CheckPoint() {
         if (res.data.err) {
           console.log(res.data.err);
         } else {
-         swal({ title: "ยืนยันเรียบร้อย",text: "เรียบร้อย'",icon: "success", button: "OK",}).then((value) =>{
+         swal({ title: "เรียบร้อย",text: "เรียบร้อย'",icon: "success", button: "OK",}).then((value) =>{
           history.push('/')
           history.go() 
         }).then((value)=>{
@@ -56,25 +56,17 @@ export default function CheckPoint() {
     const checkStatus =()=>{
       axios.post('http://localhost:3001/getChectpoint',{
         idCard:idCard
-      }).then((res)=>{         
+      }).then((res)=>{    
+        console.log(res.data);     
         setDataCheckpoint(res.data)
       })
     }
-    /* useEffect(() => {
-      let isMounted =true
-      axios.post('http://localhost:3001/getChectpoint').then((res)=>{         
-          setDataCheckpoint(res.data)
-        })
-      return () => {
-        isMounted = false 
-      }
-    },[])
- */
+
     return transitions1( 
     
         (styles,item) => item && <animated.div  className="conAnnoun" style={styles}>
             {transitions((styles, item) => item && ( <animated.div className="cont" style={styles}>
-              <div style={{borderStyle:'solid',padding:'5px',display:'flex',alignItems:'center',flexDirection:'column',position:'relative'}}>              
+              <div style={{padding:'5px',display:'flex',alignItems:'center',flexDirection:'column',position:'relative'}}>              
                     <h2>
                     ตรวจสอบผลการคัดเลือกร้านค้า
                     </h2>            
@@ -87,37 +79,37 @@ export default function CheckPoint() {
                     <div key={index}>
                     {data.right_status == 'ยืนยัน' ? (
                       <div style={{display:'flex',alignItems:'center',flexDirection:'column'}}>
-                      <span style={{color:'#B2D732'}}>
+                      <span style={{color:'#397037',marginTop:'10px'}}>
                       ท่านได้ยืนยันเป็นผู้ประกอบการแล้ว
                     </span>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037',marginTop:'10px'}}>
                       รหัสร้านค้า : {data.store_id}
                     </span>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037',marginTop:'10px'}}>
                       โดยสามารเข้าระบบแอพลิเคชั่นในมือถือโดยการกรอก <br/>
                        USERNAME:รหัสร้านค้า <br/>
                        PASSWORD:เลขบัตรประชาชน
                     </span>
                       </div>
                     ): data.status == 'ปฏิเสท' ? (<div>
-                      <span style={{color:'#B2D732'}}>
+                      <span style={{color:'#397037'}}>
                       ท่านได้ปฏิเสทเป็นผู้ประกอบการแล้ว
                     </span>
                       </div>)
-                    :
+                    : data.status !== '' ?
                     (
                       <div>
                        <h3>
                       ผลการสมัคร
                     </h3>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037',marginTop:'10px'}}>
                       {data.status}
                     </span>
-                    <hr style={{width:'100%'}} />
-                    <h3>
+                    <hr style={{width:'100%',marginTop:'20px'}} />
+                    <h3 style={{marginTop:'20px'}}>
                       ผลการสัมภาษณ์
                     </h3>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037',marginTop:'20px'}}>
                       {data.bord_opinion_detial}
                     </span>
                     {data.bord_opinion_detial == 'ผ่านการคัดเลือกแบบมีเงื่อนไข' ? (
@@ -125,39 +117,51 @@ export default function CheckPoint() {
                     <h3 >
                       เงื่อนไข
                     </h3>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037'}}>
                       {data.location}
                     </span>
-                    <span style={{color:'#B2D732'}}>
+                    <span style={{color:'#397037'}}>
                       {data.store_type}
                     </span>
                     </div>
-                    ):(
+                    ): data.bord_opinion_detial == 'ไม่ผ่านการคัดเลือก' ? (
                     <div>
-                       
+                      <span style={{color:'#000'}}>
+                        {data.data.bord_opinion_detial}
+                      </span>
                     </div>
-                    ) 
+                    ) : (
+                      <div>
+                      <span >
+                      </span>
+                    </div>
+                    )
                   }
                     
                     {data.bord_opinion_detial == 'ผ่านการคัดเลือก' || data.bord_opinion_detial == 'ผ่านการคัดเลือกแบบมีเงื่อนไข' ? (
-                    <div>
+                    <div style={{marginTop:'20px'}}>
                     <h3>
                       ยืนยันสิทธิ์
                     </h3>
-                    <span >
+                    <span style={{marginRight:'20px'}}>
                       <Button onClick={()=> rightStatus('ยืนยัน')} variant="outlined" >ยืนยันสิทธิ์</Button>
                     </span>
-                    <span >
+                    <span style={{marginLeft:'20px'}}>
                     <Button onClick={()=> rightStatus('ปฏิเสท')} variant="outlined" >ปฏิเสท</Button>
                   </span>
                     </div>)
-                    : 
-                    (<div>
-                      
-                      </div>)
-                      } 
-                      </div>
-                    )}
+                    :('')
+                  } 
+                  </div>
+                    )
+                  : (
+                    <div>
+                      <span style={{color:'#000'}}>
+                        รอดำเนินการ                     
+                      </span>
+                    </div>
+                  )
+                  }
                     
                   </div>
                 ))}

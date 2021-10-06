@@ -149,9 +149,7 @@ const Tabs = () =>{
     
         ):(
             <Tab.Navigator
-            sceneContainerStyle={{backgroundColor: '#2F1050'}}
                 screenOptions={{
-                    color:'#2F1050',
                     headerShown: false,
                     tabBarShowLabel: false,
                     tabBarStyle: {
@@ -161,8 +159,7 @@ const Tabs = () =>{
                         shadowRadius:20,                                  
                         backgroundColor:'transparent',
                         elevation:0,                      
-                        height:70,
-                                            
+                        height:60,                     
                     }
                 }}
                 >

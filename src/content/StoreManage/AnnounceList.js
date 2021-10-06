@@ -32,8 +32,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -53,6 +53,7 @@ const StyledTableCell = withStyles((theme) => ({
   
   const useStyles = makeStyles({
     table: {
+      borderRadius: 15,
       minWidth: 700,
     },
   });
@@ -123,6 +124,11 @@ export default function DataListAnnounce() {
     const [regisStatus,setRegisStatus] = React.useState(null);
     const [displayStatus,setDisplayStatus] = React.useState(null);
     const [openDialog, setOpenDilog] = React.useState(false);
+    const [edit, setEdit] = React.useState(false);
+    const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [type, setType] = React.useState('');
+  const [id, setId] = React.useState('');
 
     const handleClickOpenDialog = () => {
       setOpenDilog(true);
@@ -140,9 +146,22 @@ export default function DataListAnnounce() {
     const handleClickOpen = (e) => {
       setOpen(true);
     };
+    const handleClickOpenEdit = (id,title,content,type) => {
+      setEdit(true)
+      setOpen(true);
+      setTitle(title)
+      setContent(content)
+      setType(type)
+      setId(id)
+    };
   
     const handleClose = () => {
+      setEdit(false)
       setOpen(false);
+      setTitle('')
+      setContent('')
+      setType('')
+      setId('')
     };
     const handleSave = () => {
       axios.post('http://localhost:3001/UpdateStatusRegis',{
@@ -192,7 +211,6 @@ export default function DataListAnnounce() {
       }).then(
         axios.get("http://localhost:3001/getRegisStatus",{
         }).then( res => {
-          console.log(res.data);
         const [{status}] = res.data; 
         if (status==1) {
           setRegisStatus(true)
@@ -268,13 +286,13 @@ export default function DataListAnnounce() {
             </div> 
             : 
             <div style={{marginTop:'20px'}}>
-              <TableContainer component={Paper} >
+              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell>Dessert (100g serving)</StyledTableCell>
+                      <StyledTableCell>หัวข้อ</StyledTableCell>
                       <StyledTableCell align="right">id</StyledTableCell>
-                      <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
+                      <StyledTableCell align="right">รายละเอียด</StyledTableCell>
                       <StyledTableCell align="right">แก้ไข</StyledTableCell>
                       <StyledTableCell align="right">ลบ</StyledTableCell>
                     </TableRow>
@@ -287,7 +305,7 @@ export default function DataListAnnounce() {
                         </StyledTableCell>
                         <StyledTableCell align="right">{dataList.id}</StyledTableCell>
                         <StyledTableCell align="right">{dataList.Title}</StyledTableCell>
-                        <StyledTableCell align="right"><Button variant="outlined" color="primary" href={`${url}/ApplicationAnnouncement`}>< EditAttributesRoundedIcon style={{fontSize:'2rem',color:''}} /></Button></StyledTableCell>
+                        <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{handleClickOpenEdit(dataList.id,dataList.Title,dataList.Content,dataList.type)}}>< EditAttributesRoundedIcon style={{fontSize:'2rem',color:''}} /></Button></StyledTableCell>
                         <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{DeleteItem(dataList.id)}}><DeleteForeverRoundedIcon style={{fontSize:'2rem',color:'red'}} /></Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -308,7 +326,7 @@ export default function DataListAnnounce() {
                 </Toolbar>
               </AppBar>
               <div style={{marginTop:'50px'}}>
-                <AnnouncementForm open={open}/>
+                <AnnouncementForm edit={edit} id={id} title={title} content={content} type={type}  open={open}/>
               </div> 
             </Dialog> 
     </div>

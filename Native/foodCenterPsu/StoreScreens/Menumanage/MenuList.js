@@ -3,7 +3,7 @@ import { Icon,Tab,TabView, Toggle, Layout } from '@ui-kitten/components';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/core'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { StyleSheet, SafeAreaView, Image,ScrollView, Dimensions , TouchableOpacity, Alert, ImageBackground } from 'react-native'
+import { StyleSheet, SafeAreaView, Image,ScrollView, Dimensions , TouchableOpacity, Alert} from 'react-native'
 import { AuthContext } from '../../App';
 import ButtonTop from './ButtonAdd';
 import {
@@ -16,10 +16,11 @@ import {
     Menu,
     Divider,
   } from "native-base"
-import FormAddOption from './FormAddOption';
-import FormAddSpecialOption from './FormAddSpecialOption';
-import FormAddMenu from './FormAddMenu';
-import FormEditMenu from './FormEditMenu';
+import FormAddOption from './AddOption';
+import FormAddSpecialOption from './AddSpecialOption';
+import FormAddMenu from './AddMenu';
+import FormEditMenu from './EditMenu';
+import Payment from './Payment';
 
 const stackMenuManage = createStackNavigator()
 
@@ -34,19 +35,19 @@ export default function stackMenuManageScreen(){
 }
 
 const  MenuManage =({navigation})=> {
-
-    const isFocus = useIsFocused()
+    const isFocused = useIsFocused()
     const HEIGHT = Dimensions.get('window').height
     const { isOpen, onOpen, onClose } = useDisclose()
     const {userData} = useContext(AuthContext);
     const [foodDataList,setFoodDatalist] = useState([]);
     const [foodOptions,setFoodOptions] = useState([]);
     const [foodSpecialOptions,setFoodSpecialOptions] = useState([]);
+    const [payment,setPayment] = useState([]);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [effect, setEffect] = React.useState(false);
-    const ref = useRef(null)
     const childRef = useRef()
     const childRefOpSp = useRef()
+    const childRefPayment = useRef()
     const [shouldOverlapWithTrigger] = React.useState(false)
     const [position, setPosition] = React.useState("auto")
 
@@ -104,6 +105,25 @@ const  MenuManage =({navigation})=> {
         }
         })
     }
+    const deletePayment =(id)=>{
+        axios.post('http://192.168.1.102:3001/deletePayment',{
+            paymentId:id
+        }).then((res)=>{
+            if (res.data.err) {
+                Alert.alert(
+                    'ลองใหม่อีกครั้ง',
+                    'ไม่สามารถดำเนินการ'
+                )
+            } else {
+                Alert.alert(
+                'ลบเรียบร้อย',
+                'ลบเรียบร้อย'
+               
+            )
+             setEffect(!effect)
+        }
+        })
+    }
     const deleteNOption =(id)=>{
         axios.post('http://192.168.1.102:3001/deleteNOption',{
             nOption:id
@@ -125,6 +145,7 @@ const  MenuManage =({navigation})=> {
     }
 
     useEffect(()=>{
+        console.log('1');
         let isMounted = true;
         navigation.setOptions({
             headerRight: () => (
@@ -150,9 +171,16 @@ const  MenuManage =({navigation})=> {
                 setFoodSpecialOptions(res.data)
             })
         )
+        .then(
+            axios.post('http://192.168.1.102:3001/getPayment',{
+                storeId:userData.usersData[0].store_id
+            }).then((res)=>{
+                setPayment(res.data)
+            })
+        )
         
         return () => { isMounted = false }; 
-    },[effect,isFocus])
+    },[effect,isFocused])
     return(
         <SafeAreaView>
             <FormAddOption 
@@ -165,7 +193,11 @@ const  MenuManage =({navigation})=> {
                 isClose={onClose}
                 userEffect={setEffect} 
             />    
-
+            <Payment 
+                ref={childRefPayment}
+                isClose={onClose}
+                userEffect={setEffect}
+            />
             <Actionsheet isOpen={isOpen} onClose={onClose}>
                 <Actionsheet.Content>
                     <Divider borderColor="gray.300" />
@@ -187,13 +219,21 @@ const  MenuManage =({navigation})=> {
                         เพิ่มตัวเลือก
                     </Actionsheet.Item>
                     <Divider borderColor="gray.300" />
-                    <Actionsheet.Item
+                    {/* <Actionsheet.Item
                     onPress={()=> {childRefOpSp.current.openModalSpecialOption()}}
                         _text={{
                         color: "blue.500",
                         }}
                     >
                         เพิ่มตัวเลือกพิเศษ
+                    </Actionsheet.Item> */}
+                    <Actionsheet.Item
+                    onPress={()=> {childRefPayment.current.openModalPayment()}}
+                        _text={{
+                        color: "blue.500",
+                        }}
+                    >
+                        เพิ่มช่องทางการชำระเงิน
                     </Actionsheet.Item>
                 </Actionsheet.Content>
             </Actionsheet>
@@ -202,32 +242,32 @@ const  MenuManage =({navigation})=> {
                 onSelect={index => setSelectedIndex(index)}>
                 <Tab 
                 title='รายการอาหาร'>
-                    <ImageBackground
-                        style={{width:'100%',height:'100%'}}
-                        source={require('../../assets/img/v748-toon-106.jpg')}
+                    <View
+                        style={{width:'100%',height:'100%'}}                    
                         >
                         <View style={styles.menuList}>
                             <FlatList 
                                 data={foodDataList}
                                 keyExtractor={(item) => item.id}
                                 contentContainerStyle={{
-                                paddingLeft:10,
-                                paddingRight:10
+                                    paddingLeft:7,
+                                    paddingRight:7,
+                                    marginBottom:300
                                 }}
                                 renderItem={({item})=>
                                 <View style={{flexDirection:'row',
-                                    marginTop:8,
-                                    padding:10,
+                                    marginTop:8,                                
                                     backgroundColor:'#E4E4F4',
-                                    borderRadius:10,
+                                    borderRadius:15,
                                     marginBottom:5,
+                                    height:130
                                     
                                 }}>
                                     <Image
+                                        resizeMode='cover'
                                         style={{width:120,               
-                                            height:120,
-                                            marginLeft:5,
-                                            borderRadius:10,                                                                                                                     
+                                            height:'100%',                                           
+                                            borderRadius:15,                                                                                                                     
                                         }}
                                         source={{uri:`http://192.168.1.102:3001/userUploaded/${item.food_img}`}}                           
                                     />
@@ -235,7 +275,7 @@ const  MenuManage =({navigation})=> {
                                         <Text fontFamily='IBMPlexSansThai-SemiBold' style={{fontSize:18}}>
                                             อาหาร: {item.food_name}
                                         </Text> 
-                                        <Divider w='100%' bgColor='#888888' alignSelf='center' />
+                                        <Divider w='80%' bgColor='#888888' alignSelf='flex-start' />
                                         <Text fontFamily='IBMPlexSansThai-Regular' style={{fontSize:18}}>
                                             ประเภท: {item.food_type}
                                         </Text> 
@@ -278,11 +318,11 @@ const  MenuManage =({navigation})=> {
                                }
                             />        
                         </View>
-                        </ImageBackground>
+                        </View>
                         
                 </Tab>
-                <Tab title='พิเศษ'>
-                <ImageBackground
+                {/* <Tab title='พิเศษ'>
+                <View
                         style={{width:'100%',height:'100%'}}
                         source={require('../../assets/img/v748-toon-106.jpg')}
                         >
@@ -334,10 +374,62 @@ const  MenuManage =({navigation})=> {
                                 }
                             />        
                         </View>              
-                    </ImageBackground>
+                    </View>
+                </Tab> */}
+                <Tab title='ช่องทางการชำระเงิน'>
+                <View
+                        style={{width:'100%',height:'100%'}}
+                        source={require('../../assets/img/v748-toon-106.jpg')}
+                        >
+                    <View style={styles.menuList}>
+                            <FlatList 
+                                data={payment}
+                                keyExtractor={(item) => item.id}
+                                contentContainerStyle={{
+                                padding:10
+                                }}
+                                renderItem={({item,index})=>
+                                <View style={{flexDirection:'row',padding:10,backgroundColor:'#E4E4F4',borderRadius:5,marginBottom:5}}>
+                                   <Avatar
+                                        source={{
+                                        uri: "https://pbs.twimg.com/profile_images/1188747996843761665/8CiUdKZW_400x400.jpg",
+                                        }}
+                                    >
+                                        <Text fontSize="xl">{index+1}</Text>                           
+                                    </Avatar>
+                                    <View style={{marginLeft:10}}>
+                                        <Text style={{fontSize:22}}>
+                                           {item.payment_name}
+                                        </Text>                                      
+                                    </View>
+                                    <Menu
+                                        style={{marginRight:10}}
+                                        shouldOverlapWithTrigger={shouldOverlapWithTrigger} 
+                                        placement={position == "auto" ? undefined : position}
+                                        trigger={(triggerProps) => {
+                                        return (
+                                        <Text style={{position:'absolute',top:10,right:5}}>
+                                            <TouchableOpacity alignSelf="center" variant="solid" {...triggerProps}>                                        
+                                                <Icon name='more-vertical-outline' fill='#F08080' style={styles.icon} />                                   
+                                            </TouchableOpacity>
+                                            </Text>
+                                        )
+                                        }}
+                                    >                                       
+                                            <Menu.Item
+                                                onPress={()=> deletePayment(item.id)}
+                                            >
+                                                ลบ
+                                            </Menu.Item>
+                                        </Menu>                         
+                                </View>                                
+                                }
+                            />        
+                        </View>              
+                    </View>
                 </Tab>
                 <Tab title='ตัวเลือก'>
-                <ImageBackground
+                <View
                         style={{width:'100%',height:'100%'}}
                         source={require('../../assets/img/v748-toon-106.jpg')}
                         >
@@ -382,7 +474,7 @@ const  MenuManage =({navigation})=> {
                                 }
                             />        
                         </View>
-                    </ImageBackground>
+                    </View>
                 </Tab>      
             </TabView> 
         </SafeAreaView> 

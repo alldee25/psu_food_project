@@ -38,6 +38,8 @@ function InterViewForm(props) {
     
     const {auth,setIsload} = useContext(AuthContext)
     const [age,setAge] = useState('')
+    const [store_lock,setStore_lock] = useState([])
+    const [storeLock,setStoreLock] = useState([])
     const [date,setDate] = useState('')
     const classes = useStyles();
     const [score1,setScore1] = useState('')
@@ -116,7 +118,8 @@ function InterViewForm(props) {
             date:date,
             bordOpenion:bordOpenion,
             bType:'',
-            bLocation:''
+            bLocation:'',
+            storeLock:storeLock
           }).then((res)=>{
             swal("Good","Click","success").then((value)=>{
               history.go('HomeStore/InterView')
@@ -140,7 +143,8 @@ function InterViewForm(props) {
             date:date,
             bordOpenion:bordOpenion,
             bType:bType,
-            bLocation:bLocation
+            bLocation:bLocation,
+            storeLock:storeLock
           }).then((res)=>{
             swal("Good","Click","success").then((value)=>{
               history.go('HomeStore/InterView')
@@ -204,7 +208,15 @@ function InterViewForm(props) {
       }).then((res)=>{
         setLocationList(res.data)
       })
-    ).then(setIsload(false))
+    ).then(
+      console.log(props.id_locations),
+      axios.post('http://localhost:3001/getlock',{
+        idLocation:props.id_locations
+      }).then((res)=> {
+        setStore_lock(res.data);
+      })
+    )
+    .then(setIsload(false))
   },[])
 
     return transitions(
@@ -353,10 +365,21 @@ function InterViewForm(props) {
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'20px',fontWeight:'bold'}}>
                 <span>ประจำโรงอาหาร</span>
               </div>
+              
               <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px'}}>
                 <Select disabled={bordOpenion!=="ผ่านการคัดเลือกแบบมีเงื่อนไข"} labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={bLocation} onChange={(e)=>{setBLocation(e.target.value)}}>
                   {locationList.map((datas,index)=>(
                     <MenuItem key={index} value={datas.id}>{datas.location}</MenuItem>
+                  ))}                                
+                </Select>
+              </div>
+              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'17px',marginLeft:'20px',fontWeight:'bold'}}>
+                <span>ล็อกที่</span>
+              </div>
+              <div style={{display:'flex',alignItems:'flex-end',marginBottom:'15px',marginLeft:'15px'}}>
+                <Select disabled={bordOpenion =="ไม่ผ่านการคัดเลือก" } labelId="demo-simple-select-helper-label" id="demo-simple-select-helper" value={storeLock} onChange={(e)=>{setStoreLock(e.target.value)}}>
+                  {store_lock.map((datas,index)=>(
+                    <MenuItem key={index} value={datas.id}>{datas.id}</MenuItem>
                   ))}                                
                 </Select>
               </div>

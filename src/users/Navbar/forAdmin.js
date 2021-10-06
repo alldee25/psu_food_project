@@ -60,7 +60,7 @@ function ForAdmin() {
               </animated.div> ))}
             {transitions ((styles,item) => item && (
               <animated.div style={styles}>
-                <input variant="outlined" type="text"  placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}} />              
+                <input variant="outlined" type="password"  placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}} />              
               </animated.div> ))}             
             {transitions ((styles,item) => item && (
               <animated.div style={styles}>

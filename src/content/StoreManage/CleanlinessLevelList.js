@@ -30,8 +30,8 @@ import { MenuItem } from '@material-ui/core';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -119,11 +119,15 @@ function CleanlinessLevel() {
           setDataCleanlinessLevelList(res.data)
         }).then(
           axios.get("http://localhost:3001/getYearsOfClean").then((response)=>{
+            if (response.data.reduce((sum,data) => sum+data,0) !== 0) {
               const data = []
               response.data.forEach(element => {
               data.push(element.Year)   
               });
-              setDataYears([...new Set(data)]);     
+              setDataYears([...new Set(data)]);  
+            } else {
+              setDataYears([yeartoday])
+            }    
           })
           )
       },[])
@@ -131,7 +135,7 @@ function CleanlinessLevel() {
           <div className="subcon">
             <div className="header">
                 <h1>
-                รายการตรวจสอบคุณภาพความสะอาดร้านค้า
+                  สุขาภิบาล
                 </h1>
             </div>       
             <div style={{display:'flex',position:'absolute',right:"75px",top:'30px'}}>
@@ -162,25 +166,25 @@ function CleanlinessLevel() {
           </div>                   
             </div>
             <div style={{marginTop:'20px'}}>
-              <TableContainer component={Paper} >
+              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>
                       <StyledTableCell align="left">ชื่อร้าน</StyledTableCell>
-                      <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>
                       <StyledTableCell align="center">ตรวจสอบโดย</StyledTableCell>
                       <StyledTableCell align="center">สถานะ</StyledTableCell>
                       <StyledTableCell align="center">ผลการตรวจ</StyledTableCell>
+                      <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {dataCleanlinessLevelList.map((dataList,index) => (
                       <StyledTableRow key={index}>                       
                         <StyledTableCell align="left" width="100px">{dataList.store_name}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)|| dataList.admin_id!==null } variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.status!==null ? dataList.status  : (<RemoveRoundedIcon />) }</StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)|| dataList.admin_id!==null } variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>

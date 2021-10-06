@@ -12,18 +12,13 @@ import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { AuthContext } from '../../App';
 import BeenhereRoundedIcon from '@material-ui/icons/BeenhereRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import CleanlinessLevelForm from './CleanlinessLevelForm';
 import { MenuItem, TextField } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -33,8 +28,8 @@ import { useHistory } from 'react-router';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
+      backgroundColor: '#531061',
+      color: '#FFFF',
       fontSize:"1.1rem"
     },
     body: {
@@ -151,7 +146,7 @@ function RentalFeeList() {
       }
       
   
-      const handleClickOpen = (e) => {
+        const handleClickOpen = (e) => {
           setId(e)
           setOpen(true);  
         };
@@ -183,12 +178,17 @@ function RentalFeeList() {
           }).then((res)=>{
             setDataCleanlinessLevelList(res.data)
           }).then(
-            axios.get("http://localhost:3001/getYearsOfClean").then((response)=>{
+            axios.get("http://localhost:3001/getYearsOfRen").then((response)=>{
+              if (response.data.reduce((sum,data) => sum+data,0) !== 0) {
                 const data = []
                 response.data.forEach(element => {
                 data.push(element.Year)   
                 });
-                setDataYears([...new Set(data)]);     
+                setDataYears([...new Set(data)]);  
+              } else {
+                setDataYears([yeartoday])
+              }
+                   
             })
             )
         },[])
@@ -228,7 +228,7 @@ function RentalFeeList() {
           </div>                   
             </div>
             <div style={{marginTop:'20px'}}>
-              <TableContainer component={Paper} >
+              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
                 <Table className={classes.table} aria-label="customized table">
                   <TableHead>
                     <TableRow>

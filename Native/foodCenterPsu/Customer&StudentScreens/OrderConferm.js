@@ -29,14 +29,13 @@ export default function OrderConferm({route,navigation}) {
     const date = new Date()
     const {cart} = useSelector(state => state.userReducer);
     const {userData} = useContext(AuthContext)
-    
+    const [isLoad,setIsload] = useState(false)   
     
     const Ordered =()=> {
+      setIsload(true)
       const idValue = data.map((item)=>{
       return item.id
       })
-
-      
         axios.post('http://192.168.1.102:3001/insertOrder',{
             orderFoodId:uuidv4(),
             customerId:userData.usersData[0].id,
@@ -46,7 +45,9 @@ export default function OrderConferm({route,navigation}) {
             (res) => {
                 if (res.data.err) {
                     console.log(err);
+                    setIsload(false)
                 } else {
+                  setIsload(false)
                   toast.show({
                     title: "สั่งแรียบร้อย",
                     status: "success",
@@ -58,7 +59,8 @@ export default function OrderConferm({route,navigation}) {
                    navigation.navigate('เมนู') 
                 }
                 
-            }
+            },
+            setIsload(false)
         )
     }
 
@@ -162,7 +164,13 @@ export default function OrderConferm({route,navigation}) {
                 flexDirection='column'
             >
                 <View w='90%' alignItems='flex-end'><Text>รวมทั้งหมด {sum} บาท</Text></View>
-                <Button w='90%' onPress={()=> Ordered()}>ยืนยันการสั่งซื้อ</Button>  
+                <Button 
+                  w='90%' 
+                  onPress={()=> Ordered()}
+                  isLoading={isLoad}
+                >
+                  ยืนยันการสั่งซื้อ
+                </Button>  
             </View>
         </View>
     )
