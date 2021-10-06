@@ -60,7 +60,13 @@ export default function LeaveListScreen({navigation}) {
             <ButtonTop ref={AddLeave}
             />   
         ),
+<<<<<<< HEAD
       }),
+=======
+      });
+            
+      let isMounted = (
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
           axios.post('http://192.168.1.102:3001/getLeaveList',{
         userId:userData.usersData[0].id
         }).then((res)=>{

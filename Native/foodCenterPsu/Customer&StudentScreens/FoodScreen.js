@@ -5,7 +5,10 @@ import { Divider, FlatList, Heading, Image, Text, View, ScrollView, Input } from
 import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux';
+<<<<<<< HEAD
 import { AuthContext } from '../App';
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 import CartScreen from './CartScreen';
 import FoodDetialScreen from './FoodDetialScreen';
 import OrderConferm from './OrderConferm';
@@ -46,6 +49,7 @@ const FoodList =({navigation})=>{
 
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
+    const {cart} = useSelector(state => state.userReducer)
     const [foodDataList,setFoodDataList] = useState([]);
     const {userData} = useContext(AuthContext);
     const {cart} = useSelector(state => state.userReducer)
@@ -144,7 +148,11 @@ const FoodList =({navigation})=>{
                     olor='black'
                 >
                     <Text>
+<<<<<<< HEAD
                         {cartFilter.reduce((sum, item)=> sum + item.count, 0)}
+=======
+                        {cart.reduce((sum, item)=> sum + item.count, 0)}
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                     </Text>
                 </View>
                     
@@ -224,6 +232,7 @@ const FoodList =({navigation})=>{
                    เมนูน้ำ
                 </Text>
             </TouchableOpacity> 
+<<<<<<< HEAD
             <TouchableOpacity 
                 onPress={()=> searchFilterType('เมนูเส้น')}
                 style={searchType == 'เมนูเส้น' ? styles.buttonTypyActive : styles.buttonTypy}
@@ -246,13 +255,30 @@ const FoodList =({navigation})=>{
                     mb={'10%'}
                 >
 
+=======
+            </ScrollView> 
+            </View>
+            
+            <View
+                backgroundColor='white'
+                flex={5}
+                borderTopRadius={20}
+                mb={10}
+            >
+                
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                     <FlatList 
                         data={foodFileterDataList}
                         keyExtractor={(item, index) => index}
                         contentContainerStyle={{
+<<<<<<< HEAD
                             paddingLeft:7,
                             paddingRight:7,
                             marginBottom:300
+=======
+                        paddingLeft:7,
+                        paddingRight:7
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                         }}
                         renderItem={({item})=>
                         <TouchableOpacity

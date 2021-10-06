@@ -32,10 +32,19 @@ export default function OrderConferm({route,navigation}) {
     const [isLoad,setIsload] = useState(false)   
     
     const Ordered =()=> {
+<<<<<<< HEAD
       setIsload(true)
       const idValue = data.map((item)=>{
       return item.id
       })
+=======
+      const idValue = data.map((item)=>{
+      return item.id
+      })
+
+      
+
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         axios.post('http://192.168.1.102:3001/insertOrder',{
             orderFoodId:uuidv4(),
             customerId:userData.usersData[0].id,
@@ -47,7 +56,10 @@ export default function OrderConferm({route,navigation}) {
                     console.log(err);
                     setIsload(false)
                 } else {
+<<<<<<< HEAD
                   setIsload(false)
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                   toast.show({
                     title: "สั่งแรียบร้อย",
                     status: "success",
@@ -59,8 +71,12 @@ export default function OrderConferm({route,navigation}) {
                    navigation.navigate('เมนู') 
                 }
                 
+<<<<<<< HEAD
             },
             setIsload(false)
+=======
+            }
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         )
     }
 

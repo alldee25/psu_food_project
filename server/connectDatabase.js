@@ -5,9 +5,14 @@ const authRouter = require('./auth')
 const adminRouter = require('./adminManage')
 const usersRouter = require('./userManage')
 const appRouter = require('./appManage')
+<<<<<<< HEAD
 const path = require('path');
 const socket = require('socket.io')
 
+=======
+const path = require('path')
+const socket = require('socket.io')
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 
 
 app.use(authRouter,adminRouter,usersRouter,appRouter)

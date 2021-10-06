@@ -475,7 +475,7 @@ appRouter.post('/getAnnounCustomer',(req,res)=>{
         }
     })
 })
-appRouter.post('/insertOrder',(req,res)=> {
+/* appRouter.post('/insertOrder',(req,res)=> {
     const orderId = req.body.orderFoodId
     const customerId = req.body.customerId
     const Date = req.body.Date
@@ -485,10 +485,34 @@ appRouter.post('/insertOrder',(req,res)=> {
             console.log(err);
             res.send({err:'ไม่สามารสั่งได้'})
         } else {
+<<<<<<< HEAD
          
                const promises = data.map(data => {
                 db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity,package) 
                 VALUES(?,?,?,?,?,?)`,[orderId,data.fId,data.text,data.option,data.count,data.package],(err)=>{
+=======
+         db.query(`SELECT store.id 
+         FROM store
+            INNER JOIN food_menu ON food_menu.store_id = store.id
+            INNER JOIN order_food_detial ON order_food_detial.food_id = food_id
+            INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+            WHERE order_food.id = ?
+            GROUP BY store.id
+         `,[orderId],(err,result)=>{
+             if (err) {
+                 console.log(err);
+             } else {
+                 result.map((data)=>{
+                     
+                     io.on("connection", (socket) => {
+                    socket.to(data).emit
+                })
+                 })
+                
+               const promises = data.map(data => {
+             db.query(`INSERT INTO order_food_detial (order_food_id,food_id,text,food_option_id,quantity) 
+               VALUES(?,?,?,?,?)`,[orderId,data.id,data.text,data.option,data.count],(err)=>{
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                    if (err) {
                        console.log(err);
                        res.send({err:'ไม่สามารสั่งได้'})
@@ -496,6 +520,7 @@ appRouter.post('/insertOrder',(req,res)=> {
                }) 
                   
            })
+<<<<<<< HEAD
 
            await Promise.all(promises)
            db.query(`SELECT store.id, order_food.id AS oid, order_food.date,customer.name
@@ -703,6 +728,14 @@ appRouter.post('/getRenList',(req,res)=>{
         } else {
 
             res.send(results);   
+=======
+           io.emit
+           await Promise.all(promises)
+            res.send({message:'เรียบร้อย'})    
+             }
+         })
+               
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         }
     })
 })
@@ -711,6 +744,7 @@ appRouter.post('/getRenList',(req,res)=>{
 appRouter.get('/test',(req,res)=>{
     const userId = 4
     
+<<<<<<< HEAD
             io.emit(`withCus-id-${userId}`,'555');
            res.send({maessage:'เรียบร้อย'})
           
@@ -718,5 +752,15 @@ appRouter.get('/test',(req,res)=>{
 
 
      
+=======
+}) */
+appRouter.get('/test',(req,res)=>{
+    
+        
+    io.emit('jjj')
+    res.send('ok')
+   
+    
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 })
 module.exports = appRouter

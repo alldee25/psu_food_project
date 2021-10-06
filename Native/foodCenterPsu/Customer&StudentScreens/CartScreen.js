@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useContext } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 import { Dimensions, TouchableOpacity } from 'react-native';
 
 import {
@@ -16,6 +20,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { Icon } from '@ui-kitten/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteDataCart } from '../src/redux/actions';
+<<<<<<< HEAD
 import { AuthContext } from '../App';
 
 export default function CartScreen({navigation}) {
@@ -30,6 +35,18 @@ export default function CartScreen({navigation}) {
     const [groupValues, setGroupValues] = React.useState([])
     
 
+=======
+
+export default function CartScreen({navigation}) {
+    const [mode, setMode] = useState('Basic');
+    const dispatch = useDispatch()
+    const {cart} = useSelector(state => state.userReducer)  
+    const H = Dimensions.get('window').height
+    const W = Dimensions.get('window').width
+    const [groupValues, setGroupValues] = React.useState([])
+    
+
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
     
     const Ordered =()=> {
       let orderData = []
@@ -149,7 +166,11 @@ export default function CartScreen({navigation}) {
       <View h={H} w={W} >
         <View mt={2} bg="white" safeArea >
           <SwipeListView
+<<<<<<< HEAD
             data={cartFilter}
+=======
+            data={cart}
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-130}

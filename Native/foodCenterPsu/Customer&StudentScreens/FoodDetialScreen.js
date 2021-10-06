@@ -17,7 +17,10 @@ export default function FoodDetialScreen({navigation,route}) {
     const H = Dimensions.get('window').height
     const dispatch = useDispatch()
     const {cart} = useSelector(state => state.userReducer)
+<<<<<<< HEAD
     const cartFilter = cart.filter(data => data.userId == route.params.userId)
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
     const [optionDataList, setOptionList] = React.useState([])
     const [selectedIndex, setSelectedIndex] = React.useState([]);
     const [selectedIndexPack, setSelectedIndexPack] = React.useState([]);
@@ -31,6 +34,7 @@ export default function FoodDetialScreen({navigation,route}) {
     ]) */
 
     const conferm =(page)=>{
+<<<<<<< HEAD
         console.log(selectPackage);
         if (selectPackage !== undefined) {
             const uid = uuidv4();
@@ -39,6 +43,12 @@ export default function FoodDetialScreen({navigation,route}) {
                 id:uid,
                 fId:route.params.fId,
                 userId:route.params.userId,
+=======
+        const uid = uuidv4();
+        if (page == 'addToCart') {
+            dispatch(setDataCart({
+                id:uid,
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
@@ -50,7 +60,10 @@ export default function FoodDetialScreen({navigation,route}) {
         } else {
             navigation.navigate('conferm',('data',[{
                 id:uid,
+<<<<<<< HEAD
                 fId:route.params.fId,
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                 food_name:route.params.food_name,
                 store_name:route.params.store_name,
                 food_price:route.params.food_price*count,
@@ -59,11 +72,14 @@ export default function FoodDetialScreen({navigation,route}) {
                 option:option,
                 count:count,
             }]))  
+<<<<<<< HEAD
         }
         } else {
             Alert.alert(
                 'ข้อมูลไม่ครบถ้วน'
             )
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         }
         
         
@@ -156,7 +172,11 @@ export default function FoodDetialScreen({navigation,route}) {
                     zIndex={3}
                 >
                     <Text>
+<<<<<<< HEAD
                         {cartFilter.reduce((sum, item)=> sum + item.count, 0)}
+=======
+                        {cart.reduce((sum, item)=> sum + item.count, 0)}
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
                     </Text>
                 </View>
                     

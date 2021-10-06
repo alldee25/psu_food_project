@@ -20,6 +20,7 @@ const AuthContext = React.createContext();
 const data = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "สำนักงานสมอลแอร์อาคารเกรท ชั้นสองซอยลาดพร้าว 1", "dob": "2001-07-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 38, "idcard": "1940500129878", "idend": "2021-07-29", "idstart": "2021-07-09", "lastname": "", "name": "Yameelah ", "nationality": "Thai", "password": "", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 37}, {"adress": "l", "dob": "l", "email": "l", "gender": "l", "id": 33, "idcard": "l", "idend": "l", "idstart": "l", "lastname": "l", "name": "l", "nationality": "l", "password": "Audi", "phone": "l", "race": "l", "religion": "l", "store_id": 37}]}
 const dataCustomer = {"UserType": "customer", "logedIn": true, "usersData": [{"email": "1234", "id": 4, "img": "", "lastname": "a", "name": "a", "password": "$2b$10$IcMBuX.sUst8kvZNd3J.4OHwee0Bg48PTdYwDbWNMhpBhF6GjxAr2", "phone": "1234", "username": "a"}], "usersImg": ""}
 const dataStore = {"UserType": "store", "logedIn": true, "usersData": [{"adress": "42 หมู่ 1 บ้านสังแกตำบลสะเดาอำเภอบัวเชดจังหว", "dob": "1990-11-13", "email": "Audiffss@47gmail.com", "gender": "", "id": 31, "idcard": "1940500129879", "idend": "2021-08-07", "idstart": "2021-07-01", "lastname": "", "name": "Yasmin", "nationality": "Thai", "password": "1234", "phone": "0843122599", "race": "Thai", "religion": "islam", "store_id": 38}]}
+<<<<<<< HEAD
 
 const theme = extendTheme({
   fontConfig: {
@@ -41,15 +42,24 @@ const theme = extendTheme({
     mono: 'IBMPlexSansThai-Regular',
   },
 });
+=======
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 
 export default function App() {
  
   const [auth, setAuth] = useState('');
+<<<<<<< HEAD
   const [userData, setUserData] = useState(null);
   const [userImg, setUserImg] = useState('');
   const [userType, setUserType] =  useState('');
   const  [isload, setIsload] = useState(true)
   const socket = io('http://192.168.1.102:3001')
+=======
+  const [userData, setUserData] = useState(dataStore);
+  const [userImg, setUserImg] = useState('');
+  const [userType, setUserType] =  useState('store');
+  const  [isload, setIsload] = useState(false)
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 
     const crateChannels =()=> {
       PushNotification.createChannel({
@@ -115,6 +125,17 @@ export default function App() {
           );
           setIsload(false)         
         })
+<<<<<<< HEAD
+=======
+  } 
+
+  React.useEffect(()=>{
+    SplashScreen.hide() 
+    /* let isMounted = (
+      apiGetSession()
+    ) */
+    return () => { isMounted = false}; 
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
       },[auth]) 
 
   if ((userData !== null) && ((userType == 'customer') || (userType == 'student'))) {

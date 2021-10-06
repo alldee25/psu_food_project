@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react'
 import { Text, View, Image, Divider, Button, Heading } from 'native-base';
 import { Dimensions, TouchableOpacity } from 'react-native';
+=======
+import React, { useContext } from 'react'
+import { Text, View, Image, Divider, Button } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 import axios from 'axios';
 import { useEffect } from 'react';
 import {  SafeAreaView, StyleSheet } from 'react-native'
@@ -27,6 +33,7 @@ export default function InfomationScreen() {
     )
 }
 const ListMenu =({navigation})=> {
+<<<<<<< HEAD
     const {userType,setAuth,userData,socket} = useContext(AuthContext);
     const [loading,setLoading] = useState(false)
     const logout =()=>{
@@ -36,6 +43,13 @@ const ListMenu =({navigation})=> {
             console.log(res.data);
             socket.off()
         })
+=======
+    const {userType, setAuth} = useContext(AuthContext);
+    const logout =()=>{
+        axios.get('http://192.168.1.102:3001/logout').then(
+            setAuth('logout')
+        )
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
     }
     return(
         <SafeAreaView style={styles.container}>
@@ -47,6 +61,7 @@ const ListMenu =({navigation})=> {
                 </>
             ):(<></>)} 
             <MenuItem style={styles.MenuItem} title='ประวัติการซื้อ' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
+<<<<<<< HEAD
            <View
                 position='absolute'
                 alignItems='center'
@@ -64,6 +79,9 @@ const ListMenu =({navigation})=> {
                 Log out
             </Button>   
            </View>
+=======
+            <Button disabled={groupValues == ''} w='90%' onPress={()=> logout}>Log out</Button>  
+>>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         </SafeAreaView>
     )
 }
