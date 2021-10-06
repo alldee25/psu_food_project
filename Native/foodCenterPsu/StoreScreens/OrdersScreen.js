@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
@@ -8,13 +7,6 @@ import { Alert, Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity 
 import { AuthContext } from '../App';
 import OrderDetialScreen from './OrderDetialScreen';
 import Moment from 'moment';
-=======
-import { Container, Heading, View } from 'native-base'
-import React, { useContext, useEffect } from 'react'
-import { Alert, Dimensions, ImageBackground, Text, TouchableOpacity } from 'react-native';
-import { io } from 'socket.io-client';
-import { AuthContext } from '../App';
->>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
 
 const stackOrder = createStackNavigator()
 export default function OrdersScreen({navigation}) {
@@ -32,7 +24,6 @@ export default function OrdersScreen({navigation}) {
         )
 }
 
-<<<<<<< HEAD
 const orderScreen = ({navigation}) => {
     Moment.locale('en')
     const {userData,socket,callNotifition} = useContext(AuthContext);
@@ -62,20 +53,6 @@ const orderScreen = ({navigation}) => {
             setOrderList(res.data)
         })
         }
-=======
-    const {userData} = useContext(AuthContext);
-    const W = Dimensions.get('window').width;
-    const H = Dimensions.get('window').height
-    const socket = io('http://192.168.1.102:3001')
-    
-
-    useEffect(()=>{
-        socket.on('jjj',() => {
-            console.log('Audi');
-        })
-    })
-    return (
->>>>>>> 8cea6c4331339c741b0dff06a18b9fabaff13b79
         
     }
  
@@ -164,7 +141,7 @@ const orderScreen = ({navigation}) => {
                         </TouchableOpacity>                        
                     </Container>
                 </View>
-                
+
             <View
                 backgroundColor='white'
                 flex={5}
