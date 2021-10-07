@@ -11,19 +11,6 @@ export default function ProfileScreen() {
     
     const W = Dimensions.get('window').width
     const {userData,userImg} = useContext(AuthContext)
-    const [cusInfo,setCusInfo] = useState([])
-
-    useEffect(()=>{
-
-        axios.post('http://192.168.1.102:3001/getCustomerInfo',{
-        userId:userData.usersData[0].id
-    }).then(
-        (res)=> {
-            setCusInfo(res.data)
-        }      
-    )
-
-},[])
 
     return (
         <View 
@@ -62,9 +49,7 @@ export default function ProfileScreen() {
                 >
                     <Divider w='100%' bgColor='#888888' />
                 </View>
-            {cusInfo.map((data,index)=>(
                 <View
-                    key={index}
                     w='90%'
                     paddingTop={3}
                 > 
@@ -72,16 +57,15 @@ export default function ProfileScreen() {
                         style={styles.texData}
                         fontFamily='IBMPlexSansThai-Bold'
                     >
-                        เบอร์โทร :  {data.phone}
+                        เบอร์โทร :  {userData.usersData[0].phone}
                     </Text>    
                     <Text
                         style={styles.texData}
                         fontFamily='IBMPlexSansThai-Bold'
                     >
-                        อีเมล์ :  {data.email}
+                        อีเมล์ :  {userData.usersData[0].email}
                     </Text>    
-                </View>
-            ))}                
+                </View>        
             </View>           
         </View>
         

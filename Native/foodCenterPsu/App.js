@@ -1,8 +1,8 @@
 import * as React from 'react';
 import SplashScreen from 'react-native-splash-screen';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import {  ImageBackground, StyleSheet, Text, View } from 'react-native';
-import Tabs from './navigation/tabs';
+import Tabs from './TabNavigation/tabs';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider,IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';

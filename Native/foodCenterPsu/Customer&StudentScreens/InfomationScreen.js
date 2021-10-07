@@ -43,7 +43,7 @@ const ListMenu =({navigation})=> {
             {userType == 'student' ? (
                 <>
                 <MenuItem style={styles.MenuItem} title='detial' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='History' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ชั่วโมงทำงาน' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
                 </>
             ):(<></>)} 
             <MenuItem style={styles.MenuItem} title='ประวัติการซื้อ' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
@@ -56,6 +56,7 @@ const ListMenu =({navigation})=> {
                 flexDirection='column'
            >
              <Button  
+                borderRadius={15}
                 w='90%'
                 onPress={()=> logout()}
                 isLoading={loading} 

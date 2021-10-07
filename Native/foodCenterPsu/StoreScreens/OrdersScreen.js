@@ -107,35 +107,37 @@ const orderScreen = ({navigation}) => {
                 >
                     
                     <Container 
-                        bg={dateOrder == 'Today' ? '#D8D8D8' : '#ffFFFF'}                                                
-                        borderRadius={15} 
+                        bg={dateOrder == 'Today' ? '#D8D8D8' : ''} 
+                        borderWidth={0.5}
+                        borderColor="#D8D8D8"                                                
+                        borderLeftRadius={20} 
                         width={150} 
                         height={50} 
                         alignItems='center'
-                        mr={2}
                         >
                         <TouchableOpacity 
                             onPress={()=> seleOrderBydate('Today')}
                             style={{flex:1,alignItems:'center',width:'100%'}}
                             >
-                            <Heading size="md" m={3} >
+                            <Heading color={dateOrder == 'Today' ? '' : '#D8D8D8'} size="md" m={3} >
                                 วันนี้
                             </Heading> 
                         </TouchableOpacity>                        
                     </Container> 
                     <Container 
-                        bg={dateOrder == 'otherDay' ? '#D8D8D8' : '#ffFFFF'}   
-                        borderRadius={15} 
+                        bg={dateOrder == 'otherDay' ? '#D8D8D8' : ''}
+                        borderWidth={0.5}
+                        borderColor="#D8D8D8"   
+                        borderRightRadius={20} 
                         width={150} 
                         height={50} 
                         alignItems='center'
-                        ml={2}
                         >
                         <TouchableOpacity 
                             onPress={()=> seleOrderBydate('otherDay')}
                             style={{flex:1,alignItems:'center',width:'100%'}}
                             >
-                            <Heading size="md" m={3} >
+                            <Heading color={dateOrder == 'otherDay' ? '' : '#D8D8D8'} size="md" m={3} >
                                 อื่น ๆ   
                             </Heading> 
                         </TouchableOpacity>                        

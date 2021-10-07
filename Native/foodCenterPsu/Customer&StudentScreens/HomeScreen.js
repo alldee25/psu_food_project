@@ -40,10 +40,10 @@ const HomeData =({navigation})=> {
                 height={'100%'}
                 width={'100%'}
             >
-                <Container
+                <View
                     flexDirection='row'
                     mt={2}
-                    
+                    width={'100%'}
                 >
                     <Heading fontFamily='SanFranciscoDisplayBold' color="emerald.400" pl={4} >
                         Hi                 
@@ -52,17 +52,23 @@ const HomeData =({navigation})=> {
                             {userData.usersData[0].name}
                     </Heading>
                     <View
-                        w='100%'
+
+                        w='50%'
                         alignItems='flex-end'
+                        position='absolute'
+                        right={0}
                     >
                     <TouchableOpacity
-                        style={{marginTop:5,width:100}} 
+                        style={{
+                            marginTop:5,
+                            width:100,                          
+                        }} 
                         onPress={()=>{navigation.navigate('profileScreenCustomer')}}              
                     >
                         <Icon name='person-outline'  fill='black' style={{with:30,height:30}}/>
                     </TouchableOpacity>
                 </View>
-                </Container>
+                </View>
                 
                 <View                  
                     alignItems='center'                   

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Customer&StudentScreens/HomeScreen';
-import ProfileScreen from '../Customer&StudentScreens/ProfileScreen';
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet,  View } from 'react-native';
 import { AuthContext } from '../App';
 import OrdersScreen from '../StoreScreens/OrdersScreen';
 import ManageScreen from '../StoreScreens/ManageScreen';
@@ -26,12 +25,10 @@ const Tabs = () =>{
                     headerShown: false,
                     tabBarShowLabel: false,
                     tabBarStyle: {
-                        shadowColor:'#DC143C',
-                        backgroundColor:'transparent',                                 
-                        shadowOpacity:1,
+                        shadowColor:'#DC143C',                                                  
+                        shadowOpacity:0.5,
                         shadowRadius:20,                                  
-                        backgroundColor:'transparent',
-                        elevation:0,                      
+                        elevation:15,                      
                         height:60,
                                             
                     }
@@ -43,19 +40,16 @@ const Tabs = () =>{
                             <View style={{                              
                                 position:'absolute',                                      
                                 alignItems:'center',
-                                justifyContent:'center',
-                                backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                                justifyContent:'center',                                                       
                                 width:60,
                                 height:40,
-                                borderRadius:15,
-                                shadowColor:'#DC143C',                                 
-                                shadowOpacity:1,
-                                shadowRadius:20,                                  
-                                elevation:7
                                 }}>
                                 <Icon name='home-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />                              
+                                    style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
+                                />   
+                                {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>}                             
                             </View>
                         )
                     }}    
@@ -79,19 +73,16 @@ const Tabs = () =>{
                             <View style={{                                    
                                         position:'absolute',                                      
                                         alignItems:'center',
-                                        justifyContent:'center',
-                                        backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                                        justifyContent:'center',                                     
                                         width:60,
-                                        height:40,
-                                        borderRadius:15,
-                                        shadowColor:'#DC143C',                                 
-                                        shadowOpacity:1,
-                                        shadowRadius:20,                                  
-                                        elevation:7
+                                        height:40,                                     
                                         }}>
                                 <Image source={require('../assets/img/meal-food.png')}
-                                    style={{width:27,height:27,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />                                                                                        
+                                    style={{width:27,height:27,tintColor: focused ?'#2F1050' : '#748c94'}} 
+                                /> 
+                                {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>}                                                                                       
                             </View>
                         )
                     }}    
@@ -103,20 +94,17 @@ const Tabs = () =>{
                         <View style={{                        
                             position:'absolute',                                      
                             alignItems:'center',
-                            justifyContent:'center',
-                            backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                            justifyContent:'center',                        
                             width:60,
-                            height:40,
-                            borderRadius:15,
-                            shadowColor:'#DC143C',                                 
-                            shadowOpacity:1,
-                            shadowRadius:20,                                  
-                            elevation:7,                           
+                            height:40,                                                     
                             }}>
                             <Image
                                 source={require('../assets/img/cloche.png')} 
-                                style={{width:33,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                style={{width:33,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
                             />
+                            {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>} 
                         </View>
                     )
                 }} 
@@ -128,19 +116,16 @@ const Tabs = () =>{
                         <View style={{                        
                             position:'absolute',                                      
                             alignItems:'center',
-                            justifyContent:'center',
-                            backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                            justifyContent:'center',                        
                             width:60,
-                            height:40,
-                            borderRadius:15,
-                            shadowColor:'#DC143C',                                 
-                            shadowOpacity:1,
-                            shadowRadius:20,                                  
-                            elevation:7,                           
+                            height:40,                                                      
                             }}>
                             <Icon name='grid-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                    style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
                             />
+                            {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>} 
                         </View>
                     )
                 }} 
@@ -169,19 +154,16 @@ const Tabs = () =>{
                             <View style={{                              
                                 position:'absolute',                                      
                                 alignItems:'center',
-                                justifyContent:'center',
-                                backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                                justifyContent:'center',                             
                                 width:60,
-                                height:40,
-                                borderRadius:15,
-                                shadowColor:'#DC143C',                                 
-                                shadowOpacity:1,
-                                shadowRadius:20,                                  
-                                elevation:7
+                                height:40,                             
                                 }}>
                                 <Icon name='home-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />                              
+                                    style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
+                                />
+                                {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>}                               
                             </View>
                         )
                     }}    
@@ -205,19 +187,16 @@ const Tabs = () =>{
                             <View style={{                                    
                                         position:'absolute',                                      
                                         alignItems:'center',
-                                        justifyContent:'center',
-                                        backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
+                                        justifyContent:'center',                                     
                                         width:60,
                                         height:40,
-                                        borderRadius:15,
-                                        shadowColor:'#DC143C',                                 
-                                        shadowOpacity:1,
-                                        shadowRadius:20,                                  
-                                        elevation:7
                                         }}>
                                 <Icon name='menu-2-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
-                                />                                                                                        
+                                    style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
+                                />
+                                {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>}                                                                                         
                             </View>
                         )
                     }}    
@@ -229,20 +208,15 @@ const Tabs = () =>{
                         <View style={{                        
                             position:'absolute',                                      
                             alignItems:'center',
-                            justifyContent:'center',
-                            backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
-                            width:60,
-                            height:40,
-                            borderRadius:15,
-                            shadowColor:'#DC143C',                                 
-                            shadowOpacity:1,
-                            shadowRadius:20,                                  
-                            elevation:7,                           
+                            justifyContent:'center',                                                       
                             }}>
                             <Image source={require('../assets/img/menuFood.png')}
                                 resizeMode='contain'
-                                style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
                             />
+                            {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>} 
                         </View>
                     )
                 }} 
@@ -255,18 +229,16 @@ const Tabs = () =>{
                             position:'absolute',                                      
                             alignItems:'center',
                             justifyContent:'center',
-                            backgroundColor: focused ? '#0B2B53' : '#ffFFFF',
                             width:60,
                             height:40,
-                            borderRadius:15,
-                            shadowColor:'#DC143C',                                 
-                            shadowOpacity:1,
-                            shadowRadius:20,                                  
-                            elevation:7,                           
+                                                       
                             }}>
                             <Icon name='grid-outline'
-                                    style={{width:40,height:25,tintColor: focused ?'#ffFFFF' : '#748c94'}} 
+                                    style={{width:40,height:25,tintColor: focused ?'#2F1050' : '#748c94'}} 
                             />
+                            {focused ? <Icon name='arrow-up'
+                                    style={{width:20,height:15,position:'absolute',bottom:-15,right:-10,tintColor: focused ?'#0B2B53' : '#748c94'}} 
+                                /> : <></>} 
                         </View>
                     )
                 }} 

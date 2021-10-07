@@ -66,7 +66,6 @@ authRouter.post("/customer",(req, res)=> {//เข้าสู่ระบบโ
                         req.session.img = result[0].img;
                         res.send(result)  
                     }else{
-                        console.log("Wrong username/password combination!");
                     res.send({ message: "Wrong username/password combination!" });
                     }
                 })                                 
@@ -80,7 +79,7 @@ authRouter.post("/student",(req, res)=> {//เข้าสู่ระบบโ�
     const Username = req.body.username;
     const Password = req.body.password;
     const UserType = req.body.userType;
-    db.query("SELECT * FROM student WHERE student_id=?",[Username],((err,result)=>{
+    db.query("SELECT * FROM student WHERE student.id=?",[Username],((err,result)=>{
         if(err){
             console.log(err);
         }

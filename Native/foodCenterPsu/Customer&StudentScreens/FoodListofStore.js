@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
 import { Divider, FlatList, Heading, Image, Text, View, ScrollView, Input } from 'native-base'
@@ -6,59 +6,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux';
 import { AuthContext } from '../App';
-import CartScreen from './CartScreen';
-import FoodDetialScreen from './FoodDetialScreen';
-import FoodDetialScreenOdStore from './FoodDetialScreenOdStore';
-import FoodListofStore from './FoodListofStore';
-import OrderConferm from './OrderConferm';
 
-export default function FoodScreen() {
-    
-    const FoodStack = createStackNavigator()
-    
-    return(
-        <FoodStack.Navigator>
-            <FoodStack.Screen
-            options={{
-                headerShown:false,
-            }} 
-            name='เมนู' 
-            component={FoodList} 
-            
-            />
-            <FoodStack.Screen 
-                name='รายละเอียดเมนู'
-                options={{
-                    headerShown:false,
-                }} 
-                component={FoodDetialScreen} 
-            />
-            <FoodStack.Screen 
-                name='conferm'
-                component={OrderConferm} 
-            />
-            <FoodStack.Screen 
-                name='cart'
-                component={CartScreen} 
-            />
-            <FoodStack.Screen 
-                options={{
-                    headerShown:false,
-                }}
-                name='FoodOfStore'
-                component={FoodListofStore} 
-            />
-            <FoodStack.Screen 
-                options={{
-                    headerShown:false,
-                }}
-                name='FoodDetialScreenOdStore'
-                component={FoodDetialScreenOdStore} 
-            />
-        </FoodStack.Navigator>
-    )
-}
-const FoodList =({navigation})=>{
+export default function FoodListofStore({navigation,route}) {
 
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
@@ -67,54 +16,15 @@ const FoodList =({navigation})=>{
     const {userData} = useContext(AuthContext);
     const cartFilter = cart.filter(data => data.userId == userData.usersData[0].id)
     const today = new Date();
-    const [search, setSearch] = useState('')
-    const [searchType, setSearchType] = useState('')
-    const [foodFileterDataList, setFoodFileterDataList] = useState([]);
-    
-    const searchFilter=(textValue)=> {
-        if (textValue) {
-            const newData = foodDataList.filter((item)=> {
-                const itemData = item.food_name ? 
-                                    item.food_name.toUpperCase() 
-                                    : ''.toUpperCase();
-                const textData = textValue.toUpperCase();
-                return itemData.indexOf(textData) > -1; 
-                })
-                setFoodFileterDataList(newData);
-                setSearch(textValue)
-                      
-             } else {
-                setFoodFileterDataList(foodDataList)
-                setSearch(textValue)
-                }
-           
-    }
-    const searchFilterType=(textValue)=> {
-        if (textValue) {
-            const newData = foodDataList.filter((item)=> {
-                const itemData = item.food_type ? 
-                                    item.food_type.toUpperCase() 
-                                    : ''.toUpperCase();
-                const textData = textValue.toUpperCase();
-                return itemData.indexOf(textData) > -1; 
-                })
-                setFoodFileterDataList(newData);
-                setSearch(textValue)
-                setSearchType(textValue)
-                      
-             } else {
-                setFoodFileterDataList(foodDataList)
-                setSearch(textValue)
-                setSearchType(textValue)
-                }
-           
-    }
+
+
     useEffect(()=>{
         let isMounted = (
-            axios.get('http://192.168.1.102:3001/getFoodMenuListCustomer').then(
+            axios.post('http://192.168.1.102:3001/getFoodMenuListCustomerByStore',{
+                storeId:route.params.sid
+            }).then(
                 (res) => {
                     setFoodDataList(res.data)
-                    setFoodFileterDataList(res.data)
                 }
             )
         )
@@ -122,14 +32,60 @@ const FoodList =({navigation})=>{
             isMounted= false;
         })
     },[])
-    
+
     return (
         <View
             h={H}
             w={W}
             backgroundColor='#0B2B53'
         >
+            <TouchableOpacity
+                    onPress={()=>{ navigation.goBack()}}
+                    style={{
+                        position:'absolute',
+                        width:30,
+                        height:30,
+                        top:10,
+                        zIndex:5,
+                        flex:1,                      
+                    }}
+            >
+                <Icon style={styles.icon} fill='white' name='arrow-ios-back-outline' />
+            </TouchableOpacity>
+            <View
+                m={2}
+                mr={4}
+                position='absolute'
+                right={0}
+            >
+                <TouchableOpacity
+                    onPress={()=> navigation.navigate('cart')}
+                >
+                    <View
+                        w={7}
+                        position='absolute'
+                        zIndex={2}
+                        justifyContent='center'
+                        alignItems='center'                   
+                        top={4}
+                        olor='black'
+                    >
+                        <Text>
+                            {cartFilter.reduce((sum, item)=> sum + item.count, 0)}
+                        </Text>
+                    </View>                   
+                    <Image
+                        mt={0.3}
+                        source={require('../assets/img/Asset.png')}
+                        alt='cart'
+                        style={styles.iconBack}
+                        />
+                </TouchableOpacity>
+                
+            </View>
         <View
+        mt={20}
+        flex={1}
             w='100%'
             flexDirection='row'
             justifyContent='space-between'
@@ -140,129 +96,20 @@ const FoodList =({navigation})=>{
                 ml={3}
                 color='#FFFFFF'
             >
-                กินอะไรดี 
+                ร้าน :  {route.params.store_name}
             </Heading>
+        </View>          
             <View
-                m={2}
-                mr={4}
+                
+                borderWidth={1}
+                backgroundColor='white'
+                flex={5}
+                borderTopRadius={20}
+                mb={'10%'}
             >
-                <TouchableOpacity
-                    onPress={()=> navigation.navigate('cart')}
-                >
-                <View
-                    w={7}
-                    position='absolute'
-                    zIndex={2}
-                    justifyContent='center'
-                    alignItems='center'                   
-                    top={4}
-                    olor='black'
-                >
-                    <Text>
-                        {cartFilter.reduce((sum, item)=> sum + item.count, 0)}
-                    </Text>
-                </View>
-                    
-                    <Image
-                        mt={0.3}
-                        source={require('../assets/img/Asset.png')}
-                        alt='cart'
-                        style={styles.iconBack}
-                    />
-
-                   
-            </TouchableOpacity>
-            
-            </View>
-        </View>
-            <View
-             width={W} alignItems='center'
-            >
-            <Input
-                value={search}
-                color='white' 
-                w={'95%'} 
-                size="xs" 
-                placeholder="ค้นหา" 
-                borderRadius={20}
-                onChangeText={(textValue)=> searchFilter(textValue)} 
-            />
-            </View>          
-            <View               
-                flexDirection='row'
-                justifyContent='space-around'
-                width={W}
-                flex={1}
-            > 
-                <ScrollView 
-                    contentContainerStyle={{alignItems:'center'}}         
-                    width={W}
-                    horizontal={true} 
-                >
-                <TouchableOpacity                 
-                    style={searchType == 'ตามสั่ง' ? styles.buttonTypyActive : styles.buttonTypy}
-                    onPress={()=> searchFilterType('ตามสั่ง')}
-                >
-                <Text
-                    color={searchType == 'ตามสั่ง' ? '#1D1F20' : '#FFFF'}
-                >
-                   เมนูตามสั่ง 
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={searchType == 'เมนูทานเล่น' ? styles.buttonTypyActive : styles.buttonTypy}
-                onPress={()=> searchFilterType('เมนูทานเล่น')}
-            >
-                <Text
-                    color={searchType == 'เมนูทานเล่น' ? '#1D1F20' : '#FFFF'}
-                >
-                   เมนูทานเล่น
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={searchType == 'ข้าวแกง' ? styles.buttonTypyActive : styles.buttonTypy}
-                onPress={()=> searchFilterType('ข้าวแกง')}
-            >
-                <Text
-                    color={searchType == 'ข้าวแกง' ? '#1D1F20' : '#FFFF'}
-                >
-                   ข้าวแกง 
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-                onPress={()=> searchFilterType('เมนูน้ำ')}
-                style={searchType == 'เมนูน้ำ' ? styles.buttonTypyActive : styles.buttonTypy}
-            >
-                <Text
-                    color={searchType == 'เมนูน้ำ' ? '#1D1F20' : '#FFFF'}
-                >
-                   เมนูน้ำ
-                </Text>
-            </TouchableOpacity> 
-            <TouchableOpacity 
-                onPress={()=> searchFilterType('เมนูเส้น')}
-                style={searchType == 'เมนูเส้น' ? styles.buttonTypyActive : styles.buttonTypy}
-            >
-                <Text
-                    color={searchType == 'เมนูเส้น' ? '#1D1F20' : '#FFFF'}
-                >
-                   เมนูเส้น
-                </Text>
-            </TouchableOpacity> 
-            </ScrollView> 
-            </View>
-            
-                <View
-                    
-                    borderWidth={1}
-                    backgroundColor='white'
-                    flex={5}
-                    borderTopRadius={20}
-                    mb={'10%'}
-                >
 
                     <FlatList 
-                        data={foodFileterDataList}
+                        data={foodDataList}
                         keyExtractor={(item, index) => index}
                         contentContainerStyle={{
                             paddingLeft:7,
@@ -275,7 +122,7 @@ const FoodList =({navigation})=>{
                             style={{
                                 marginTop:8
                             }}
-                            onPress={()=>{navigation.navigate('รายละเอียดเมนู',
+                            onPress={()=>{navigation.navigate('FoodDetialScreenOdStore',
                             {
                                 fId:item.id,
                                 sId:item.sId,

@@ -12,7 +12,7 @@ const packaging = [
     'ใส่จาน'
 ];
   
-export default function FoodDetialScreen({navigation,route}) {
+export default function FoodDetialScreenOdStore({navigation,route}) {
     const W = Dimensions.get('window').width
     const H = Dimensions.get('window').height
     const dispatch = useDispatch()
@@ -170,26 +170,6 @@ export default function FoodDetialScreen({navigation,route}) {
                     </Image>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                    onPress={()=> navigation.navigate('FoodOfStore',{
-                        sid:route.params.sId,
-                        store_name:route.params.store_name,
-                    })}
-                    style={{
-                        width:100,
-                        zIndex:45,
-                        position:'absolute',
-                        right:20,
-                        bottom:20,
-                        justifyContent:'center',
-                        alignItems:'center',
-                        flexDirection:'row',
-                        backgroundColor:'#888888',
-                        borderRadius:30/2
-                    }}
-                >
-                <Text color="#FFFF">ไปที่ร้าน</Text><Icon style={styles.icon} fill='white' name='arrow-forward' />                  
-            </TouchableOpacity>
 
                 <TouchableOpacity
                     onPress={()=>{ navigation.goBack()}}

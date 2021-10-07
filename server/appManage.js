@@ -440,6 +440,21 @@ appRouter.get('/getFoodMenuListCustomer',(req,res)=>{
         }
     })
 })
+appRouter.post('/getFoodMenuListCustomerByStore',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT food_menu.*,store.store_name,store.id AS sId,store.status AS s_status,leave_store.to_date,leave_store.frome_date
+    FROM food_menu
+    INNER JOIN store ON store.id = food_menu.store_id
+    INNER JOIN store_owner ON store.id = store_owner.store_id
+   	LEFT JOIN leave_store ON leave_store.store_owner_id = store_owner.id AND leave_store.date_write = (SELECT MAX(leave_store.date_write) FROM leave_store WHERE leave_store.status='อนุมัติ')
+    WHERE store.id = ?`,[storeId],(err,result)=>{
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
 appRouter.post('/getOptionMixByfoodid',(req,res)=>{
     const fooId = req.body.fooId
     db.query(`SELECT food_option.option_name AS name,food_and_option_mix.option_id AS id
