@@ -41,8 +41,7 @@ const ListMenu =({navigation})=> {
         <SafeAreaView style={styles.container}>
             
             {userType == 'student' ? (
-                <>
-                <MenuItem style={styles.MenuItem} title='detial' onPress={()=> navigation.navigate('รายการ')} accessoryRight={ForwardIcon} />
+                <>               
                 <MenuItem style={styles.MenuItem} title='ชั่วโมงทำงาน' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
                 </>
             ):(<></>)} 

@@ -79,6 +79,18 @@ function Navbar (){
                                 </div>
                             </div>
                         </Link> 
+                    </li>
+                    <li className={Navbar === 5 ? 'active' : ''}>
+                        <Link item="ทุนการศึกษา"  to="/Advertiment"   onClick={()=>{setNavbar(5)}}>
+                            <div className="it">
+                                <div className="icon">
+                                    <StoreRoundedIcon />
+                                </div>
+                                <div className="text">
+                                    โฆษณา
+                                </div>
+                            </div>
+                        </Link> 
                     </li>             
                     {/* <li className={Navbar === 5 ? 'active' : ''}>
                         <Link item="จัดการสถานที่"  to="/HomeArea"       onClick={()=>{setNavbar(5)}}>

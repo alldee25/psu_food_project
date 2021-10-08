@@ -74,8 +74,8 @@ export default function OrderConferm({route,navigation}) {
 
     return (
         <View
-        mt={1}
-        h={H}
+          mt={1}
+          h={H}
           w={{
             base: "100%",
             md: "25%",
@@ -179,5 +179,5 @@ const styles = StyleSheet.create({
     icon: {
         width: 15,
         height: 15,
-        },
+    },
 })

@@ -3,27 +3,41 @@ import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
 import { Center, Container, Divider, Heading, Link, ScrollView, Text, View, Image } from 'native-base'
 import React, { useContext, useEffect, useState } from 'react'
-import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
 import { AuthContext } from '../App';
 import ProfileScreen from './ProfileScreen';
 
 const stackHome = createStackNavigator()
 
 const HomeData =({navigation})=> {
-        const W = Dimensions.get('window').width;
+
+    const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
     const {userData,socket,callNotifitionUser} = useContext(AuthContext)
     const userId = userData.usersData[0].id
     const [annonment,setAnnounment]= useState([])
-    
+    const [dataImageAdvi, setDataImageAdvi] = useState([])
+    const [imageActive,setImageActive] = useState(0)
 
+    onchange = (nativeEven) => {
+        if (nativeEven) {
+            const slide = Math.ceil(nativeEven.contentOffset.x / nativeEven.layoutMeasurement.width)
+            if (slide != imageActive) {
+                setImageActive(slide);
+            }
+        } 
+    }
     useEffect(()=>{
 
         let isMounted = (
             socket.off(`withCus-id-${userId}`).on(`withCus-id-${userId}`,()=> {callNotifitionUser()}),
              axios.post(`http://192.168.1.102:3001/getAnnounCustomer`).then((res)=>{
             setAnnounment(res.data)
+        }).then(
+            axios.get("http://192.168.1.102:3001/getAdviList").then((res)=>{
+            setDataImageAdvi(res.data)  
         })
+        )
         )
        
         return ()=> { isMounted = false }
@@ -35,7 +49,7 @@ const HomeData =({navigation})=> {
             style={{width:W,height:H}}
         >
              
-            <View
+            <SafeAreaView
                 flexDirection='column'
                 height={'100%'}
                 width={'100%'}
@@ -81,8 +95,7 @@ const HomeData =({navigation})=> {
                 flexDirection="row"
                 mt={4}    
                 >
-                    <View                                       
-                        bg='#FFFFFF'                          
+                    <View                                                              
                         borderRadius={25} 
                         width={'100%'} 
                         height={200}                         
@@ -90,20 +103,36 @@ const HomeData =({navigation})=> {
                         mr={2}
                         >                                             
                         <ScrollView
+                            
                             showsHorizontalScrollIndicator={false}
                             pagingEnabled
                             horizontal
                             style={styles.wrap}
+                            onScroll={({nativeEvent}) => onchange(nativeEvent)}
                         >
-                           {/*  <Image 
-                                alt=''
-                                resizeMode='contain'
-                                w='100%'
-                                h='100%'
-                                source={require('../assets/img/closeup-shot-delicious-asian-soup-with-different-vegetables.jpg')}
-                            /> */}
-                          
-                        </ScrollView>                                             
+                        {dataImageAdvi.map((data,index)=>(
+                            <Image                                
+                                key={data.id}
+                                alt={data.img}
+                                resizeMode='stretch'
+                                h='100%'                            
+                                w={360}
+                                borderRadius={25} 
+                                source={{uri :`http://192.168.1.102:3001/adminUploaded/${data.img}`}}
+                            />
+                        ))}
+                              
+                        </ScrollView>
+                        <View style={styles.wrapDot}>
+                        {dataImageAdvi.map((data,index)=>(
+                            <Text 
+                                key={data.id}
+                                style={imageActive == index ? styles.dotActive : styles.dot}
+                            >
+                               ● 
+                            </Text>
+                        ))}
+                        </View>                                             
                     </View> 
                 </View>
                      
@@ -133,7 +162,7 @@ const HomeData =({navigation})=> {
                     </View>                   
                 </View>
                                             
-            </View>
+            </SafeAreaView>
         </ImageBackground>
     )
 }
@@ -156,7 +185,16 @@ const styles = StyleSheet.create({
     },
     wrap: {
       width: '100%',
-      height: '100%'
+      height: '100%',
+      shadowColor: "#DDDD",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.55,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     wrapDot: {
       position: 'absolute',
@@ -170,7 +208,7 @@ const styles = StyleSheet.create({
     },
     dotActive: {
       margin: 3,
-      color: 'black'
+      color: '#FFFF'
     }
   
   });

@@ -721,6 +721,23 @@ appRouter.post('/getRenList',(req,res)=>{
         }
     })
 })
+appRouter.post('/getHistoryOfSell',(req,res)=>{
+    const userId = req.body.userId
+    db.query(`SELECT order_food_detial.*,store.store_name,food_menu.food_name
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    INNER JOIN food_menu ON food_id = order_food_detial.food_id
+    INNER JOIN store ON store.id = food_menu.store_id
+    WHERE order_food.customer_id = ?
+    `,[userId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
 
 //----------------------------------------------------------Just Test-----------------------------------------------
 appRouter.get('/test',(req,res)=>{

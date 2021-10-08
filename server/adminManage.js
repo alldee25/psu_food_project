@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits:{fileSize: 1000000},
     fileFilter: function(req,file,cb){
         checkFileType(file, cb);
     }
@@ -38,7 +37,7 @@ const userStorage = multer.diskStorage({
 
 const userUpload = multer({
     storage: userStorage,
-    limits:{fileSize: 1000000},
+    limits:{fileSize: 10000000},
     fileFilter: function(req,file,cb){
         checkFileType(file, cb);
     }
@@ -100,6 +99,42 @@ adminRouter.post('/upload', upload.single('file'), (req, res)=>{
     }
         
        
+})
+adminRouter.post('/UploadeImageAdvi', upload.single('file'), (req, res)=>{
+    if (req.file == undefined) {
+        res.send({msg:'Error: No File Selected!'})
+    } else {
+        const image =  req.file.filename
+        const AdminId = req.body.AdminId
+        const date = req.body.date
+        db.query(`INSERT INTO img_advert (img,admin_id,date) VALUES(?,?,?)`,[image,AdminId,date],(err)=>{
+            if (err) {
+                console.log(err);
+                res.send(err)
+            } else {
+                res.send('upload success')
+            }
+        })
+    }     
+       
+})
+
+adminRouter.post("/deleteImageAdvi",(req,res)=>{//เพิ่มข้อมูลประกาศ
+    const id = req.body.id
+    fs.unlink('./public/images/adminUploaded/'+req.body.oldFile, function(err){
+        if (err) {
+            throw err;
+        }else{ 
+          db.query("DELETE FROM img_advert WHERE id=?",[id],
+    (err) => {
+        if(err){
+            console.log(err);
+        }else{
+            res.send('Success for insert')
+        }
+    })  
+       }
+    }) 
 })
 adminRouter.post("/insert",(req,res)=>{//เพิ่มข้อมูลประกาศ
     const title = req.body.title
@@ -916,6 +951,7 @@ adminRouter.post("/getFoodMenuListByAdmin",(req, res) => {
         }
     }))
 })
+
 adminRouter.post("/getLeaveByprecess",(req, res) => {
     storeId = req.body.storeId
     db.query(`SELECT leave_store.status AS SUMnoti,leave_store.store_owner_id,store_owner.name,store_owner.lastname,store.store_name
@@ -957,6 +993,19 @@ adminRouter.post("/deleteStore",(req, res) => {
                     res.send('Deleted') 
                     }
                 })       
+        }
+    }))
+})
+adminRouter.get("/getAdviList",(req, res) => {
+    db.query(`SELECT img_advert.*,admin.name AS name, admin.lastname AS lastname
+         FROM img_advert
+        INNER JOIN admin ON admin.id = img_advert.admin_id
+    `,((err, result)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
         }
     }))
 })

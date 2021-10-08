@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import axios from "axios";
 import swal from 'sweetalert';
 import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
-import {BrowserRouter as Router,Route,useParams,useRouteMatch,useHistory,} from "react-router-dom";
+import {useRouteMatch,useHistory,} from "react-router-dom";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -26,7 +26,6 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
@@ -116,16 +115,16 @@ const StyledTableCell = withStyles((theme) => ({
   });
 export default function DataListAnnounce() {
   const [checked, setChecked] = React.useState(true);
-    const history = useHistory();
-    const [dataList, setDataList] = useState([]);
-    const { url, path } = useRouteMatch();
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    const [regisStatus,setRegisStatus] = React.useState(null);
-    const [displayStatus,setDisplayStatus] = React.useState(null);
-    const [openDialog, setOpenDilog] = React.useState(false);
-    const [edit, setEdit] = React.useState(false);
-    const [title, setTitle] = useState('')
+  const history = useHistory();
+  const [dataList, setDataList] = useState([]);
+  const { url, path } = useRouteMatch();
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [regisStatus,setRegisStatus] = React.useState(null);
+  const [displayStatus,setDisplayStatus] = React.useState(null);
+  const [openDialog, setOpenDilog] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [type, setType] = React.useState('');
   const [id, setId] = React.useState('');
