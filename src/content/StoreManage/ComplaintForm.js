@@ -197,11 +197,13 @@ function ComplaintForm(props) {
                     </div>
                   ))}                                                                 
                 </div>
-                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',fontWeight:'bold',fontSize:'17px',marginLeft:'30px',marginTop:'20px'}}>            
                   <span>ผู้ประกอบการร้านจำหน่ายอาหาร ร้านที่</span>
-                  <div style={{marginLeft:'10px'}}>
-                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={props.active} variant="standard" type="text" ></TextField>
+                  {locationAndStoreList.map((data,index)=>(
+                  <div key={index} style={{marginLeft:'10px'}}>
+                    <TextField inputProps={{min: 0, style: { textAlign: 'center'}}} disabled value={data.log_id} variant="standard" type="text" ></TextField>
                   </div>
+                  ))} 
                   <span style={{marginLeft:'10px'}}>
                     ประจำโรงอาหาร
                   </span>

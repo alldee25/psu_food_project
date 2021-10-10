@@ -11,7 +11,6 @@ import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
-import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
 import { AuthContext } from '../../App';
 import {useRouteMatch,useHistory,} from "react-router-dom";
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,6 +18,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CameraEnhanceOutlinedIcon from '@material-ui/icons/CameraEnhanceOutlined';
 import IconButton from '@material-ui/core/IconButton';
+import {  useLocation } from 'react-router';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -67,6 +69,7 @@ export default function AdverList(props) {
     const [regisStatus,setRegisStatus] = React.useState(null);
     const [imagePreview,setImagePreview] = useState(null)
     const [imageSelected,setImageSelected] = useState(null)
+    const location = useLocation();
 
   
     const handleCloseDialog = () => {
@@ -149,9 +152,14 @@ export default function AdverList(props) {
           setDataImageAdvi(res.data)   
         })
     },[])
-    return (
-      
-           <div className="subcon">
+    const transitions = useTransition(location.pathname == '/Advertiment', {
+      from: { opacity: 0 },
+      enter: { opacity: 1, delay: 150},
+      leave:  { opacity: 0},
+  
+      })
+    return transitions(
+          ((styles, item) => item && <animated.div className="subcon" style={styles}> 
                <div className="header" className="header" style={{display:"flex",alignItems:"center",position:"relative" }}>
                    <h1>รายการโฆษณา</h1>
                    <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"0px",width:"130px",borderRadius:"10px",fontSize: "1rem",
@@ -233,7 +241,7 @@ export default function AdverList(props) {
                     </Button>
                   </DialogActions>
                 </Dialog>
-            </div> 
+            </animated.div>) 
         
     )
 }

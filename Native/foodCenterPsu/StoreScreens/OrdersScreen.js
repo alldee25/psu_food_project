@@ -35,7 +35,6 @@ const orderScreen = ({navigation}) => {
     const [dateOrder,setDateOrder] = useState('Today')
 
     const seleOrderBydate = (value) => {
-        console.log(value);
         if (value == 'Today') {
             setDateOrder(value)
             axios.post('http://192.168.1.102:3001/getOrder',{
@@ -108,7 +107,7 @@ const orderScreen = ({navigation}) => {
                     
                     <Container 
                         bg={dateOrder == 'Today' ? '#D8D8D8' : ''} 
-                        borderWidth={0.5}
+                        borderWidth={1}
                         borderColor="#D8D8D8"                                                
                         borderLeftRadius={20} 
                         width={150} 
@@ -126,7 +125,7 @@ const orderScreen = ({navigation}) => {
                     </Container> 
                     <Container 
                         bg={dateOrder == 'otherDay' ? '#D8D8D8' : ''}
-                        borderWidth={0.5}
+                        borderWidth={1}
                         borderColor="#D8D8D8"   
                         borderRightRadius={20} 
                         width={150} 

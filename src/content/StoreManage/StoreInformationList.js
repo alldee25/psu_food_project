@@ -17,7 +17,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import swal from 'sweetalert';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -60,6 +62,7 @@ function StoreInformation() {
     const [id, setIid] = useState()
     const history = useHistory()
     const [idRegis,setIdRegis] = useState();
+    const location = useLocation();
 
     const deletestore = (id) => {
       swal("กด ok เพื่อยืนยันการบันทึก",{
@@ -96,8 +99,14 @@ function StoreInformation() {
             }
         )
     },[])
-    return (
-        <div className="subcon">
+    const transitions = useTransition(location.pathname == '/HomeStore/StoreInformation', {
+      from: { opacity: 0 },
+      enter: { opacity: 1, delay: 150},
+      leave:  { opacity: 0},
+
+      })
+    return transitions(
+          ((styles, item) => item && <animated.div className="subcon" style={styles}>  
            <div className="header">
                 <h1>
                 ข้อมูลร้านค้า
@@ -153,7 +162,7 @@ function StoreInformation() {
           <StoreInfornationDetial active={id} />
           </div> 
       </Dialog> 
-        </div>
+      </animated.div>)
     )
 }
 

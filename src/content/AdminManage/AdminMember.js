@@ -7,13 +7,14 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import Divider from '@material-ui/core/Divider';
-import { Button, Input } from '@material-ui/core';
-import swal from 'sweetalert';
-import S__2154499 from '../../img/avatarA.png'
+import { Button} from '@material-ui/core';
 import axios from 'axios';
 import { AuthContext } from '../../App';
 import AvatarA from '../../img/avatar-1577909.svg'
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
+import {  useLocation } from 'react-router';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,6 +32,7 @@ function AdminMember() {
     const [attendant,setAttendant] = useState([])
     const [dataPreview,setdataPreview] = useState([])
     const {setIsload} = useContext(AuthContext)
+    const location = useLocation();
 
     const handleClickOpen =()=>{
         
@@ -60,8 +62,14 @@ function AdminMember() {
       })).then(setIsload(false))
       },[])
 
-    return (
-        <div className="subcon">
+      const transitions = useTransition(location.pathname == '/HomeAdmin', {
+        from: { opacity: 0 },
+        enter: { opacity: 1, delay: 150},
+        leave:  { opacity: 0},
+    
+        })
+      return transitions(
+            ((styles, item) => item && <animated.div className="subcon" style={styles}>
             <div className='header' style={{display:"flex",alignItems:"center",position:"relative" }}>
                 <h1>
                     รายการข้อมูลสมาชิก
@@ -135,6 +143,6 @@ function AdminMember() {
             ))}            
         </div>  
         </div> 
-        </div>
+        </animated.div>) 
     )
 }export default AdminMember

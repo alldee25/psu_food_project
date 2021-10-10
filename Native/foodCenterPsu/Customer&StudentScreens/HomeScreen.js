@@ -103,7 +103,7 @@ const HomeData =({navigation})=> {
                         mr={2}
                         >                                             
                         <ScrollView
-                            
+                            borderRadius={25}
                             showsHorizontalScrollIndicator={false}
                             pagingEnabled
                             horizontal
@@ -111,7 +111,7 @@ const HomeData =({navigation})=> {
                             onScroll={({nativeEvent}) => onchange(nativeEvent)}
                         >
                         {dataImageAdvi.map((data,index)=>(
-                            <Image                                
+                            <Image                           
                                 key={data.id}
                                 alt={data.img}
                                 resizeMode='stretch'
@@ -186,15 +186,6 @@ const styles = StyleSheet.create({
     wrap: {
       width: '100%',
       height: '100%',
-      shadowColor: "#DDDD",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.55,
-        shadowRadius: 3.84,
-
-        elevation: 5,
     },
     wrapDot: {
       position: 'absolute',
@@ -209,6 +200,6 @@ const styles = StyleSheet.create({
     dotActive: {
       margin: 3,
       color: '#FFFF'
-    }
+    },
   
   });

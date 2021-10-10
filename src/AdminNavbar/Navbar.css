@@ -33,8 +33,9 @@ padding: 10px 0px 0px 0px;
 flex: var(--sidebar-flex);
 align-items: center;
 background:#CFFDFF ;
-box-shadow:   5px 5px 20px #181414,
+box-shadow:   5px 10px 20px #8805011A,
     0px 0px 0px ;
+
 
 }
 nav ul{

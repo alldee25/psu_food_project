@@ -681,13 +681,14 @@ adminRouter.post('/geStoreDetialBynameList',(req, res)=>{
                 }
             }))
 })
+
 adminRouter.post('/getStoreInfo',(req, res)=>{
     const storeId = req.body.id
-    db.query(`SELECT store_owner.name
-            FROM ((store
-            INNER JOIN store_owner ON store_owner.store_id = store.id)
-            INNER JOIN location ON location.id = store.location_id)
-            WHERE store.id = ?`,[storeId],((err, result)=>{
+    db.query(`SELECT store_owner.name,store.log_id,location.location
+    FROM ((store
+    INNER JOIN store_owner ON store_owner.store_id = store.id)
+    INNER JOIN location ON location.id = store.location_id)
+    WHERE store.id = ?`,[storeId],((err, result)=>{
                 if (err) {
                     console.log(err);
                 } else {
@@ -1003,6 +1004,87 @@ adminRouter.get("/getAdviList",(req, res) => {
     `,((err, result)=>{
         if(err){
             console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/insertScholarship",(req, res) => {
+    studentNumber = req.body.studentNumber
+    dateEnd = req.body.dateEnd
+    date = req.body.date
+    type = req.body.type
+    name = req.body.name
+    adminId = req.body.adminId
+    db.query(`INSERT INTO scholarship (scholarship_name, type,admin_id, date, date_end, number_student) VALUES(?,?,?,?,?,?)`,
+    [name, type, adminId, date, dateEnd, studentNumber],((err)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            res.send('เรียบร้อย')
+        }
+    }))
+})
+adminRouter.post("/getSchohalarList",(req, res) => {
+    yearToday = req.body.yearToday
+    db.query(`SELECT * FROM scholarship WHERE YEAR(date)`,
+    [yearToday],((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.get("/getYearsOfSchohalar",(req, res) => {
+    db.query(`SELECT YEAR(date) AS YEAR FROM scholarship`,((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post("/getStudentScholarship",(req, res) => {
+    id = req.body.id
+    db.query(`SELECT student_scholarship.*,admin.name AS ad_name,admin.lastname AS ad_lastname,student.name,student.lastname,student.id 
+    FROM student_scholarship 
+    INNER JOIN student ON student.id = student_scholarship.student_id 
+    INNER JOIN admin ON admin.id = student_scholarship.admin_id 
+    WHERE student_scholarship.scholarship_id = ?`,
+    [id],((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.get("/getSchohalarList",(req, res) => {
+    db.query(`SELECT *  FROM scholarship`,((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.get("/getStudentList",(req, res) => {
+    db.query(`SELECT *  FROM student`,((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send(err)
         }
         else{
             res.send(result)

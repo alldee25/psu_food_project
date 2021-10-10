@@ -27,6 +27,9 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
+import {  useLocation } from 'react-router';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +86,7 @@ const HomeDachboad = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   let  y = Array.from(Array(12)).fill(0);
+  const location = useLocation();
 
   chartData.map((item, i) => {
     y[parseInt(item.month) ] = parseInt(item.quantity)
@@ -160,9 +164,14 @@ const HomeDachboad = () => {
       })
     ))
   },[])
-  return (
-    <Router>
-      <div className="condiv">
+  const transitions = useTransition(location.pathname == '/Admin', {
+    from: { opacity: 0 },
+    enter: { opacity: 1, delay: 150},
+    leave:  { opacity: 0},
+
+    })
+  return transitions(
+        ((styles, item) => item && <animated.div className="condiv" style={styles}>  
       <div className="on" >
         <div className="left">
           <h1>
@@ -307,32 +316,33 @@ const HomeDachboad = () => {
                       </div>
                     </button>
                     <div>
-                          <Dialog
-                            open={openSave}
-                            onClose={handleCloseSave}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                              <DialogTitle id="alert-dialog-title">{"ข้อมูลรายการการอาหาร"}</DialogTitle>
-                              <DialogContent>
-                                  <DialogContentText id="alert-dialog-description" style={{height:'100%',width:'500px'}}>
-                                      <MenuStoreList storeId={storeId} />
-                                  </DialogContentText>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button onClick={handleCloseSave} color="primary">
-                                    ปิด
-                                </Button>                           
-                              </DialogActions>
-                          </Dialog>
-                        </div>
+                      <Dialog
+                        open={openSave}
+                        onClose={handleCloseSave}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                          <DialogTitle id="alert-dialog-title">{"ข้อมูลรายการการอาหาร"}</DialogTitle>
+                          <DialogContent>
+                              <DialogContentText id="alert-dialog-description" style={{height:'100%',width:'500px'}}>
+                                  <MenuStoreList storeId={storeId} />
+                              </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={handleCloseSave} color="primary">
+                                ปิด
+                            </Button>                           
+                          </DialogActions>
+                      </Dialog>
+                    </div>
                     <span
                       component="span"
                       variant="body2"
                       className={classes.status}
                       color="textPrimary"
                     >
-                      {data.status == 1 ? (<div><Chip
+                      {data.status == 1 ? (<div>
+                        <Chip
                           
                           label="เปิดอยู่"
                           disabled
@@ -351,7 +361,8 @@ const HomeDachboad = () => {
                             backgroundColor: '#727682',                         
                           }}                        
                           deleteIcon={<DoneIcon />}
-                        /></div>)}  
+                        />
+                        </div>)}  
                     </span>
                   </div>
                 }
@@ -361,9 +372,7 @@ const HomeDachboad = () => {
           ))}         
         </div>
       </div>
-      </div>
-       
-    </Router>
+      </animated.div>)
   );
 };
 export default HomeDachboad;

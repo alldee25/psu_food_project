@@ -23,8 +23,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Swal from 'sweetalert2';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -73,6 +74,7 @@ function RentalFeeList() {
     const [price,setPrice] = useState('')
     let date = new Date();
     const {auth} = useContext(AuthContext)
+    const location = useLocation();
 
     const SelectByMonth =(e)=>{
         setDataCleanlinessLevelList([])
@@ -193,13 +195,19 @@ function RentalFeeList() {
             )
         },[])
 
-    return (
-        <div className="subcon">
-            <div className="header">
-                <h1>
-                รายการการชำระค่าเช่า
-                </h1>
-            </div>       
+        const transitions = useTransition(location.pathname == '/HomeStore/RentalFeeList', {
+          from: { opacity: 0 },
+          enter: { opacity: 1, delay: 150},
+          leave:  { opacity: 0},
+    
+          })
+        return transitions(
+              ((styles, item) => item && <animated.div className="subcon" style={styles}>  
+                <div className="header">
+                    <h1>
+                    รายการการชำระค่าเช่า
+                    </h1>
+                </div>       
             <div style={{display:'flex',position:'absolute',right:"75px",top:'30px'}}>
               <div style={{marginLeft:'10px'}}>
                 <InputLabel  id="demo-simple-select-outlined-label" >เดือน</InputLabel>
@@ -317,7 +325,7 @@ function RentalFeeList() {
                     </DialogActions>
                 </Dialog>
               </div>  
-            </div>
+            </animated.div>)
     )
 }
 

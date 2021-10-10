@@ -4,14 +4,13 @@ import Button from '@material-ui/core/Button';
 import axios from "axios";
 import swal from 'sweetalert';
 import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
-import {useRouteMatch,useHistory,} from "react-router-dom";
+import {useRouteMatch, useHistory, useLocation} from "react-router-dom";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import EditAttributesRoundedIcon from '@material-ui/icons/EditAttributesRounded';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -27,6 +26,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -128,6 +129,7 @@ export default function DataListAnnounce() {
   const [content, setContent] = useState('')
   const [type, setType] = React.useState('');
   const [id, setId] = React.useState('');
+  const location = useLocation();
 
     const handleClickOpenDialog = () => {
       setOpenDilog(true);
@@ -202,133 +204,139 @@ export default function DataListAnnounce() {
       }
       })
   }
+  
 
     useEffect(() => {
-   axios.get("http://localhost:3001/get").then( res => {
-        const dataList = res.data;
-        setDataList(dataList)
-      }).then(
-        axios.get("http://localhost:3001/getRegisStatus",{
-        }).then( res => {
-        const [{status}] = res.data; 
-        if (status==1) {
-          setRegisStatus(true)
-          setDisplayStatus('เปิด')
-        } else {
-          setRegisStatus(false)
-          setDisplayStatus('ปิด')
-        }       
-        
-      })
-      )
-  },[]);
+    axios.get("http://localhost:3001/get").then( res => {
+          const dataList = res.data;
+          setDataList(dataList)
+        }).then(
+          axios.get("http://localhost:3001/getRegisStatus",{
+          }).then( res => {
+          const [{status}] = res.data; 
+          if (status==1) {
+            setRegisStatus(true)
+            setDisplayStatus('เปิด')
+          } else {
+            setRegisStatus(false)
+            setDisplayStatus('ปิด')
+          }       
+          
+        })
+        )
+    },[]);
+    const transitions = useTransition(location.pathname == '/HomeStore', {
+        from: { opacity: 0 },
+        enter: { opacity: 1, delay: 150},
+        leave:  { opacity: 1},
 
-    return (
-        <div className="subcon">
-             <div className="header" style={{display:"flex",alignItems:"center",position:"relative" }}>
-                <h1>
-                 ข้อมูลการเปิดรับสมัค
-                </h1>
-                <h3 style={{marginLeft:'20px'}}>
-                 สถาณะเปิดรับสมัคร : {displayStatus}
-                </h3> 
-                <Button variant="outlined" color="primary" style={{position:'absolute',right:'150px',bottom:"10px",borderRadius:"10px",fontSize: "1rem",
-                    fontWeight: "bold"}} onClick={handleClickOpenDialog}>
-                เปลี่ยนสถานะการสมัคร
-                </Button>
-                <Dialog
-                  open={openDialog}
-                  onClose={handleCloseDialog}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                  <DialogTitle id="alert-dialog-title">{"ต้องการเปลี่ยนสถานะการสมัคร ?"}</DialogTitle>
-                  <div>
-                  <DialogContent>
-                    <div id="alert-dialog-description" >
-                      <div  style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                        <span style={{marginBottom:'10px'}}>
-                          ปิดการสมัคร
-                        </span>
-                        <span>
-                          <FormControlLabel
-                          style={{width:'90px',display:'flex',justifyContent:'center',marginLeft:'5px'}}
-                          control={<IOSSwitch checked={regisStatus} onChange={() =>handleChangeRegisStatus()}  value={regisStatus} />}
-                        />
-                        </span>                  
-                        <span style={{marginBottom:'10px'}}>
-                          เปิดการสมัคร
-                        </span> 
-                      </div>                  
-                       สามารถเปลี่ยนสถานะการสมัครโดยการคลิกทีุ่ป๋ม                    
-                    </div>
-                  </DialogContent>
-                  </div>
-                  <DialogActions>
-                    <Button onClick={handleSave} color="primary">
-                      บันทึก
-                    </Button>
-                    <Button onClick={handleCloseDialog} color="primary" autoFocus>
-                      ยกเลิก
-                    </Button>
-                  </DialogActions>
-                </Dialog>     
-                  <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"10px",width:"130px",borderRadius:"10px",fontSize: "1rem",
-                    fontWeight: "bold",
-                    color:"white"}} variant="contained" color="primary" >
-                      เพิ่มประกาศ
+      })
+    return transitions(
+          ((styles, item) => item && <animated.div className="subcon" style={styles}>  
+              <div className="header" style={{display:"flex",alignItems:"center",position:"relative" }}>
+                  <h1>
+                  ข้อมูลการเปิดรับสมัค
+                  </h1>
+                  <h3 style={{marginLeft:'20px'}}>
+                  สถาณะเปิดรับสมัคร : {displayStatus}
+                  </h3> 
+                  <Button variant="outlined" color="primary" style={{position:'absolute',right:'150px',bottom:"10px",borderRadius:"10px",fontSize: "1rem",
+                      fontWeight: "bold"}} onClick={handleClickOpenDialog}>
+                  เปลี่ยนสถานะการสมัคร
                   </Button>
-              </div>
-            {dataList == '' ? 
-            <div style={{position:'absolute',top:'50%',right:'40%'}}>
-              <h1>ไม่พบข้อมูล</h1>
-            </div> 
-            : 
-            <div style={{marginTop:'20px'}}>
-              <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
-                <Table className={classes.table} aria-label="customized table">
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell>หัวข้อ</StyledTableCell>
-                      <StyledTableCell align="right">id</StyledTableCell>
-                      <StyledTableCell align="right">รายละเอียด</StyledTableCell>
-                      <StyledTableCell align="right">แก้ไข</StyledTableCell>
-                      <StyledTableCell align="right">ลบ</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {dataList.map((dataList) => (
-                      <StyledTableRow key={dataList.Title}>
-                        <StyledTableCell component="th" scope="row">
-                          {dataList.Content}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">{dataList.id}</StyledTableCell>
-                        <StyledTableCell align="right">{dataList.Title}</StyledTableCell>
-                        <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{handleClickOpenEdit(dataList.id,dataList.Title,dataList.Content,dataList.type)}}>< EditAttributesRoundedIcon style={{fontSize:'2rem',color:''}} /></Button></StyledTableCell>
-                        <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{DeleteItem(dataList.id)}}><DeleteForeverRoundedIcon style={{fontSize:'2rem',color:'red'}} /></Button></StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-            }
-              <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-              <AppBar className={classes.appBar}>
-                <Toolbar>
-                  <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                    <CloseIcon />
-                  </IconButton>
-                  <Typography variant="h6" className={classes.title}>
-                    เพิ่มข้อมูลประกาศรับสมัครร้านค้า
-                  </Typography>
-                </Toolbar>
-              </AppBar>
-              <div style={{marginTop:'50px'}}>
-                <AnnouncementForm edit={edit} id={id} title={title} content={content} type={type}  open={open}/>
+                  <Dialog
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">{"ต้องการเปลี่ยนสถานะการสมัคร ?"}</DialogTitle>
+                    <div>
+                    <DialogContent>
+                      <div id="alert-dialog-description" >
+                        <div  style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                          <span style={{marginBottom:'10px'}}>
+                            ปิดการสมัคร
+                          </span>
+                          <span>
+                            <FormControlLabel
+                            style={{width:'90px',display:'flex',justifyContent:'center',marginLeft:'5px'}}
+                            control={<IOSSwitch checked={regisStatus} onChange={() =>handleChangeRegisStatus()}  value={regisStatus} />}
+                          />
+                          </span>                  
+                          <span style={{marginBottom:'10px'}}>
+                            เปิดการสมัคร
+                          </span> 
+                        </div>                  
+                        สามารถเปลี่ยนสถานะการสมัครโดยการคลิกทีุ่ป๋ม                    
+                      </div>
+                    </DialogContent>
+                    </div>
+                    <DialogActions>
+                      <Button onClick={handleSave} color="primary">
+                        บันทึก
+                      </Button>
+                      <Button onClick={handleCloseDialog} color="primary" autoFocus>
+                        ยกเลิก
+                      </Button>
+                    </DialogActions>
+                  </Dialog>     
+                    <Button onClick={handleClickOpen} style={{position:'absolute',right:'10px',bottom:"10px",width:"130px",borderRadius:"10px",fontSize: "1rem",
+                      fontWeight: "bold",
+                      color:"white"}} variant="contained" color="primary" >
+                        เพิ่มประกาศ
+                    </Button>
+                </div>
+              {dataList == '' ? 
+              <div style={{position:'absolute',top:'50%',right:'40%'}}>
+                <h1>ไม่พบข้อมูล</h1>
               </div> 
-            </Dialog> 
-    </div>
+              : 
+              <div style={{marginTop:'20px'}}>
+                <TableContainer  style={{backgroundColor:'#EAF1F4',borderRadius:'15px'}} >
+                  <Table className={classes.table} aria-label="customized table">
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>หัวข้อ</StyledTableCell>
+                        <StyledTableCell align="right">id</StyledTableCell>
+                        <StyledTableCell align="right">รายละเอียด</StyledTableCell>
+                        <StyledTableCell align="right">แก้ไข</StyledTableCell>
+                        <StyledTableCell align="right">ลบ</StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {dataList.map((dataList) => (
+                        <StyledTableRow key={dataList.Title}>
+                          <StyledTableCell component="th" scope="row">
+                            {dataList.Content}
+                          </StyledTableCell>
+                          <StyledTableCell align="right">{dataList.id}</StyledTableCell>
+                          <StyledTableCell align="right">{dataList.Title}</StyledTableCell>
+                          <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{handleClickOpenEdit(dataList.id,dataList.Title,dataList.Content,dataList.type)}}>< EditAttributesRoundedIcon style={{fontSize:'2rem',color:''}} /></Button></StyledTableCell>
+                          <StyledTableCell align="right"><Button variant="outlined" color="primary" onClick={()=>{DeleteItem(dataList.id)}}><DeleteForeverRoundedIcon style={{fontSize:'2rem',color:'red'}} /></Button></StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+              }
+                <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                <AppBar className={classes.appBar}>
+                  <Toolbar>
+                    <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                      <CloseIcon />
+                    </IconButton>
+                    <Typography variant="h6" className={classes.title}>
+                      เพิ่มข้อมูลประกาศรับสมัครร้านค้า
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
+                <div style={{marginTop:'50px'}}>
+                  <AnnouncementForm edit={edit} id={id} title={title} content={content} type={type}  open={open}/>
+                </div> 
+              </Dialog> 
+      </animated.div>)
     )
 }
 

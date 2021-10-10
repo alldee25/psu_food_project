@@ -6,11 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
-import RemoveRedEyeRoundedIcon from '@material-ui/icons/RemoveRedEyeRounded';
-import StoreInfornationDetial from './storeInfornationDetial';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,9 +15,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
 import { AuthContext } from '../../App';
 import LeaveForm from './LeaveForm';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
+import { useHistory, useLocation } from 'react-router';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -59,6 +58,7 @@ function LeaveList() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [id, setIid] = useState()
+    const location = useLocation();
 
     const handleClickOpen = (e) => {
         setIid(e)
@@ -78,8 +78,14 @@ function LeaveList() {
         )
     },[])
 
-    return (
-        <div className="subcon">
+    const transitions = useTransition(location.pathname == '/HomeStore/LeaveList', {
+      from: { opacity: 0 },
+      enter: { opacity: 1, delay: 150},
+      leave:  { opacity: 0},
+
+      })
+    return transitions(
+          ((styles, item) => item && <animated.div className="subcon" style={styles}>  
            <div className="header">
                 <h1>
                 ข้อมูลการลา
@@ -125,8 +131,8 @@ function LeaveList() {
         <div style={{marginTop:'50px'}}>
           <LeaveForm active={id} open={open} />
           </div> 
-      </Dialog> 
-        </div>
+        </Dialog> 
+      </animated.div>)
     )
 }
 

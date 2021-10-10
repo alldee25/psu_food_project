@@ -6,10 +6,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
-import RemoveRedEyeRoundedIcon from '@material-ui/icons/RemoveRedEyeRounded';
+import { useLocation } from 'react-router';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -23,6 +22,8 @@ import ComplaintForm from './ComplaintForm';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -62,6 +63,7 @@ function ComplaintList() {
     const [id, setIid] = useState()
     const [storeName, setStoreName] = useState('')
     const [storeOwnerName, SetstoreOwnerName] = useState([])
+    const location = useLocation();
 
     const SelectByStoreName =(e)=>{
         setStoreName(e)
@@ -100,25 +102,28 @@ function ComplaintList() {
         )
     },[])
 
-    return (
-        <div className="subcon">
-          <div className="header">
-            <h1>
-            รายการการร้องเรียน
-            </h1>
-          </div>
+    const transitions = useTransition(location.pathname == '/HomeStore/ComplaintList', {
+        from: { opacity: 0 },
+        enter: { opacity: 1, delay: 150},
+        leave:  { opacity: 0},
+
+      })
+    return transitions(
+          ((styles, item) => item && <animated.div className="subcon" style={styles}>  
+            <div className="header">
+                <h1>
+                รายการการร้องเรียน
+                </h1>
+            </div>
             <div style={{display:'flex',position:'absolute',right:"75px",top:'30px',alignItems:'center'}}>
                 <div style={{marginLeft:'10px'}}>
                     <InputLabel style={{marginLeft:'10px'}} id="demo-simple-select-outlined-label" >เลือกร้านค้า</InputLabel>
                     <Select value={storeName} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByStoreName(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
-                    {storeOwnerName.map((data,index)=>(
-                        <MenuItem key={data.id} value={data.id}>{data.store_name}</MenuItem>
-                    ))}
+                        {storeOwnerName.map((data,index)=>(
+                            <MenuItem key={data.id} value={data.id}>{data.store_name}</MenuItem>
+                        ))}
                     </Select>
-                </div>
-                <div style={{marginLeft:'10px',marginTop:'23px'}}>
-                    <Button variant="contained" disabled={storeName===''} color='primary' style={{fontWeight:'bold',width:'90px',height:'40px'}} onClick={(e)=>{handleClickOpenForm(storeName)}}>เพิ่ม</Button>
-                </div>                   
+                </div>                  
             </div>
             
             <div style={{marginTop:'20px'}}>
@@ -186,7 +191,7 @@ function ComplaintList() {
                         <ComplaintForm open={openForm} count={complaintList.length} active={id} />
                     </div> 
             </Dialog> 
-        </div>
+        </animated.div>)
     )
 }
 

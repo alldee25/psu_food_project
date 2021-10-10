@@ -6,7 +6,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Button from '@material-ui/core/Button';
-import {Link,useHistory,useLocation,useRouteMatch} from 'react-router-dom'
+import {Link,useHistory,useLocation} from 'react-router-dom'
 import { useTransition,animated } from 'react-spring'
 import { AuthContext } from '../App';
 import {userSchema} from './Validation'
@@ -24,12 +24,9 @@ import Removeicon from '@material-ui/icons/RemoveRounded'
 import { Checkbox, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-import { DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import swal from 'sweetalert';
 import './RegisStore.css'
-import NativeSelect from '@material-ui/core/NativeSelect';
 import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 
  //-------------------------------------------------------------------------------------------------------------- 
 
@@ -44,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     input: {
       display: 'none',
     },
+    instructions:{
+      color:'#FFFF',
+      fontWeight:'bold'
+    }
   }));
 
  //-------------------------------------------------------------------------------------------------------------- 
@@ -117,60 +118,7 @@ export default function RegisStore() {
       }     
     }
 
-  useEffect(()=>{
-    setIsload(true)
-    const today = new Date();
-    const year = today.getFullYear() - 20
-    const yeartoday = today.getFullYear() 
-    const month = today.getMonth() +1
-    const date = today.getDate() 
-    if(month < 10 && date > 9){
-      const forThan = `${year}-0${month}-${date}`
-      const forday = `${yeartoday}-0${month}-${date}`
-      setMorYear(forThan)
-      setMorToday(forday) 
-    }
-    else if(date < 10 && month > 9){
-      const forThan = `${year}-${month}-0${date}`
-      const forday = `${yeartoday}-${month}-0${date}`
-      setMorYear(forThan)
-      setMorToday(forday)     
-    }
-    else if(date < 10 && month < 10){
-      const forThan = `${year}-0${month}-0${date}`
-      const forday = `${yeartoday}-0${month}-0${date}`
-      setMorYear(forThan)
-      setMorToday(forday)      
-    }else{
-     const forThan = `${year}-${month}-${date}` 
-     const forday = `${yeartoday}-${month}-${date}`
-     setMorYear(forThan)
-     setMorToday(forday) 
-    } 
-       const yearThis = today.getFullYear()
-    axios.post("http://localhost:3001/getIdCard",{
-      year:yearThis
-    }).then(res =>{    
-      setInId(res.data) 
-    }).then(
-      axios.get('http://localhost:3001/getType').then((res)=>{
-      setTypeList(res.data)
-    })
-    ).then(
-      axios.get('http://localhost:3001/getType1').then((res)=>{
-      setType1List(res.data)
-      })
-      ).then(
-        axios.get('http://localhost:3001/getLocation').then((res)=>{
-          setLocationList(res.data)
-         })  
-      ).finally(
-        setTimeout(function() {
-          setIsload(false)
-        }, 1000)
-        
-      ) 
-  },[])
+  
 
   const selectType = (event) => {
     setTypeId(event.target.name);
@@ -341,6 +289,60 @@ export default function RegisStore() {
  function getSteps() {
     return ['หน้า 1', 'หน้า 2', 'หน้า 3','หน้า 4'];
   } 
+  useEffect(()=>{
+    setIsload(true)
+    const today = new Date();
+    const year = today.getFullYear() - 20
+    const yeartoday = today.getFullYear() 
+    const month = today.getMonth() +1
+    const date = today.getDate() 
+    if(month < 10 && date > 9){
+      const forThan = `${year}-0${month}-${date}`
+      const forday = `${yeartoday}-0${month}-${date}`
+      setMorYear(forThan)
+      setMorToday(forday) 
+    }
+    else if(date < 10 && month > 9){
+      const forThan = `${year}-${month}-0${date}`
+      const forday = `${yeartoday}-${month}-0${date}`
+      setMorYear(forThan)
+      setMorToday(forday)     
+    }
+    else if(date < 10 && month < 10){
+      const forThan = `${year}-0${month}-0${date}`
+      const forday = `${yeartoday}-0${month}-0${date}`
+      setMorYear(forThan)
+      setMorToday(forday)      
+    }else{
+     const forThan = `${year}-${month}-${date}` 
+     const forday = `${yeartoday}-${month}-${date}`
+     setMorYear(forThan)
+     setMorToday(forday) 
+    } 
+       const yearThis = today.getFullYear()
+    axios.post("http://localhost:3001/getIdCard",{
+      year:yearThis
+    }).then(res =>{    
+      setInId(res.data) 
+    }).then(
+      axios.get('http://localhost:3001/getType').then((res)=>{
+      setTypeList(res.data)
+    })
+    ).then(
+      axios.get('http://localhost:3001/getType1').then((res)=>{
+      setType1List(res.data)
+      })
+      ).then(
+        axios.get('http://localhost:3001/getLocation').then((res)=>{
+          setLocationList(res.data)
+         })  
+      ).finally(
+        setTimeout(function() {
+          setIsload(false)
+        }, 1000)
+        
+      ) 
+  },[])
 function getStepContent(step) {
     switch (step) {
       case 0:

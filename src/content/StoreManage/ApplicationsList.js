@@ -1,14 +1,12 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
-import swal from 'sweetalert';
-import {BrowserRouter as Router,Link,Route,useParams,useRouteMatch,useHistory,} from "react-router-dom";
+import {useLocation,useRouteMatch} from "react-router-dom";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles,withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -25,6 +23,8 @@ import Slide from '@material-ui/core/Slide';
 import MaximizeRoundedIcon from '@material-ui/icons/MaximizeRounded';
 import { AuthContext } from '../../App';
 import './ApplicationsList.css'
+import { useTransition } from "@react-spring/core";
+import { animated } from "@react-spring/web";
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -64,6 +64,7 @@ export default function CheckApplication(props) {
     const [open, setOpen] = React.useState(false);
     const [id, setIid] = useState()
     const {auth,setIsload} = useContext(AuthContext);
+    const location = useLocation();
     
 
     const handleClickOpen = (e) => {
@@ -100,10 +101,15 @@ export default function CheckApplication(props) {
             setDataApplicationList(res.data)
         })
     }
-    return (
-      
-           <div className="subcon">
-               <div className="header">
+    const transitions = useTransition(location.pathname == '/HomeStore/CheckApplication', {
+      from: { opacity: 0 },
+      enter: { opacity: 1, delay: 150},
+      leave:  { opacity: 0},
+
+    })
+    return transitions(
+      ((styles, item) => item && <animated.div className="subcon" style={styles}> 
+            <div className="header">
                    <h1>ตรวจสอบใบสมัคร</h1>
             </div>
             <div style={{position:'absolute',right:"5%",top:'30px'}}>
@@ -152,10 +158,10 @@ export default function CheckApplication(props) {
                 </Toolbar>
               </AppBar>
               <div style={{marginTop:'50px'}}>
-                <ApplicationDetial active={id}/>
+                  <ApplicationDetial active={id}/>
                 </div> 
             </Dialog>
-    </div> 
+      </animated.div>) 
         
     )
 }

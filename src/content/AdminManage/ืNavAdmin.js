@@ -19,13 +19,13 @@ export default function HomeAdmin() {
             <div className={togle === 1 ? "itemNaveactive-nave" : "itemNave"}>
               <Link onClick={() => togleTab(1)} to={`${url}/`}>จัดสมาชิก</Link>
             </div>
-            <div className={togle === 2 ? "itemNaveactive-nave" : "itemNave"}>
+            {/* <div className={togle === 2 ? "itemNaveactive-nave" : "itemNave"}>
               <Link onClick={() => togleTab(2)} to={`${url}/AdminWorkManage`}>จัดการงานผู้รับผิดชอบ</Link>
-            </div>             
+            </div> */}             
           </div>
           <div className="content"> 
-              <Route exact   path={`${path}/`} component={AdminMember} />
-              <Route    path={`${path}/AdminWorkManage`} component={AdminWorkManage} />
+              <Route exact   path={`${path}`} component={AdminMember} />
+              {/* <Route    path={`${path}/AdminWorkManage`} component={AdminWorkManage} /> */}
           </div>
         </div>
       </Router> 
