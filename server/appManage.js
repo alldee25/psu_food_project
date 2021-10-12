@@ -691,16 +691,16 @@ appRouter.post('/getsellInfomation',(req,res)=>{
     
     const storeId = req.body.storeId
     const date = req.body.date
-    db.query(`SELECT MAX(MaxOrder) AS quantity,food_name,orderToday 
-        FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
-        INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
-        INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
-        WHERE food_menu.store_id = ? AND date(order_food.date) = ?) AS orderToday
-        FROM order_food_detial 
-        INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
-        INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
-        WHERE food_menu.store_id = ? AND date(order_food.date) = ?
-        GROUP BY food_menu.food_name) MaxOrder
+    db.query(`SELECT MAX(MaxOrder) AS quantity,MAX(food_name) AS food_name,orderToday 
+    FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    WHERE food_menu.store_id = ? AND date(order_food.date) = ?) AS orderToday
+    FROM order_food_detial 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    WHERE food_menu.store_id = ? AND date(order_food.date) = ?
+    GROUP BY food_menu.id) MaxOrder
     `,[storeId,date,storeId,date],(err,result)=>{
              if (err) {
                  console.log(err);
@@ -726,10 +726,66 @@ appRouter.post('/getHistoryOfSell',(req,res)=>{
     db.query(`SELECT order_food_detial.*,store.store_name,food_menu.food_name
     FROM order_food_detial 
     INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
-    INNER JOIN food_menu ON food_id = order_food_detial.food_id
+    INNER JOIN food_menu ON  food_menu.id = order_food_detial.food_id
     INNER JOIN store ON store.id = food_menu.store_id
     WHERE order_food.customer_id = ?
     `,[userId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getSellDetial',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT order_food_detial.*,food_menu.food_name,food_menu.id,food_menu.food_price*order_food_detial.quantity AS num_of_price
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id 
+    INNER JOIN store ON store.id = food_menu.store_id 
+    WHERE food_menu.store_id = ? AND date(order_food.date) = ? GROUP BY order_food_detial.id
+    `,[storeId,date],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getPopularMenuSell',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT MaxOrder AS quantity,food_name
+    FROM (SELECT food_menu.food_name AS food_name,order_food_detial.quantity,SUM(order_food_detial.quantity) AS MaxOrder
+    FROM order_food_detial 
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    WHERE food_menu.store_id = ? AND date(order_food.date) = ?
+    GROUP BY food_menu.food_name) MaxOrder
+    `,[storeId,date],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getHistoryOfSellStore',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT order_food_detial.*,store.store_name,food_menu.food_name,food_menu.food_price*order_food_detial.quantity AS num_of_price
+    FROM order_food_detial 
+    INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
+    INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
+    INNER JOIN store ON store.id = food_menu.store_id
+    WHERE food_menu.store_id = ?
+    GROUP by order_food_detial.id
+    `,[storeId,date],(err,results)=>{
         if (err) {
             console.log(err);
             res.send({err:err});

@@ -56,7 +56,6 @@ const StyledTableCell = withStyles((theme) => ({
 
 export default function AdverList(props) {
     const dateImg = new Date()
-    console.log(dateImg);
     const [dataImageAdvi, setDataImageAdvi] = useState([])
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -177,16 +176,16 @@ export default function AdverList(props) {
                       <TableHead >
                         <TableRow>
                           <StyledTableCell>รูป</StyledTableCell>
-                          <StyledTableCell align="left">เพิ่มโดย</StyledTableCell>                                              
-                          <StyledTableCell align="left">ลบ</StyledTableCell>                                                        
+                          <StyledTableCell align="center">เพิ่มโดย</StyledTableCell>                                              
+                          <StyledTableCell align="center">ลบ</StyledTableCell>                                                        
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {dataImageAdvi.map((dataList) => (
                           <StyledTableRow key={dataList.id}>
                             <StyledTableCell  align="left" width="100px"><div><img width="auto" height={90}  width={160} src={`http://localhost:3001/adminUploaded/${dataList.img}`} /></div></StyledTableCell>
-                            <StyledTableCell align="left" width="100px">{dataList.name} {dataList.lastname}</StyledTableCell>
-                            <StyledTableCell align="left" width="10px"><Button variant="contained" onClick={()=>DeleteItem(dataList.id,dataList.img)} style={{fontWeight:'bold'}}>ลบ</Button></StyledTableCell>                           
+                            <StyledTableCell align="center" width="100px">{dataList.name} {dataList.lastname}</StyledTableCell>
+                            <StyledTableCell align="center" width="10px"><Button variant="contained" onClick={()=>DeleteItem(dataList.id,dataList.img)} style={{fontWeight:'bold'}}>ลบ</Button></StyledTableCell>                           
                           </StyledTableRow>
                         ))}
                       </TableBody>

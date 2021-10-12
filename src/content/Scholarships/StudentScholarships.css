@@ -1,6 +1,9 @@
 .suggestionPointer{
     cursor: pointer;
     border-bottom: 1 px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #000;
 }
 .suggestionPointer:hover{
     background-color: cadetblue;

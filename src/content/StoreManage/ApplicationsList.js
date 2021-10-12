@@ -130,6 +130,7 @@ export default function CheckApplication(props) {
                           <StyledTableCell align="left">สถานะ</StyledTableCell>
                           <StyledTableCell align="left">ตรวจสอบ</StyledTableCell>
                           <StyledTableCell align="center">ผู้ตรวจสอบ</StyledTableCell>
+                          <StyledTableCell align="center">รายละเอียด</StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -139,6 +140,7 @@ export default function CheckApplication(props) {
                             <StyledTableCell align="left" width="100px">{dataList.idcard}</StyledTableCell>
                             <StyledTableCell align="left" width="100px">{dataList.status}</StyledTableCell>
                             <StyledTableCell align="left" width="10px"><Button disabled={dataList.adminName!==null} variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                            <StyledTableCell align="center" width="100px">{dataList.adminName}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
                             <StyledTableCell align="center" width="100px">{dataList.adminName}{dataList.adminName===null && <MaximizeRoundedIcon/> }</StyledTableCell>
                           </StyledTableRow>
                         ))}

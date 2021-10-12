@@ -226,7 +226,7 @@ function ComplaintForm(props) {
                     ดังนั้นจึงขอให้ผู้ประกอบการดำเนินการดังนี้
                   </span>
                   <div style={{marginLeft:'10px',width:'720px'}}>
-                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} variant="standard" type="text" onChange={(e)=>{setAction(e.target.value)}} value={action}></TextField>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}}  variant="standard" type="text" onChange={(e)=>{setAction(e.target.value)}} value={action}></TextField>
                   </div>                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
@@ -244,7 +244,7 @@ function ComplaintForm(props) {
                     ความคิดเห็นผู้ควบคุมกำกับดูแล
                   </span>
                   <div style={{marginLeft:'10px',width:'800px'}}>
-                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
+                    <TextField fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled={auth.usersData[0].name !== manager } variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
                   </div>                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
@@ -257,7 +257,7 @@ function ComplaintForm(props) {
                       </span>
                     </div>                                                                   
                 </div>
-                <Button style={{position:'absolute',right:'50px',bottom:'10px'}} variant="contained" color="primary" onClick={Insert}>บันทึก</Button>
+                <Button disabled={auth.usersData[0].name !== manager && auth.usersData[0].name !== attendant} style={{position:'absolute',right:'50px',bottom:'10px'}} variant="contained" color="primary" onClick={Insert}>บันทึก</Button>
               </div>            
             </div>                      
           </animated.div>

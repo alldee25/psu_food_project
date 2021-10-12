@@ -136,7 +136,7 @@ export default function HomeStore(props) {
             <Link onClick={() => togleTab(4)} to={`${url}/LeaveList`}>ตรวรวสอบการลา</Link>
           </div>
           <div className={togle === 5 ? "itemNaveactive-nave" : "itemNave"}>
-            <Link onClick={() => togleTab(5)} to={`${url}/ComplaintList`}>ข้อร้องเรียน</Link>
+            <Link onClick={() => togleTab(5)} to={`${url}/ComplaintList`}>แจ้งเตือนความผิด</Link>
           </div>
 
           <div className={togle === 6 ? "itemNaveactive-nave" : "itemNave"}>

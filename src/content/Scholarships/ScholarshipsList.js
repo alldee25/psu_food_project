@@ -199,7 +199,7 @@ function ScholarshipsList() {
                     <h1>
                         รายการทุนการศึกษา
                     </h1>
-                    <Button variant="outlined" color="primary" style={{position:'absolute',right:'150px',bottom:"-5px",borderRadius:"10px",fontSize: "1rem",
+                    <Button disabled={!yearToday} variant="outlined" color="primary" style={{position:'absolute',right:'150px',bottom:"-5px",borderRadius:"10px",fontSize: "1rem",
                      fontWeight: "bold"}} onClick={handleClickOpenForm}>
                         เพิ่มรายการทุน
                 </Button>

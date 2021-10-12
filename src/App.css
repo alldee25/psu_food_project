@@ -55,6 +55,12 @@ a:hover{
   backdrop-filter: blur(10px);  
   z-index: 3; 
 }
+.containFormDialog{
+  display: flex;
+  justify-content: center;
+  background-color: cyan;
+
+}
 
 
 

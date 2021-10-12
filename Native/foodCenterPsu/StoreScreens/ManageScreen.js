@@ -10,6 +10,7 @@ import CleaneseLevelDetial from './CleaneseLevelDetial';
 import CleaneseLevelList from './CleaneseLevelList';
 import ComplaintList from './ComplaintList';
 import ComplaintListDetial from './ComplaintListDetial';
+import HistoryOfSell from './HistoryOfSell';
 import LeaveScreen from './LeaveAddScreen';
 import LeaveListScreen from './LeaveListScreen';
 import RenScreen from './RenScreen';
@@ -31,6 +32,7 @@ export default function ManageScreen() {
             <stackManage.Screen name='การแจ้งเตือนความผิด' component={ComplaintList} />           
             <stackManage.Screen name='รายละเอียดการแจ้งเตือน' component={ComplaintListDetial} />           
             <stackManage.Screen name='เพิ่มลาพักจำหน่ายอาหาร' component={LeaveScreen} />           
+            <stackManage.Screen name='ประวัติการขาย' component={HistoryOfSell} />           
         </stackManage.Navigator>
     )
 }
@@ -59,6 +61,7 @@ const stackScreen =({navigation})=>{
                 <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการชำระค่าเช่า')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} /> 
+                <MenuItem style={styles.MenuItem} title='ประวัติการขาย' onPress={()=> navigation.navigate('ประวัติการขาย')} accessoryRight={ForwardIcon} /> 
                          
             </SafeAreaView>
             <View

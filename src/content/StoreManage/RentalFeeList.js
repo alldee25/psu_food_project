@@ -26,6 +26,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useHistory, useLocation } from 'react-router';
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
+import RentalFeeInfo from './RentalFeeInfo';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -60,21 +61,20 @@ function RentalFeeList() {
     const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [openInfo, setOpenInfo] = React.useState(false);
     const [openSave, setOpenSave] = React.useState(false);
     const [id,setId] = useState()
     const [dateYears,setDataYears] = useState([])
     const [yearToday,setYeartoday] = useState('')
-    const [month,setMonth] = useState('')
     const [status,setStatus] = useState('')
     const [datePay,setDatePay] = useState('')
-    const [monthT,setMonthT] = useState('')
+    const [today,setToday] = useState('')
     const history = useHistory()
     const [monthToday,setMonthToday] = useState('')
-    const [yeartodayForcheck,setYeartodayForcheck] = useState('')
     const [price,setPrice] = useState('')
-    let date = new Date();
     const {auth} = useContext(AuthContext)
     const location = useLocation();
+    const [month,setMonth] = useState('')
 
     const SelectByMonth =(e)=>{
         setDataCleanlinessLevelList([])
@@ -100,7 +100,7 @@ function RentalFeeList() {
         if (price !== '') {
           axios.post('http://localhost:3001/insertRen',{
                 sroreId:id,
-                date:date,
+                date:today,
                 price:price,
                 adminId:auth.usersData[0].id
 
@@ -156,24 +156,49 @@ function RentalFeeList() {
           setId(e)
           setOpenSave(true);  
         };
+        const handleClickOpenInfo = (e) => {
+          setId(e)
+          setOpenInfo(true);  
+        };
+        const handleCloseInfo = () => {
+          setOpenInfo(false);
+        };
         const handleClose = () => {
           setOpen(false);
           setPrice(0)
         };
+        
         const handleCloseSave = () => {
           setOpenSave(false);
           setStatus('')
           setDatePay('')
         };
   
-        useEffect(()=>{      
-            const today = new Date();
-            const yeartoday = today.getFullYear() 
-            const month = today.getMonth() +1
-            setMonth(month)
-            setMonthToday(month)
-            setYeartoday(yeartoday)
-            setYeartodayForcheck(yeartoday)
+        useEffect(()=>{ 
+          const today = new Date();
+          const yeartoday = today.getFullYear() 
+          const month = today.getMonth() +1
+          setMonthToday(month)
+          setMonth(month)
+          setYeartoday(yeartoday)
+          const date = today.getDate() 
+          if(month < 10 && date > 9){
+            const forday = `${yeartoday}-0${month}-${date}`
+            
+            setToday(forday) 
+          }
+          else if(date < 10 && month > 9){
+            const forday = `${yeartoday}-${month}-0${date}`
+            
+            setToday(forday)     
+          }
+          else if(date < 10 && month < 10){
+            const forday = `${yeartoday}-0${month}-0${date}`          
+            setToday(forday)      
+          }else{ 
+          const forday = `${yeartoday}-${month}-${date}`
+          setToday(forday) 
+          }      
           axios.post("http://localhost:3001/getRenListByYearAndMonth",{
             yearToday:yeartoday,
             month:month
@@ -228,7 +253,7 @@ function RentalFeeList() {
             </div>
           <div style={{marginLeft:'10px'}}>
             <InputLabel style={{marginLeft:'10px'}} id="demo-simple-select-outlined-label" >ปี</InputLabel>
-            <Select value={yearToday} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByYear(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+            <Select value={yearToday}  labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByYear(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
               {dateYears.map((year,index)=>(
                 <MenuItem key={index} value={year}>{year}</MenuItem>
               ))}
@@ -245,6 +270,7 @@ function RentalFeeList() {
                       <StyledTableCell align="center">สถานะ</StyledTableCell>
                       <StyledTableCell align="center">ผลการตรวจ</StyledTableCell>
                       <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>                   
+                      <StyledTableCell align="center">รายละเอียด</StyledTableCell>                   
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -255,6 +281,7 @@ function RentalFeeList() {
                         <StyledTableCell align="center" width="10px">{dataList.status!==null ? dataList.status  : (<RemoveRoundedIcon />) }</StyledTableCell>
                         <StyledTableCell align="center" width="10px"><Button disabled={ dataList.admin_id !==null } variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>เพิ่ม</Button></StyledTableCell>
                         <StyledTableCell align="center" width="10px"><Button disabled={ dataList.status !== '' } variant="contained" onClick={(e)=>handleClickOpensave(dataList.s_id)} style={{fontWeight:'bold'}}>บันทึก</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button disabled={ dataList.status == '' } variant="contained" onClick={(e)=>handleClickOpenInfo(dataList.id)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -281,6 +308,7 @@ function RentalFeeList() {
                             InputLabelProps={{
                               shrink: true,
                             }}
+                            inputProps={{ max: (today)}}
                             margin="normal" 
                             KeyboardButtonProps={{
                                 'aria-label': 'change date'
@@ -325,6 +353,27 @@ function RentalFeeList() {
                     </DialogActions>
                 </Dialog>
               </div>  
+              <div>
+                <Dialog
+                    open={openInfo}
+                    onClose={handleCloseInfo}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"รายละเอียดการชำระค่าเช่า"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText style={{width:'200px',height:'400px'}} id="alert-dialog-description">
+                            <RentalFeeInfo id={id} />
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseInfo} color="primary">
+                          ปิด
+                      </Button>                     
+                    </DialogActions>
+                </Dialog>
+              </div>  
+              
             </animated.div>)
     )
 }

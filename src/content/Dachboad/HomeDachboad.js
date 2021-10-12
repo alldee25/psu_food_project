@@ -288,7 +288,7 @@ const HomeDachboad = () => {
               <ListItemText
                 primary={<span style={{fontWeight:'bold',marginLeft:'10px'}} >ร้าน : {data.store_name}</span>}
                 secondary={
-                  <div style={{display:'flex',flexDirection:'column',marginLeft:'10px'}}>
+                  <Typography style={{display:'flex',flexDirection:'column',marginLeft:'10px'}} component={'span'}>
                     <span
                       component="span"
                       variant="body2"
@@ -311,11 +311,10 @@ const HomeDachboad = () => {
                       <div
                         style={{fontSize:'12px'}}
                       >
-                        รายการอาหาร 
-                        
+                        รายการอาหาร                     
                       </div>
                     </button>
-                    <div>
+                    <Typography >
                       <Dialog
                         open={openSave}
                         onClose={handleCloseSave}
@@ -323,8 +322,8 @@ const HomeDachboad = () => {
                         aria-describedby="alert-dialog-description"
                       >
                           <DialogTitle id="alert-dialog-title">{"ข้อมูลรายการการอาหาร"}</DialogTitle>
-                          <DialogContent>
-                              <DialogContentText id="alert-dialog-description" style={{height:'100%',width:'500px'}}>
+                          <DialogContent >
+                              <DialogContentText  id="alert-dialog-description" style={{height:'100%',width:'500px'}}>
                                   <MenuStoreList storeId={storeId} />
                               </DialogContentText>
                           </DialogContent>
@@ -334,7 +333,7 @@ const HomeDachboad = () => {
                             </Button>                           
                           </DialogActions>
                       </Dialog>
-                    </div>
+                    </Typography>
                     <span
                       component="span"
                       variant="body2"
@@ -364,7 +363,7 @@ const HomeDachboad = () => {
                         />
                         </div>)}  
                     </span>
-                  </div>
+                  </Typography>
                 }
               />
             </ListItem>

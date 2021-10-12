@@ -80,9 +80,9 @@ export default function RenScreen({navigation}) {
                                 <Text style={{fontSize:18}}>ประจำวันที่ : {Moment(item.date).format('DD-MM-YYY')}</Text>                                                                                               
                             </View>
                             <Divider my={2} w='90%' bgColor='#BBBBBB' alignSelf='center' />                       
-                            <View style={{marginLeft:10}} justifyContent='center' flexDirection='row'>                                                               
-                                <Text style={{fontSize:18}}>สถาณะ : </Text>{item.admin_id == '' ? <></> : item.status == 'ชำระแล้ว' ? <Text>ชำระแล้ววันที่ : {item.date_pay}</Text>  : <Text>ค้างชำระ</Text>}                                                                                             
-                            </View>  
+                            <View style={{marginLeft:10}} alignItems='center' flexDirection='row'>                                                               
+                                <Text style={{fontSize:18}}> </Text>{item.admin_id == '' ? <>ยังไม่ชำระ</> : item.status == 'ชำระแล้ว' ? <Text>ชำระแล้ววันที่ : {item.date_pay}</Text>  : <Text>ค้างชำระ</Text>}                                                                                             
+                            </View> 
                         </View>
                                                                                                                                 
                     </View>                                

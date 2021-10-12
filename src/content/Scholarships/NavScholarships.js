@@ -1,21 +1,33 @@
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
-import React, {useState } from "react";
+import React, {useEffect, useState } from "react";
 import { BrowserRouter as Router, Link, Route ,useRouteMatch, useLocation} from "react-router-dom";
 import HourWork from "./HourWork";
 import ScholarshipsList from "./ScholarshipsList";
 import StudentScholarships from "./StudentScholarships";
-import TableWork from "./TableWork";
+import TableWork from "./TableWorkList";
 
 export default function HomeScholarships() {
     const { url, path } = useRouteMatch();
     const [togle ,setTogle] = useState(1);
+    const location = useLocation();
     
     
     const togleTab =(index)=>{
     setTogle(index)
     }
     
+    useEffect(() => {
+      if ((location.pathname == '/HomeScholarships/StudentScholarships')) {
+        setTogle(2)
+      }
+      else if((location.pathname == '/HomeScholarships/TableWork')){
+        setTogle(3)
+      }
+      else if((location.pathname == '/HomeScholarships/HourWork')){
+        setTogle(4)
+      }
+    }, [])
 return (
     
       <Router>      

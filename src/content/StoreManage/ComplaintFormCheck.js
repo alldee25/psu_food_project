@@ -198,7 +198,7 @@ function ComplaintForm(props) {
                     ความคิดเห็นผู้ควบคุมกำกับดูแล
                   </span>
                   <div style={{marginLeft:'10px',width:'800px'}}>
-                    <TextField helperText="ถ้าไม่มีให้ใส่ -" fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled={auth.usersData[0].name !== managerName} variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
+                    <TextField helperText="ถ้าไม่มีให้ใส่ -" fullWidth multiline inputProps={{min: 0, style: { textAlign: 'center'}}} disabled={auth.usersData[0].name !== managerName || data.attendant_comment!=''} variant="standard" type="text" onChange={(e)=>{setAttendantComment(e.target.value)}} value={attendantComment}></TextField>
                   </div>                                 
                 </div>
                 <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',fontWeight:'bold',fontSize:'17px',width:'95%',marginTop:'20px'}}>                                
@@ -211,7 +211,8 @@ function ComplaintForm(props) {
                       </span>
                     </div>                                                                   
                 </div>
-                <Button style={{position:'absolute',right:'50px',bottom:'10px'}} variant="contained" color="primary" onClick={update}>บันทึก</Button>
+                {data.attendant_comment == '' ? <Button style={{position:'absolute',right:'50px',bottom:'10px'}} variant="contained" color="primary" onClick={update}>บันทึก</Button> : <div></div>}
+               
               </div>            
             </div>
             ))}                      

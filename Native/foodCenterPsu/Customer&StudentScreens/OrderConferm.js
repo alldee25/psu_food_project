@@ -158,7 +158,7 @@ export default function OrderConferm({route,navigation}) {
             <View
                 position='absolute'
                 alignItems='center'
-                bottom='22%'
+                bottom='17.5%'
                 mt={4}
                 w='100%'
                 flexDirection='column'

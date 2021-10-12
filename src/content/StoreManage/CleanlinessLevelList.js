@@ -24,6 +24,7 @@ import { MenuItem } from '@material-ui/core';
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 import { useHistory, useLocation } from 'react-router';
+import CleanlinessLevelInfo from './CleanlinessLevelInfo';
 
 
 
@@ -59,6 +60,7 @@ function CleanlinessLevel() {
     const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [openInfo, setOpenInfo] = React.useState(false);
     const [id,setId] = useState()
     const [dateYears,setDataYears] = useState([])
     const [yearToday,setYeartoday] = useState('')
@@ -66,6 +68,7 @@ function CleanlinessLevel() {
     const [monthT,setMonthT] = useState('')
     const [monthToday,setMonthToday] = useState('')
     const [yeartodayForcheck,setYeartodayForcheck] = useState('')
+    const [cleanId,setCleanId] = useState('')
     const location = useLocation();
 
     const SelectByMonth =(e)=>{
@@ -102,6 +105,15 @@ function CleanlinessLevel() {
       };
       const handleClose = () => {
         setOpen(false);
+      };
+
+      const handleClickOpenInfo = (e,cleanId) => {
+        setId(e)
+        setCleanId(cleanId)
+        setOpenInfo(true);  
+      };
+      const handleCloseInfo = () => {
+        setOpenInfo(false);
       };
 
       useEffect(()=>{       
@@ -182,7 +194,9 @@ function CleanlinessLevel() {
                       <StyledTableCell align="center">ตรวจสอบโดย</StyledTableCell>
                       <StyledTableCell align="center">สถานะ</StyledTableCell>
                       <StyledTableCell align="center">ผลการตรวจ</StyledTableCell>
+                      <StyledTableCell align="center">คะแนนรวม</StyledTableCell>
                       <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>
+                      <StyledTableCell align="center">รายละเอียด</StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -192,7 +206,9 @@ function CleanlinessLevel() {
                         <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.admin_id!==null ? (<BeenhereRoundedIcon style={{color:'green'}} />) : (<RemoveRoundedIcon />) }</StyledTableCell>
                         <StyledTableCell align="center" width="10px">{dataList.status!==null ? dataList.status  : (<RemoveRoundedIcon />) }</StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.point!==null ? dataList.point  : (<RemoveRoundedIcon />) }</StyledTableCell>
                         <StyledTableCell align="center" width="10px"><Button disabled={(month > monthToday || yearToday  !== yeartodayForcheck)|| dataList.admin_id!==null } variant="contained" onClick={(e)=>handleClickOpen(dataList.s_id)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button disabled={dataList.admin_id==null } variant="contained" onClick={()=>handleClickOpenInfo(dataList.s_id,dataList.id)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
                       </StyledTableRow>
                     ))}
                   </TableBody>
@@ -214,6 +230,21 @@ function CleanlinessLevel() {
               <CleanlinessLevelForm active={id} forDate={yearToday+'-'+monthT+'-'+'01'} open={open}/>
             </div> 
           </Dialog> 
+          <Dialog fullScreen open={openInfo} onClose={handleCloseInfo} TransitionComponent={Transition}>
+            <AppBar className={classes.appBar}>
+              <Toolbar>
+                <IconButton edge="start" color="inherit" onClick={handleCloseInfo} aria-label="close">
+                  <CloseIcon />
+                </IconButton>
+                <Typography variant="h6" className={classes.title}>
+                  รายละเอียด
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <div style={{marginTop:'50px'}}>
+              <CleanlinessLevelInfo active={id} cleanId={cleanId}  open={openInfo}/>
+            </div> 
+          </Dialog>
       </animated.div>) 
     )
 }

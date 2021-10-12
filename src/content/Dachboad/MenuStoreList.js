@@ -37,39 +37,50 @@ function MenuStoreList(props) {
 
     return (
 
-        <div
+        <Typography
+            component="span"
             style={{height:'100%'}}
         >
             {menuList.map((data,index)=>(
-           <List key={index} className={classes.root}>
-            <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                    <img 
-                        style={{borderRadius:'15px'}}
-                        width="150px"
-                        src={`http://localhost:3001/userUploaded/${data.food_img}`}
-                    />
-                </ListItemAvatar>
-                <ListItemText
-                primary={<span style={{fontWeight:'bold',marginLeft:'10px'}}>เมนู : {data.food_name}</span>}
-                secondary={
-                    <React.Fragment
+                <List 
+                    key={index} 
+                    className={classes.root}
+                    component="span"
+                >
+                    <ListItem 
+                        component="span"
+                        alignItems="flex-start"
                     >
-                        <div
-                            style={{display:'flex',flexDirection:'column'}}
-                        >
-                          <span style={{fontWeight:'bold',marginLeft:'10px'}}>ราคา : {data.food_price}</span>
-                            <span style={{fontWeight:'bold',marginLeft:'10px'}}>ประเภท : {data.food_type}</span>   
-                        </div>
-                        
-                    </React.Fragment>
                     
-                }
-                />
-            </ListItem>
-        </List> 
-        ))}
-        </div>
+                        <ListItemAvatar
+                            component="span"
+                        >
+                        <img  
+                        component="span"                      
+                            style={{borderRadius:'15px'}}
+                            width="150px"
+                            src={`http://localhost:3001/userUploaded/${data.food_img}`}
+                        />
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={<span style={{fontWeight:'bold',marginLeft:'10px'}}>เมนู : {data.food_name}</span>}
+                            secondary={
+                                <React.Fragment
+                                >
+                                    <Typography
+                                        style={{display:'flex',flexDirection:'column'}}
+                                    >
+                                    <span style={{fontWeight:'bold',marginLeft:'10px'}}>ราคา : {data.food_price}</span>
+                                        <span style={{fontWeight:'bold',marginLeft:'10px'}}>ประเภท : {data.food_type}</span>   
+                                    </Typography>
+                                    
+                                </React.Fragment>
+                            }
+                        />
+                    </ListItem>
+                </List> 
+            ))}
+        </Typography>
         
         
     )

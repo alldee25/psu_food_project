@@ -114,7 +114,7 @@ export default function LeaveListScreen({navigation}) {
                                 </Text>
                             </View> 
                                                                                            
-                            <Text>สถานะ : {item.status == 'อนุญาต' ? <Text color='#66B032'>อนุญาต</Text> : item.status == 'ไม่อนุญาต' ? <Text color='#6400CD'>อนุญาต</Text> : <Text color='#6400CD'>รอดำเนินการ</Text>}</Text>                                                                                               
+                            <Text>สถานะ : {item.status == 'อนุญาต' ? <Text color='#66B032'>อนุญาต</Text> : item.status == 'ไม่อนุญาต' ? <Text color='#6400CD'>ไม่อนุญาต</Text> : <Text color='#6400CD'>รอดำเนินการ</Text>}</Text>                                                                                               
                         </View>
                         <Menu
                             style={{marginRight:10}}

@@ -20,6 +20,7 @@ import LeaveForm from './LeaveForm';
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 import { useHistory, useLocation } from 'react-router';
+import LeaveFormInfo from './LeaveFormInfo';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -58,6 +59,8 @@ function LeaveList() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [id, setIid] = useState()
+    const [openInfo, setOpenInfo] = React.useState(false);
+    const [idInfo, setIidInfo] = useState()
     const location = useLocation();
 
     const handleClickOpen = (e) => {
@@ -67,6 +70,14 @@ function LeaveList() {
     
       const handleClose = () => {
         setOpen(false);
+      };
+    const handleClickOpenInfo = (e) => {
+        setIidInfo(e)
+        setOpenInfo(true);
+      };
+    
+      const handleCloseInfo = () => {
+        setOpenInfo(false);
       };
 
     useEffect(()=>{
@@ -101,6 +112,7 @@ function LeaveList() {
                         <StyledTableCell align="center">ชื่อเจ้าของร้าน</StyledTableCell>
                         <StyledTableCell align="center">สถาณะ</StyledTableCell>  
                         <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
+                        <StyledTableCell align="center">รายละเอียด</StyledTableCell>  
                     </TableRow>
                     </TableHead>
                     <TableBody>
@@ -109,8 +121,9 @@ function LeaveList() {
                         <StyledTableCell  align="left" width="100px">{dataList.store_id}</StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.store_name}</StyledTableCell>
                         <StyledTableCell align="center" width="100px">{dataList.name}</StyledTableCell>
-                        <StyledTableCell align="center" width="100px">{dataList.status}</StyledTableCell>
-                        <StyledTableCell align="center" width="10px"><Button variant="contained" disabled={(auth.usersData[0].id == dataList.admin_id) || (auth.usersData[0].id == dataList.admin_id1)} onClick={(e)=>handleClickOpen(dataList.leaveStoreId)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="100px">{dataList.lfs}</StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button variant="contained" disabled={(auth.usersData[0].id == dataList.admin_id) || (auth.usersData[0].id == dataList.admin_id1) || auth.usersData[0].role !== 'หัวหน้งานบริการสุขภาพและเสริมสร้างสุขภาวะ' && auth.usersData[0].role !=='เจ้าหน้าที่หน่วยคุ้มครองผู้บริโภค'} onClick={(e)=>handleClickOpen(dataList.leaveStoreId)} style={{fontWeight:'bold'}}>ตรวจสอบ</Button></StyledTableCell>
+                        <StyledTableCell align="center" width="10px"><Button variant="contained"  onClick={(e)=>handleClickOpenInfo(dataList.leaveStoreId)} style={{fontWeight:'bold'}}>ดู</Button></StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>
@@ -118,20 +131,35 @@ function LeaveList() {
                 </TableContainer>    
             </div>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              รายละเอียดการลา
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <div style={{marginTop:'50px'}}>
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    ตรวจสอบการลา
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+          <div style={{marginTop:'50px'}}>
           <LeaveForm active={id} open={open} />
           </div> 
         </Dialog> 
+        <Dialog fullScreen open={openInfo} onClose={handleCloseInfo} TransitionComponent={Transition}>
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleCloseInfo} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    รายละเอียดการลา
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+          <div style={{marginTop:'50px'}}>
+          <LeaveFormInfo active={idInfo} open={openInfo} />
+          </div> 
+        </Dialog>
       </animated.div>)
     )
 }

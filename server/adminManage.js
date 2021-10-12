@@ -613,11 +613,13 @@ adminRouter.get("/getYearsOfClean",(req, res) => {
 adminRouter.post("/getCleanListByYearAndMonth",(req, res) => {
     const year = req.body.yearToday
     const month = req.body.month
-    db.query(`SELECT store.store_name,store.id AS s_id,cleanliness_level.*,admin.name 
-            FROM ((store 
-            LEFT JOIN cleanliness_level ON cleanliness_level.store_id = store.id AND year(cleanliness_level.date) = ? AND month(cleanliness_level.date) = ?)
-            LEFT JOIN admin ON admin.id = cleanliness_level.admin_id)
-            WHERE store.right_status = 'ยืนยัน'`,[year,month],((err, result)=>{
+    db.query(`SELECT store.store_name,store.id AS s_id,cleanliness_level.*,admin.name,SUM(cleanliness_level_detial.point) AS point
+    FROM ((store 
+    LEFT JOIN cleanliness_level ON cleanliness_level.store_id = store.id AND year(cleanliness_level.date) = ? AND month(cleanliness_level.date) = ?)
+    LEFT JOIN admin ON admin.id = cleanliness_level.admin_id)
+    LEFT JOIN cleanliness_level_detial ON cleanliness_level_detial.cleanliness_level_id = cleanliness_level.id
+    WHERE store.right_status = 'ยืนยัน'
+    GROUP BY store.id`,[year,month],((err, result)=>{
         if(err){
             console.log(err);
         }
@@ -796,7 +798,7 @@ adminRouter.post('/getInfoAdmin',(req, res)=>{
 })
 adminRouter.post('/getStoreListLeave',(req, res)=>{
     const ThisYears = req.body.ThisYears
-    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*
+    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*,leave_store.status AS lfs
     FROM leave_store
     INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id 
     INNER JOIN store ON store.id = store_owner.store_id
@@ -810,7 +812,7 @@ adminRouter.post('/getStoreListLeave',(req, res)=>{
 })
 adminRouter.post('/getStoreListLeaveDetial',(req, res)=>{
     const leaveId = req.body.leaveId
-    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*,location.location 
+    db.query(`SELECT leave_store.id AS leaveStoreId,leave_store.*,store.*,store_owner.*,location.location,leave_store.status AS STATUS 
     FROM leave_store
     INNER JOIN store_owner ON store_owner.id = leave_store.store_owner_id 
     INNER JOIN store ON store.id = store_owner.store_id
@@ -823,6 +825,7 @@ adminRouter.post('/getStoreListLeaveDetial',(req, res)=>{
                 }
             }))
 })
+
 adminRouter.post('/InsertStoreListLeaveDetialAdmin1',(req, res)=>{
 
     const leaveId = req.body.leaveId
@@ -922,6 +925,7 @@ adminRouter.post("/getDachboardInfomation",(req, res) => {
     GROUP BY food_menu.food_name) MaxOrder`,[date,date],((err, result)=>{
         if(err){
             console.log(err);
+            res.send({err:err})
         }
         else{
             res.send({sum:result[0].orderToday,menuPop:result[0].food_name,numMenuPop:result[0].quantity})
@@ -935,6 +939,7 @@ adminRouter.get("/getDataChart",(req, res) => {
     GROUP BY MONTH(order_food.date)`,((err, result)=>{
         if(err){
             console.log(err);
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -946,6 +951,7 @@ adminRouter.post("/getFoodMenuListByAdmin",(req, res) => {
     db.query(`SELECT food_menu.* FROM food_menu WHERE food_menu.store_id = ?`,[storeId],((err, result)=>{
         if(err){
             console.log(err);
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -962,6 +968,7 @@ adminRouter.post("/getLeaveByprecess",(req, res) => {
     WHERE leave_store.status ='รอดำเนินการ'`,[storeId],((err, result)=>{
         if(err){
             console.log(err);
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -979,7 +986,7 @@ adminRouter.post("/deleteStore",(req, res) => {
     WHERE store.id = ?`,[storeId],((err)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             db.query(`UPDATE store_lock
@@ -988,7 +995,7 @@ adminRouter.post("/deleteStore",(req, res) => {
             WHERE store.id = ?
                 `,[storeId],(err)=>{
                     if (err) {
-                        res.send(err)
+                        res.send({err:err})
                         console.log(err);
                     } else {
                     res.send('Deleted') 
@@ -1004,6 +1011,7 @@ adminRouter.get("/getAdviList",(req, res) => {
     `,((err, result)=>{
         if(err){
             console.log(err);
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -1021,7 +1029,7 @@ adminRouter.post("/insertScholarship",(req, res) => {
     [name, type, adminId, date, dateEnd, studentNumber],((err)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send('เรียบร้อย')
@@ -1034,7 +1042,7 @@ adminRouter.post("/getSchohalarList",(req, res) => {
     [yearToday],((err,result)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -1045,7 +1053,7 @@ adminRouter.get("/getYearsOfSchohalar",(req, res) => {
     db.query(`SELECT YEAR(date) AS YEAR FROM scholarship`,((err,result)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -1054,7 +1062,7 @@ adminRouter.get("/getYearsOfSchohalar",(req, res) => {
 })
 adminRouter.post("/getStudentScholarship",(req, res) => {
     id = req.body.id
-    db.query(`SELECT student_scholarship.*,admin.name AS ad_name,admin.lastname AS ad_lastname,student.name,student.lastname,student.id 
+    db.query(`SELECT student_scholarship.*,student_scholarship.id AS sch_id,admin.name AS ad_name,admin.lastname AS ad_lastname,student.name,student.lastname,student.id 
     FROM student_scholarship 
     INNER JOIN student ON student.id = student_scholarship.student_id 
     INNER JOIN admin ON admin.id = student_scholarship.admin_id 
@@ -1062,7 +1070,7 @@ adminRouter.post("/getStudentScholarship",(req, res) => {
     [id],((err,result)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -1073,7 +1081,7 @@ adminRouter.get("/getSchohalarList",(req, res) => {
     db.query(`SELECT *  FROM scholarship`,((err,result)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send(result)
@@ -1081,14 +1089,95 @@ adminRouter.get("/getSchohalarList",(req, res) => {
     }))
 })
 adminRouter.get("/getStudentList",(req, res) => {
-    db.query(`SELECT *  FROM student`,((err,result)=>{
+    db.query(`SELECT student.*
+    FROM student 
+    INNER JOIN student_scholarship ON student_scholarship.student_id != student.id`,((err,result)=>{
         if(err){
             console.log(err);
-            res.send(err)
+            res.send({err:err})
         }
         else{
             res.send(result)
         }
+    }))
+})
+adminRouter.post("/insertStudenScholarships",(req, res) => {
+
+    const scholarshipId = req.body.scholarshipId
+    const adminId = req.body.adminId
+    const studentId = req.body.studentId
+    const date = req.body.date    
+
+    db.query(`INSERT INTO student_scholarship (scholarship_id,admin_id,student_id,date) VALUES(?,?,?,?)`,
+    [scholarshipId,adminId,studentId,date],
+    ((err)=>{
+        if(err){
+            console.log(err);
+            res.send({err:err})
+        }
+        else{
+            res.send('เรียบร้อย')
+        }
+    }))
+})
+adminRouter.post("/deleteStudentSch",(req, res) => {
+    const id = req.body.id
+    db.query(`DELETE student_scholarship.* FROM student_scholarship WHERE id = ?`,
+    [id],
+    ((err)=>{
+        if(err){
+            console.log(err);
+            res.send({err:err})
+        }
+        else{
+            res.send('เรียบร้อย')
+        }
+    }))
+})
+adminRouter.post("/getDetialListInfo",(req, res) => {
+    const storeId = req.body.storeId
+    const cleanId = req.body.cleanId
+    db.query(`SELECT cleanliness_topic.*,cleanliness_level_detial.*,cleanliness_topic.id AS topic,cleanliness_topic.detial AS topic_detial
+    FROM cleanliness_level 
+    INNER JOIN cleanliness_level_detial ON cleanliness_level_detial.cleanliness_level_id = cleanliness_level.id 
+    INNER JOIN cleanliness_topic ON cleanliness_topic.id = cleanliness_level_detial.topic_id 
+    WHERE cleanliness_level.store_id = ? AND cleanliness_level.id = ?`,
+    [storeId,cleanId],
+    ((err,result)=>{
+        if(err){
+            console.log(err);
+            res.send({err:err})
+        }
+        else{
+            res.send(result)
+        }
+    }))
+})
+adminRouter.post('/getDetialClean',(req,res)=>{
+    const storeId = req.body.storeId
+    const cleanId = req.body.cleanId
+    db.query(`SELECT store_owner.name,store.store_name,store.id ,cleanliness_level.date,cleanliness_level.time,cleanliness_level.feedback,location.location,type.store_type
+    FROM store 
+    INNER JOIN store_owner ON store_owner.store_id = store.id 
+    INNER JOIN cleanliness_level ON cleanliness_level.store_id = store.id 
+    INNER JOIN location ON location.id = store.location_id
+    INNER JOIN type ON type.id = store.type_id
+    WHERE store.id = ? AND cleanliness_level.id = ?`,[storeId,cleanId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+            }))
+})
+adminRouter.post('/getRenInfo',(req,res)=>{
+    const RenId = req.body.RenId
+    db.query(`SELECT rent_fel.* FROM rent_fel WHERE id=?`,[RenId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
     }))
 })
 module.exports = adminRouter

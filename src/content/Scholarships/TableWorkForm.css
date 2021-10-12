@@ -1,0 +1,20 @@
+.containFormTableWork{
+    display: flex;
+    position: relative;
+    margin-top: 20px;
+    height: 900px;
+    width: 65.8vw;
+    background-color: #FFFF;
+    margin-bottom: 10px;
+   align-items: center;
+   flex-direction: column;
+   
+}
+.tableWorwSelect{
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 25px;
+    width: 1020px;
+    overflow-y  : auto;
+
+}

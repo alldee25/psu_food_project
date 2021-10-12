@@ -7,6 +7,8 @@ import { Dimensions, ImageBackground, StyleSheet, TouchableOpacity } from 'react
 import { AuthContext } from '../App'
 import Moment from 'moment';
 import ProfileStore from './ProfileStore';
+import SellDetial from './SellDetial';
+import PopularMenu from './PopularMenu';
 
 const stackHomeStore = createStackNavigator()
 
@@ -21,6 +23,8 @@ export default function HomeStoreScreen() {
                 }}
                 />
             <stackHomeStore.Screen name='profileScreenStore' component={ProfileStore} />
+            <stackHomeStore.Screen name='SellDetial' component={SellDetial} />
+            <stackHomeStore.Screen name='PopularMenu' component={PopularMenu} />
         </stackHomeStore.Navigator>
     )
 }
@@ -97,7 +101,8 @@ const HomeStore =({navigation})=> {
                         alignItems='center'
                         mr={2}
                         >                                             
-                        <TouchableOpacity                       
+                        <TouchableOpacity 
+                        onPress={()=>navigation.navigate('PopularMenu')}                      
                             style={{
                                 flex:1,
                                 alignItems:'center',
@@ -119,7 +124,7 @@ const HomeStore =({navigation})=> {
                                 ))}
                             </Heading>
                             <Text fontFamily='IBMPlexSansThai-Regular' mt={2} fontSize="md">
-                                ออรเดอร์
+                                จาน/ห่อ
                             </Text> 
                                
                         </TouchableOpacity>                                              
@@ -131,7 +136,14 @@ const HomeStore =({navigation})=> {
                         width={'47.5%'} 
                         height={200 } 
                         ml={2} >
-                        <TouchableOpacity style={{flex:1,alignItems:'center',width:'100%'}}>
+                        <TouchableOpacity 
+                            onPress={()=>navigation.navigate('SellDetial')}                          
+                            style={{
+                                flex:1,
+                                alignItems:
+                                'center',
+                                width:'100%'
+                                }}>
                             <Heading fontFamily='IBMPlexSansThai-Bold' size="md" m={3} >
                                 ยอดขาย    
                             </Heading>
@@ -144,7 +156,7 @@ const HomeStore =({navigation})=> {
                                 ))} 
                             </Heading>
                             <Text mt={2} fontFamily='IBMPlexSansThai-Regular' fontSize="md">
-                                ออร์เดอร์
+                                จาน/ห่อ
                             </Text>
                         </TouchableOpacity>    
                     </Container>
@@ -171,7 +183,7 @@ const HomeStore =({navigation})=> {
                         </ScrollView>   
                     </View>                   
                 </View>
-                                            
+                                           
             </View>
         </ImageBackground>
     )

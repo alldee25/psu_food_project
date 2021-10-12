@@ -84,20 +84,20 @@ function ComplaintList() {
         setOpen(false);
       };
 
-    const handleClickOpenForm = (e) => {
-        setIid(e)
+    const handleClickOpenForm = () => {
+        setIid(storeName)
         setOpenForm(true);
       };
     
       const handleCloseForm = () => {
         setOpenForm(false);
+        setIid('')
       };
 
     useEffect(()=>{
         axios.get("http://localhost:3001/getStoreOwnerList",{
         }).then((res)=>{
-            SetstoreOwnerName(res.data);
-            console.log(res.data);             
+            SetstoreOwnerName(res.data);            
             }
         )
     },[])
@@ -110,10 +110,30 @@ function ComplaintList() {
       })
     return transitions(
           ((styles, item) => item && <animated.div className="subcon" style={styles}>  
-            <div className="header">
+            <div className="header" style={{
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+            }}>
                 <h1>
                 รายการการร้องเรียน
                 </h1>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{
+                        position: "absolute",
+                        right: "150px",
+                        bottom: "-5px",
+                        borderRadius: "10px",
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                    }}
+                    disabled={storeName == ''}
+                    onClick={() => handleClickOpenForm()}
+                    >
+                    เพิ่ม
+                    </Button>
             </div>
             <div style={{display:'flex',position:'absolute',right:"75px",top:'30px',alignItems:'center'}}>
                 <div style={{marginLeft:'10px'}}>
@@ -137,8 +157,8 @@ function ComplaintList() {
                                 <StyledTableCell align="center">หัวข้อ</StyledTableCell>
                                 <StyledTableCell align="center">วันที่ร้องเรียน</StyledTableCell>
                                 <StyledTableCell align="center">ร้องเรียนโดย</StyledTableCell>
-                                <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
                                 <StyledTableCell align="center">สถานะ</StyledTableCell>  
+                                <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -148,13 +168,13 @@ function ComplaintList() {
                                     <StyledTableCell align="center" width="100px">{dataList.topic}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
                                     <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
+                                    <StyledTableCell align="center" width="100px">{dataList.attendant_comment !== '' ? <div>ตรวจสอบแล้ว</div> : <div>ยังไม่ตรวจสอบแล้ว</div>}</StyledTableCell>
                                     <StyledTableCell align="center" width="10px">
                                         <Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
-                                            {dataList.attendant_comment !== '' ? <div>แก้ไข</div> : <div>ตรวจสอบ</div>}
+                                            {dataList.attendant_comment !== '' ? <div>ดู</div> : <div>ตรวจสอบ</div>}
                                         </Button>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center" width="100px">{dataList.attendant_comment !== '' ? <div>ตรวจสอบแล้ว</div> : <div>ยังไม่ตรวจสอบแล้ว</div>}</StyledTableCell>
-
+                                    
                                 </StyledTableRow>
                             ))}
                         </TableBody>
@@ -194,5 +214,4 @@ function ComplaintList() {
         </animated.div>)
     )
 }
-
 export default ComplaintList

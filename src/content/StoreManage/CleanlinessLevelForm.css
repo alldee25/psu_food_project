@@ -6,6 +6,14 @@
     background-color: cyan;
     margin-bottom: 10px;
 }
+.containCleanInfo{
+    position: relative;
+    margin-top: 20px;
+    height: 2030px;
+    width: 65.8vw;
+    background-color: cyan;
+    margin-bottom: 10px;
+}
 
 .containFormClean h5{
     margin-top: 15px;

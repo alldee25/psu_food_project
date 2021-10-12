@@ -161,12 +161,17 @@ export default function CartScreen({navigation}) {
         <View
                 position='absolute'
                 alignItems='center'
-                bottom='22%'
+                bottom='17.5%'
                 mt={4}
                 w='100%'
                 flexDirection='column'
             >
-                <Button disabled={groupValues == ''} w='90%' onPress={()=> Ordered()}>สั่งซื้อ</Button>  
+                <Button
+                  borderRadius={15} 
+                  disabled={groupValues == ''} 
+                  w='90%' onPress={()=> Ordered()}>
+                    สั่งซื้อ
+                  </Button>  
             </View>
       </View>
       
