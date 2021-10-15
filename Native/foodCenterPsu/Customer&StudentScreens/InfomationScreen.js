@@ -6,10 +6,13 @@ import { useEffect } from 'react';
 import {  SafeAreaView, StyleSheet } from 'react-native'
 import { Icon, MenuItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
-import ProfileScreen from './ProfileScreen';
 import { AuthContext } from '../App';
 import History from './History';
 import CartScreen from './CartScreen';
+import RegisWork from './RegisWork';
+import RegisWorkDetial from './RegisWorkDetial';
+import ScholarList from './ScholarList';
+import WorkHour from './WorkHour';
 
 const ForwardIcon = (props) => (
     <Icon {...props} name='arrow-ios-forward'/>
@@ -23,6 +26,10 @@ export default function InfomationScreen() {
             <ManageStack.Screen name='ListMenu' component={ListMenu} />
             <ManageStack.Screen name='History' component={History} />
             <ManageStack.Screen name='Cart' component={CartScreen} />
+            <ManageStack.Screen name='RegisWork' component={RegisWork} />
+            <ManageStack.Screen name='RegisWorkDetial' component={RegisWorkDetial} />
+            <ManageStack.Screen name='ScholarList' component={ScholarList} />
+            <ManageStack.Screen name='WorkHour' component={WorkHour} />
         </ManageStack.Navigator>
     )
 }
@@ -42,7 +49,8 @@ const ListMenu =({navigation})=> {
             
             {userType == 'student' ? (
                 <>               
-                <MenuItem style={styles.MenuItem} title='ชั่วโมงทำงาน' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ชั่วโมงทำงาน' onPress={()=> navigation.navigate('ScholarList')} accessoryRight={ForwardIcon} />
+                <MenuItem style={styles.MenuItem} title='ลงชื่อเก็บชั่วโมง' onPress={()=> navigation.navigate('RegisWork')} accessoryRight={ForwardIcon} />
                 </>
             ):(<></>)} 
             <MenuItem style={styles.MenuItem} title='ประวัติการซื้อ' onPress={()=> navigation.navigate('History')} accessoryRight={ForwardIcon} />

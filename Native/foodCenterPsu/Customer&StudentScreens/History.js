@@ -19,11 +19,10 @@ export default function History() {
     const [dataHistoryList,setDataHistoryList] = useState([])
 
     useEffect(()=> {
-        console.log(userData.usersData[0].id);
+        
         axios.post('http://192.168.1.102:3001/getHistoryOfSell',{
             userId:userData.usersData[0].id
         }).then((res) =>{
-            console.log(res.data);
             setDataHistoryList(res.data)
         })
     },[])

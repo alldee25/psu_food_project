@@ -14,6 +14,8 @@ import HistoryOfSell from './HistoryOfSell';
 import LeaveScreen from './LeaveAddScreen';
 import LeaveListScreen from './LeaveListScreen';
 import RenScreen from './RenScreen';
+import SaveHour from './SaveHour';
+import SaveHourDetial from './SaveHourDetial';
 
 const ForwardIcon = (props) => (
     <Icon {...props} name='arrow-ios-forward'/>
@@ -33,6 +35,8 @@ export default function ManageScreen() {
             <stackManage.Screen name='รายละเอียดการแจ้งเตือน' component={ComplaintListDetial} />           
             <stackManage.Screen name='เพิ่มลาพักจำหน่ายอาหาร' component={LeaveScreen} />           
             <stackManage.Screen name='ประวัติการขาย' component={HistoryOfSell} />           
+            <stackManage.Screen name='บันทึกชัวโมง' component={SaveHour} />           
+            <stackManage.Screen name='SaveHourDetial' component={SaveHourDetial} />           
         </stackManage.Navigator>
     )
 }
@@ -60,7 +64,7 @@ const stackScreen =({navigation})=>{
                 <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการชำระค่าเช่า')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('HistoryMenu')} accessoryRight={ForwardIcon} /> 
+                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('บันทึกชัวโมง')} accessoryRight={ForwardIcon} /> 
                 <MenuItem style={styles.MenuItem} title='ประวัติการขาย' onPress={()=> navigation.navigate('ประวัติการขาย')} accessoryRight={ForwardIcon} /> 
                          
             </SafeAreaView>

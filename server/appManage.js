@@ -794,7 +794,176 @@ appRouter.post('/getHistoryOfSellStore',(req,res)=>{
         }
     })
 })
-
+appRouter.post('/getScholarShipsbyStudent',(req,res)=>{
+    const studentId = req.body.studentId
+    db.query(`SELECT scholarship.* 
+    FROM scholarship
+    INNER JOIN student_scholarship ON student_scholarship.scholarship_id = scholarship.id
+    WHERE student_scholarship.student_id = ? AND scholarship.type='ทุนเก็บชั่วโมง'`,[studentId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getScholarShipsbyStore',(req,res)=>{
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT scholarship.* 
+    FROM scholarship
+    INNER JOIN table_work ON table_work.scholarship_id = scholarship.id
+    INNER JOIN table_work_detial ON table_work_detial.table_work_id = table_work.id
+    WHERE table_work.date_work = ? AND table_work_detial.store_id = ?
+    GROUP BY scholarship.id`,[date,storeId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getWorkTableByStudent',(req,res)=>{
+    const scId = req.body.scId
+    db.query(`SELECT table_rage.rage_name,table_student_regis.student_sc_id,store.store_name,store.id AS sid,COUNT(table_rage.id) AS count,table_rage.id
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work.scholarship_id = ?
+    GROUP BY table_rage.id`,[scId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getCheckWorkTableByStudent',(req,res)=>{
+    const scId = req.body.scId
+    const studentId = req.body.studentId
+    const date = req.body.date
+    db.query(`SELECT table_rage.rage_name,table_student_regis.student_sc_id,store.store_name,table_work.date_work
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work.scholarship_id = ? AND table_work.date_work > ? AND table_student_regis.student_sc_id = ?`,[scId,date,studentId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/getStoreScList',(req,res)=>{
+    const scId = req.body.scId
+    db.query(`SELECT store.store_name,store.id
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work.scholarship_id = ?
+    GROUP BY table_work_detial.store_id`,[scId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+appRouter.post('/InsertTableWork',(req,res)=>{
+    const rageId = req.body.rageId
+    const studentId = req.body.studentId
+    const date = req.body.date
+    db.query(`INSERT INTO table_student_regis (table_rage_id,student_sc_id,date) VALUES(?,?,?)`,[rageId,studentId,date],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send('เรียบร้อย');   
+        }
+    })
+})
+appRouter.post('/getStudentIdForSave',(req,res)=>{
+    const studentId = req.body.studentId
+    const storeId = req.body.storeId
+    const date = req.body.date
+    db.query(`SELECT student.*,table_student_regis.date,table_rage.rage_name,table_student_regis.id AS tis,COUNT(table_hour.date) AS count
+    FROM table_student_regis 
+    INNER JOIN table_rage ON table_rage.id = table_student_regis.table_rage_id  
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id 
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id 
+    INNER JOIN student ON student.id = table_student_regis.student_sc_id 
+    LEFT JOIN table_hour ON table_hour.table_student_regis_id = table_student_regis.id
+    WHERE table_student_regis.student_sc_id = ? AND table_work.date_work = ? AND table_work_detial.store_id = ?`,
+    [studentId,date,storeId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
+appRouter.post('/InsertHour',(req,res)=>{
+    const tid = req.body.tid
+    const hourQuantity = req.body.hourQuantity
+    const date = req.body.date
+    db.query(`INSERT INTO table_hour (table_student_regis_id,hour_quantity,date) VALUES(?,?,?)`,
+    [tid,hourQuantity,date],(err)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send('เรียบร้อย');   
+        }
+    })
+})
+appRouter.post('/getTableStudenRegis',(req,res)=>{
+    const storeId = req.body.storeId
+    db.query(`SELECT table_work.date_work,table_work_detial.id
+    FROM table_work_detial
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    WHERE table_work_detial.store_id =?`,
+    [storeId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
+appRouter.post('/getQiuntityHour',(req,res)=>{
+    const userId = req.body.userId
+    const scId = req.body.scId
+    db.query(`SELECT table_hour.hour_quantity AS quantity ,store.store_name,table_work.date_work
+    FROM table_hour
+    INNER JOIN table_student_regis ON table_student_regis.id = table_hour.table_student_regis_id
+    INNER JOIN table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work_detial.table_work_id = table_work.id
+    INNER JOIN store ON table_work_detial.store_id = store.id
+    WHERE table_student_regis.student_sc_id = ? AND table_work.scholarship_id = ?
+    `,
+    [userId,scId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
 //----------------------------------------------------------Just Test-----------------------------------------------
 appRouter.get('/test',(req,res)=>{
     const userId = 4

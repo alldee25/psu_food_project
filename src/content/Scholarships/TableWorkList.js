@@ -16,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import { AuthContext } from '../../App';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -59,45 +58,43 @@ function TableWork() {
     const [data,setData] = useState([])
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [openForm, setOpenForm] = React.useState(false);
-    const [id, setIid] = useState()
-    const [name, setName] = useState('')
-    const [storeOwnerName, SetstoreOwnerName] = useState([])
+    const [id, setId] = useState('')
+    const [scholarships, setScholarships] = useState([])
     const location = useLocation();
+    const [dateFilter,setDateFilter] = useState(false)
+    const todayDate = new Date()
 
     const SelectByName =(e)=>{
-        setName(e)
-        axios.post("http://localhost:3001/geStoreDetialBynameList",{
-            storeId:e
+        setId(e)
+        axios.post("http://localhost:3001/getTableList",{
+            ScholarshipsId:e
         }).then((res)=>{
-            setData(res.data);             
+            setData(res.data);
             }
+        ).then(
+            axios.post('http://localhost:3001/getFilterDate',{
+                ScholarshipsId:e
+            }).then((res)=>{
+                console.log(res.data);
+                const [{date_work}] = res.data
+                const date = new Date(date_work)
+                setDateFilter(todayDate.getTime() > date.getTime());
+            })
         )
     }
 
-    const handleClickOpenCheck = (e) => {
-        setIid(e)
+    const handleClickOpen = () => {
         setOpen(true);
       };
-    
       const handleClose = () => {
         setOpen(false);
       };
 
-    const handleClickOpenForm = () => {
-        setIid(name)
-        setOpenForm(true);
-      };
     
-      const handleCloseForm = () => {
-        setOpenForm(false);
-        setIid('')
-      };
-
     useEffect(()=>{
-        axios.get("http://localhost:3001/getStoreOwnerList",{
+        axios.get("http://localhost:3001/getScholarshipsList",{
         }).then((res)=>{
-            SetstoreOwnerName(res.data);            
+            setScholarships(res.data);            
             }
         )
     },[])
@@ -128,18 +125,18 @@ function TableWork() {
                             fontSize: "1rem",
                             fontWeight: "bold",
                         }}
-                        
-                        onClick={() => handleClickOpenForm()}
+                        disabled={id == '' || !dateFilter}
+                        onClick={() => handleClickOpen()}
                         >
                         เพิ่ม
                         </Button>
                 </div>
                 <div style={{display:'flex',position:'absolute',right:"75px",top:'30px',alignItems:'center'}}>
                     <div style={{marginLeft:'10px'}}>
-                        <InputLabel style={{marginLeft:'10px'}} id="demo-simple-select-outlined-label" >เลืแกทุน</InputLabel>
-                        <Select value={name} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByName(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
-                            {storeOwnerName.map((data,index)=>(
-                                <MenuItem key={data.id} value={data.id}>{data.store_name}</MenuItem>
+                        <InputLabel style={{marginLeft:'10px'}} id="demo-simple-select-outlined-label" >เลือกทุน</InputLabel>
+                        <Select value={id} labelId="demo-simple-select-outlined-label" id="demo-simple-select-outlined" label="Age" variant="outlined" onChange={(e)=>{SelectByName(e.target.value)}} style={{width:'100px',height:"40px",outline:'none',background:'transparent'}}>
+                            {scholarships.map((data,index)=>(
+                                <MenuItem key={index} value={data.id}>{data.scholarship_name}</MenuItem>
                             ))}
                         </Select>
                     </div>                  
@@ -150,25 +147,22 @@ function TableWork() {
                         <Table className={classes.table} aria-label="customized table">
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>ครั้งที่</StyledTableCell>
-                                    <StyledTableCell align="center">หัวข้อ</StyledTableCell>
-                                    <StyledTableCell align="center">วันที่ร้องเรียน</StyledTableCell>
-                                    <StyledTableCell align="center">ร้องเรียนโดย</StyledTableCell>
-                                    <StyledTableCell align="center">สถานะ</StyledTableCell>  
-                                    <StyledTableCell align="center">ตรวจสอบ</StyledTableCell>  
+                                    <StyledTableCell>ของวันที่</StyledTableCell>
+                                    <StyledTableCell align="center">วันที่เพิ่ม</StyledTableCell>
+                                    <StyledTableCell align="center">เพิ่มโดย</StyledTableCell>                                
+                                    <StyledTableCell align="center">รายละเอียด</StyledTableCell>  
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {data.map((dataList,index) => (
                                     <StyledTableRow key={index}>
-                                        <StyledTableCell align="left" width="100px">{dataList.complaint_number}</StyledTableCell>
-                                        <StyledTableCell align="center" width="100px">{dataList.topic}</StyledTableCell>
+                                        <StyledTableCell align="left" width="100px">{dataList.date_work}</StyledTableCell>
                                         <StyledTableCell align="center" width="100px">{dataList.date}</StyledTableCell>
-                                        <StyledTableCell align="center" width="100px">{dataList.ad_name}</StyledTableCell>
-                                        <StyledTableCell align="center" width="100px">{dataList.attendant_comment !== '' ? <div>ตรวจสอบแล้ว</div> : <div>ยังไม่ตรวจสอบแล้ว</div>}</StyledTableCell>
+                                        <StyledTableCell align="center" width="100px">{dataList.name} {dataList.lastname}</StyledTableCell>
+                                        
                                         <StyledTableCell align="center" width="10px">
-                                            <Button variant="contained" onClick={(e)=>handleClickOpenCheck(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
-                                                {dataList.attendant_comment !== '' ? <div>ดู</div> : <div>ตรวจสอบ</div>}
+                                            <Button variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
+                                                <div>ดู</div>
                                             </Button>
                                         </StyledTableCell>
                                         
@@ -178,7 +172,7 @@ function TableWork() {
                         </Table>
                     </TableContainer> 
                 </div>
-                <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+               {/*  <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
                                 <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
@@ -192,11 +186,11 @@ function TableWork() {
                         <div style={{marginTop:'50px'}}>
                             
                         </div> 
-                </Dialog>
-                <Dialog fullScreen  open={openForm} onClose={handleCloseForm} TransitionComponent={Transition}>
+                </Dialog> */}
+                <Dialog fullScreen  open={open} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
-                                <IconButton edge="start" color="inherit" onClick={handleCloseForm} aria-label="close">
+                                <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                     <CloseIcon />
                                 </IconButton>
                                 <Typography variant="h6" className={classes.title}>
@@ -205,7 +199,7 @@ function TableWork() {
                             </Toolbar>
                         </AppBar>
                         <div className="containFormDialog" style={{marginTop:'50px'}}>
-                            <TableWorkForm />
+                            <TableWorkForm id={id} />
                         </div> 
                 </Dialog> 
             </animated.div>) 

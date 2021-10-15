@@ -13,8 +13,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
+import { v4 as uuidv4 } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,13 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
+const rage = ['เช้า','บ่าย','ค่ำ']
 
 function TableWorkForm(props) {
 
   const [dataCleanlinessLevelList,setDataCleanlinessLevelList] = useState([])
   const history = useHistory()
-  const [date,setDate] = useState('')
   const [dateInput,setDateInput] = useState('')
   const [dateStart,setDateStart] = useState('')
   const [dateEnd,setDateEnd] = useState('')
@@ -40,20 +39,20 @@ function TableWorkForm(props) {
   const todayDate = moment(new Date()).format("YYYY-MM-DD")
   const [filterDtaWork,setFilterDateWork] = useState('')
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
-  });
+  const [state, setState] = React.useState([]);
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+
+      if (event.target.checked) {
+        setState([...state,{sid: event.target.value,id:uuidv4()}])
+      } else {
+         const values  = [...state];
+      values.splice(values.findIndex(value => value.sid === event.target.value), 1);
+      setState(values);
+      }
+   
+
   };
-
-  const { gilad, jason, antoine } = state;
-  const error = [gilad, jason, antoine].filter((v) => v).length !== 2;
- 
-
 
   const transitions = useTransition(!isload, {
     from: { opacity: 0, y: 800 },
@@ -62,6 +61,29 @@ function TableWorkForm(props) {
   })
 
   const InsertData = (e) =>{
+
+    if (dateInput !== '' && dateStart !== '' && dateEnd !== '' && state.length !== 0) {
+      axios.post(`http://localhost:3001/insertDataTableWork`,{
+      tableWorkId:uuidv4(),
+      scholarshipId:props.id,
+      dateInput:dateInput,
+      dateStart:dateStart,
+      dateEnd:dateEnd,
+      date:todayDate,
+      state:state,
+      rage:rage,
+      adminId:auth.usersData[0].id,
+    }).then((res) => {
+      if (res.data.err) {
+        swal('ไม่สามารถเพิ่มข้อมูล','โปรดตรวจสอบข้อมูลอีกครั้ง...','warning')
+        
+      } else {
+        swal(res.data,'ต่อไป...','success')
+      }
+    })
+    } else {
+      swal('ข้อมูลไม่ครบถ้วน','โปรดตรวจสอบข้อมูลอีกครั้ง...','warning')
+    }
     
   }
   const inputDate =(e)=> {
@@ -85,6 +107,7 @@ function TableWorkForm(props) {
     
         axios.post('http://localhost:3001/getStoreList').then(
             (res) => {
+              
                 setData(res.data)
             }
         )
@@ -168,7 +191,7 @@ function TableWorkForm(props) {
                     <FormGroup>
                         {data.map((data,index) => (
                             <FormControlLabel key={index}
-                                control={<Checkbox checked={data.id} onChange={()=> handleChange(data.id)} name="gilad" />}
+                                control={<Checkbox checked={state.sid} onChange={(e) => handleChange(e)} value={data.s_id} name={data.store_name} />}
                                 label={<span>{data.store_name} : {data.location}</span>}
                             />
                         ))}
@@ -176,7 +199,7 @@ function TableWorkForm(props) {
                     </FormGroup>
                 </FormControl>
             </div>         
-            <Button type="submit" variant="contained" color="primary" style={{position:'absolute',right:'20px',bottom:'20px'}}>บันทึก</Button>
+            <Button onClick={InsertData} variant="contained" color="primary" style={{position:'absolute',right:'20px',bottom:'20px'}}>บันทึก</Button>
         </form>
          </div>              
         </div>

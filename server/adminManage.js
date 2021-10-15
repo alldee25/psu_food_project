@@ -3,7 +3,10 @@ const bodyParser = require('body-parser')
 const adminRouter = express.Router()
 const bcrypt = require('bcrypt')
 const cors = require("cors")
-const session = require('express-session')
+const { 
+    v1: uuidv1,
+    v4: uuidv4,
+  } = require('uuid');
 const saltRounds = 10;
 const path = require('path')
 let fs = require('fs');
@@ -913,7 +916,7 @@ adminRouter.get("/getYearsOfRen",(req, res) => {
 })  
   
 adminRouter.post("/getDachboardInfomation",(req, res) => {
-    const date = '2021-10-04'
+    const date = req.body.date
     db.query(`SELECT MAX(MaxOrder) AS quantity,food_name,orderToday 
     FROM (SELECT food_menu.food_name AS food_name,SUM(order_food_detial.quantity) AS MaxOrder,(SELECT SUM(order_food_detial.quantity) FROM order_food_detial
     INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
@@ -1179,5 +1182,79 @@ adminRouter.post('/getRenInfo',(req,res)=>{
                     res.send(result)
                 }
     }))
+})
+adminRouter.get('/getScholarshipsList',(req,res)=>{
+    db.query(`SELECT scholarship.* FROM scholarship WHERE type='ทุนเก็บชั่วโมง' `,((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+    }))
+})
+adminRouter.post('/getTableList',(req,res)=>{
+    const ScholarshipsId = req.body.ScholarshipsId
+    db.query(`SELECT table_work.* ,admin.name,admin.lastname
+    FROM table_work 
+    INNER JOIN admin ON admin.id = table_work.admin_id
+    WHERE table_work.scholarship_id=?`,[ScholarshipsId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+    }))
+})
+adminRouter.post('/getFilterDate',(req,res)=>{
+    const ScholarshipsId = req.body.ScholarshipsId
+    db.query(`SELECT MAX(table_work.date_work) AS date_work
+    FROM table_work 
+    INNER JOIN admin ON admin.id = table_work.admin_id
+    WHERE table_work.scholarship_id=?`,[ScholarshipsId],((err, result)=>{
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send(result)
+                }
+    }))
+})
+adminRouter.post('/insertDataTableWork',(req,res)=>{
+    
+    const tableWorkId = req.body.tableWorkId
+    const rage = req.body.rage
+    const dateInput = req.body.dateInput
+    const scholarshipId = req.body.scholarshipId
+    const dateStart = req.body.dateStart
+    const dateEnd = req.body.dateEnd
+    const date = req.body.date
+    const adminId = req.body.adminId
+    const state = req.body.state
+    db.query(`INSERT INTO table_work (id,admin_id,date_start,date_end,date_work,scholarship_id,date) VALUES(?,?,?,?,?,?,?)`,
+    [tableWorkId,adminId,dateInput,dateStart,dateEnd,scholarshipId,date],async(err)=>{
+                if (err) {
+                    console.log(err);
+                    res.send({err:err})
+                } else {
+                const promises = state.map((data)=> {
+                      db.query(`INSERT INTO table_work_detial (id,table_work_id,store_id) VALUES(?,?,?)`,[data.id,tableWorkId,data.sid],((err)=>{
+                          if (err) {
+                              console.log(err);
+                              res.send({err:err})
+                          } else {
+                              rage.map((dataRage) => {
+                                  db.query('INSERT INTO table_rage (table_work_detial_id,rage_name) VALUES(?,?)',[data.id,dataRage],((err) => {
+                                      if (err) {
+                                          console.log(err);
+                                      }
+                                  }))
+                              })
+                              
+                          }
+                      }))  
+                    })
+                   await Promise.all(promises) 
+                   res.send('เรียบร้อย')
+                }
+    })
 })
 module.exports = adminRouter

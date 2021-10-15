@@ -51,9 +51,9 @@ const HomeStore =({navigation})=> {
         return () => { isMounted = false }
     },[])
     return (
-        <ImageBackground
-            source={require('../assets/img/v748-toon-106.jpg')}
+        <View
             style={{width:W,height:H}}
+            backgroundColor="#193B681A"
         >
             <View
                 flexDirection='column'
@@ -185,7 +185,7 @@ const HomeStore =({navigation})=> {
                 </View>
                                            
             </View>
-        </ImageBackground>
+        </View>
     )
 }
 const styles = StyleSheet.create({

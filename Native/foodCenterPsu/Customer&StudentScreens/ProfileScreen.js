@@ -1,10 +1,7 @@
-import axios from 'axios';
-import { Avatar, Divider, Image, Text, View } from 'native-base';
+import { Avatar, Divider, Text, View } from 'native-base';
 import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import { useContext } from 'react';
-import {  Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import {  Dimensions, StyleSheet } from 'react-native';
 import { AuthContext } from '../App';
 
 export default function ProfileScreen() {
