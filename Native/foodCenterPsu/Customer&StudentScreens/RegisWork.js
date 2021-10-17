@@ -33,11 +33,12 @@ export default function RegisWork({navigation}) {
         data={dataList}
         renderItem={({ item }) => (
             <TouchableOpacity
-                onPress={()=> navigation.navigate('RegisWorkDetial',{
+                onPress={()=> navigation.navigate('RegisTableList',{
                     scId:item.id
                 })}
             >
             <Box
+                height={'65px'}
                 bgColor='#ffff'
                 borderBottomWidth={1}
                 _dark={{
@@ -51,25 +52,22 @@ export default function RegisWork({navigation}) {
                 <HStack space={3} flexDirection="row" alignContent="space-between" w='100%' >
                         <View>
                             <Text
-                            _dark={{
-                                color: "warmGray.50",
-                            }}
-                            color="coolGray.800"
-                            bold
-                            >
-                            {item.scholarship_name}
-                            </Text>
-                            <Text
-                            color="coolGray.600"
-                            _dark={{
-                                color: "warmGray.200",
-                            }}
-                            >
-                            วันที่ : {item.date}
-                            </Text>
+                                _dark={{
+                                    color: "warmGray.50",
+                                }}
+                                color="coolGray.800"
+                                bold
+                                >
+                                ทุน : {item.scholarship_name}
+                            </Text>                       
                         </View>
-                        <View
-                            right={0}
+                        
+                        <Spacer />
+                        </HStack>
+                        
+                    </Box>
+                    <View                
+                            right={0}                         
                             position='absolute'
                             justifyContent='center'                  
                             height='100%'
@@ -86,9 +84,6 @@ export default function RegisWork({navigation}) {
 
                             </Text>
                         </View>
-                        <Spacer />
-                        </HStack>
-                    </Box>
                 </TouchableOpacity>
         )}
         keyExtractor={(item,index) => index}
@@ -96,7 +91,6 @@ export default function RegisWork({navigation}) {
     </View> 
     )
 }
-
 const styles = StyleSheet.create({
     icon: {
         width: 42,

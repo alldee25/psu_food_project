@@ -10,13 +10,29 @@ export default function TableWorkOfStudent({navigation}) {
     const H = Dimensions.get('window').height
     const {userData} = useContext(AuthContext);
     const [dataList,setDataList] = useState([])
+    const [dataReng,setDataReng] = useState([])
+    const [dataStudent,setDataStudent] = useState([])
 
     useEffect(()=> {
         axios.post('http://192.168.1.102:3001/getTableStudenRegis',{
             storeId:userData.usersData[0].store_id
         }).then((res) =>{
             setDataList(res.data)
-        })
+            
+        }).then(
+            axios.post('http://192.168.1.102:3001/getRangeNameOfTableStudentRegis',{
+                storeId:userData.usersData[0].store_id
+            }).then((res)=> {
+                setDataReng(res.data)
+            })
+        )
+        .then(
+            axios.post('http://192.168.1.102:3001/getStudentRegisOfStoreTable',{
+                storeId:userData.usersData[0].store_id
+            }).then((res)=> {
+                setDataStudent(res.data)
+            })
+        )
     },[])
 
     return (
@@ -57,7 +73,7 @@ export default function TableWorkOfStudent({navigation}) {
                             color="coolGray.800"
                             bold
                             >
-                            {item.scholarship_name}
+                            วันที่ : {item.date_work}
                             </Text>
                             <Text
                             color="coolGray.600"
@@ -65,27 +81,36 @@ export default function TableWorkOfStudent({navigation}) {
                                 color: "warmGray.200",
                             }}
                             >
-                            วันที่ : {item.date}
+                            ทุน : {item.scholarship_name}
+                            
                             </Text>
+                            {dataReng.filter(dataRage => dataRage.id == item.id).map((filteredPerson,index) => (
+                            
+                                <View
+                                    key={index}
+                                    style={styles.rage}
+                                >
+                                        <View                                         
+                                            style={styles.select}
+                                            
+                                        >
+                                            <Text
+                                                ml={2}
+                                            >{filteredPerson.rage_name}</Text>
+                                            {dataStudent.filter(dataStudent => dataStudent.id == filteredPerson.rid).map((dataStu,index) => (                            
+                                                <View
+                                                    key={index}
+                                                    style={styles.student}
+                                                >      
+                                                    <Text>{dataStu.name} {dataStu.lastname} : {dataStu.student_id}</Text>
+                                                </View>
+                                            ))}
+                                            
+                                        </View>
+                                </View>
+                            ))}
                         </View>
-                        <View
-                            right={0}
-                            position='absolute'
-                            justifyContent='center'                  
-                            height='100%'
-                        >
-                            <Text
-                            _dark={{
-                                color: "warmGray.50",
-                            }}
-                            color="coolGray.800"
-                            bold
-                            >
-                    
-                                <Icon style={styles.icon} fill='#888888' name='arrow-ios-forward-outline' />
-
-                            </Text>
-                        </View>
+                        
                         <Spacer />
                         </HStack>
                     </Box>
@@ -103,4 +128,22 @@ const styles = StyleSheet.create({
         height: 30,
         color:"black"
         },
+        rage: {
+            flexDirection:'column',
+            height:60,
+            marginLeft:15,
+            width:330
+        },
+        select:{
+            flexDirection:'column',
+            height:60,
+            borderWidth:1,
+            borderRadius:5
+        },
+        student:{
+            marginLeft:15,
+            flexDirection:'column',
+            height:60,
+        }
     })
+    

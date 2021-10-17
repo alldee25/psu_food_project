@@ -39,6 +39,7 @@ export default function WorkHour({route}) {
         data={dataList}
         renderItem={({ item }) => (
           <Box
+            height={'65px'}
             bgColor='#ffff'
             borderBottomWidth={1}
             _dark={{

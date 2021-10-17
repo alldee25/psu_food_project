@@ -4,16 +4,18 @@ import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App'
 import React, { useContext, useEffect, useState } from 'react'
 import { Icon } from '@ui-kitten/components'
+import Moment from 'moment';
 
-export default function ScholarList({navigation}) {
+export default function RegisTableList({navigation,route}) {
 
     const H = Dimensions.get('window').height
     const {userData} = useContext(AuthContext);
     const [dataList,setDataList] = useState([])
+    const date = new Date()
 
     useEffect(()=> {
-        axios.post('http://192.168.1.102:3001/getScholarShipsbyStudent',{
-            studentId:userData.usersData[0].id
+        axios.post('http://192.168.1.102:3001/getTablesbyStudent',{
+            scId:route.params.scId
         }).then((res) =>{
             setDataList(res.data)
         })
@@ -33,7 +35,8 @@ export default function ScholarList({navigation}) {
         data={dataList}
         renderItem={({ item }) => (
             <TouchableOpacity
-                onPress={()=> navigation.navigate('WorkHour',{
+                disabled={(item.date_start) <= Moment(date).format('YYYY-MM-DD') && (item.date_end) >= Moment(date).format('YYYY-MM-DD')}
+                onPress={()=> navigation.navigate('RegisWorkDetial',{
                     scId:item.id
                 })}
             >
@@ -52,13 +55,12 @@ export default function ScholarList({navigation}) {
                 <HStack space={3} flexDirection="row" alignContent="space-between" w='100%' >
                         <View>
                             <Text
+                            color="coolGray.600"
                             _dark={{
-                                color: "warmGray.50",
+                                color: "warmGray.200",
                             }}
-                            color="coolGray.800"
-                            bold
                             >
-                            ทุน : {item.scholarship_name}
+                            ทำงานวันที่ : {item.date_work}
                             </Text>
                         </View>
                         
@@ -90,7 +92,6 @@ export default function ScholarList({navigation}) {
     </View> 
     )
 }
-
 const styles = StyleSheet.create({
     icon: {
         width: 42,

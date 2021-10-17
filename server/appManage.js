@@ -778,7 +778,7 @@ appRouter.post('/getPopularMenuSell',(req,res)=>{
 appRouter.post('/getHistoryOfSellStore',(req,res)=>{
     const storeId = req.body.storeId
     const date = req.body.date
-    db.query(`SELECT order_food_detial.*,store.store_name,food_menu.food_name,food_menu.food_price*order_food_detial.quantity AS num_of_price
+    db.query(`SELECT order_food_detial.*,store.store_name,food_menu.food_name,food_menu.food_price*order_food_detial.quantity AS num_of_price,order_food.date
     FROM order_food_detial 
     INNER JOIN order_food ON order_food.id = order_food_detial.order_food_id
     INNER JOIN food_menu ON food_menu.id = order_food_detial.food_id
@@ -811,12 +811,11 @@ appRouter.post('/getScholarShipsbyStudent',(req,res)=>{
 appRouter.post('/getScholarShipsbyStore',(req,res)=>{
     const storeId = req.body.storeId
     const date = req.body.date
-    db.query(`SELECT scholarship.* 
+    db.query(`SELECT scholarship.*,table_work.date_work
     FROM scholarship
     INNER JOIN table_work ON table_work.scholarship_id = scholarship.id
     INNER JOIN table_work_detial ON table_work_detial.table_work_id = table_work.id
-    WHERE table_work.date_work = ? AND table_work_detial.store_id = ?
-    GROUP BY scholarship.id`,[date,storeId],(err,results)=>{
+    WHERE table_work.date_work = ? AND table_work_detial.store_id = ?`,[date,storeId],(err,results)=>{
         if (err) {
             console.log(err);
             res.send({err:err});
@@ -833,7 +832,7 @@ appRouter.post('/getWorkTableByStudent',(req,res)=>{
     INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
     INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
     INNER JOIN store ON store.id = table_work_detial.store_id
-    WHERE table_work.scholarship_id = ?
+    WHERE table_work.id = ?
     GROUP BY table_rage.id`,[scId],(err,results)=>{
         if (err) {
             console.log(err);
@@ -846,14 +845,13 @@ appRouter.post('/getWorkTableByStudent',(req,res)=>{
 appRouter.post('/getCheckWorkTableByStudent',(req,res)=>{
     const scId = req.body.scId
     const studentId = req.body.studentId
-    const date = req.body.date
     db.query(`SELECT table_rage.rage_name,table_student_regis.student_sc_id,store.store_name,table_work.date_work
     FROM table_student_regis 
     RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
     INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
     INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
     INNER JOIN store ON store.id = table_work_detial.store_id
-    WHERE table_work.scholarship_id = ? AND table_work.date_work > ? AND table_student_regis.student_sc_id = ?`,[scId,date,studentId],(err,results)=>{
+    WHERE table_work.id = ?  AND table_student_regis.student_sc_id = ?`,[scId,studentId],(err,results)=>{
         if (err) {
             console.log(err);
             res.send({err:err});
@@ -870,7 +868,7 @@ appRouter.post('/getStoreScList',(req,res)=>{
     INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
     INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
     INNER JOIN store ON store.id = table_work_detial.store_id
-    WHERE table_work.scholarship_id = ?
+    WHERE table_work.id = ?
     GROUP BY table_work_detial.store_id`,[scId],(err,results)=>{
         if (err) {
             console.log(err);
@@ -930,10 +928,11 @@ appRouter.post('/InsertHour',(req,res)=>{
 })
 appRouter.post('/getTableStudenRegis',(req,res)=>{
     const storeId = req.body.storeId
-    db.query(`SELECT table_work.date_work,table_work_detial.id
+    db.query(`SELECT table_work.date_work,table_work_detial.id,scholarship.scholarship_name
     FROM table_work_detial
     INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
-    WHERE table_work_detial.store_id =?`,
+    INNER JOIN scholarship ON scholarship.id = table_work.scholarship_id
+    WHERE table_work_detial.store_id = ?`,
     [storeId],(err,result)=>{
         if (err) {
             console.log(err);
@@ -956,6 +955,65 @@ appRouter.post('/getQiuntityHour',(req,res)=>{
     WHERE table_student_regis.student_sc_id = ? AND table_work.scholarship_id = ?
     `,
     [userId,scId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
+appRouter.post('/getRangeNameOfTableStudentRegis',(req,res)=>{
+
+    const storeId = req.body.storeId
+
+    db.query(`SELECT table_rage.rage_name,table_work_detial.id,table_rage.id AS rid
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work_detial.store_id = ?
+   GROUP BY table_rage.id`,
+    [storeId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
+appRouter.post('/getStudentRegisOfStoreTable',(req,res)=>{
+
+    const storeId = req.body.storeId
+
+    db.query(`SELECT table_rage.id,student_scholarship.student_id,student.name,student.lastname
+    FROM table_student_regis 
+    RIGHT JOIN table_rage ON table_rage.id = table_student_regis.table_rage_id 
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id 
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id 
+    INNER JOIN store ON store.id = table_work_detial.store_id 
+    INNER JOIN student_scholarship ON student_scholarship.student_id = table_student_regis.student_sc_id
+    INNER JOIN student ON student.id = student_scholarship.student_id
+    WHERE table_work_detial.store_id = ?`,
+    [storeId],(err,result)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(result);   
+        }
+    })
+})
+appRouter.post('/getTablesbyStudent',(req,res)=>{
+
+    const scId = req.body.scId
+
+    db.query(`SELECT table_work.*
+    FROM table_work 
+    WHERE table_work.scholarship_id = ?`,
+    [scId],(err,result)=>{
         if (err) {
             console.log(err);
             res.send({err:err});

@@ -22,6 +22,7 @@ import Select from '@material-ui/core/Select';
 import { useTransition } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 import TableWorkForm from './TableWorkForm';
+import InfoStudent from './InfoStudent';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -58,7 +59,9 @@ function TableWork() {
     const [data,setData] = useState([])
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [openInfo, setOpenInfo] = React.useState(false);
     const [id, setId] = useState('')
+    const [idInfo, setIdInfo] = useState('')
     const [scholarships, setScholarships] = useState([])
     const location = useLocation();
     const [dateFilter,setDateFilter] = useState(false)
@@ -75,7 +78,6 @@ function TableWork() {
             axios.post('http://localhost:3001/getFilterDate',{
                 ScholarshipsId:e
             }).then((res)=>{
-                console.log(res.data);
                 const [{date_work}] = res.data
                 const date = new Date(date_work)
                 setDateFilter(todayDate.getTime() > date.getTime());
@@ -88,6 +90,14 @@ function TableWork() {
       };
       const handleClose = () => {
         setOpen(false);
+      };
+
+    const handleClickOpenInfo = (e) => {
+        setOpenInfo(true);
+        setIdInfo(e)
+      };
+      const handleCloseInfo = () => {
+        setOpenInfo(false);
       };
 
     
@@ -112,7 +122,7 @@ function TableWork() {
                 position: "relative",
                 }}>
                     <h1>
-                    รายการการตารางการทำงาน
+                        รายการการตารางการทำงาน
                     </h1>
                     <Button
                         variant="outlined"
@@ -125,11 +135,11 @@ function TableWork() {
                             fontSize: "1rem",
                             fontWeight: "bold",
                         }}
-                        disabled={id == '' || !dateFilter}
-                        onClick={() => handleClickOpen()}
+                            disabled={id == '' || dateFilter}
+                            onClick={() => handleClickOpen()}
                         >
                         เพิ่ม
-                        </Button>
+                    </Button>
                 </div>
                 <div style={{display:'flex',position:'absolute',right:"75px",top:'30px',alignItems:'center'}}>
                     <div style={{marginLeft:'10px'}}>
@@ -161,32 +171,31 @@ function TableWork() {
                                         <StyledTableCell align="center" width="100px">{dataList.name} {dataList.lastname}</StyledTableCell>
                                         
                                         <StyledTableCell align="center" width="10px">
-                                            <Button variant="contained" onClick={(e)=>handleClickOpen(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
+                                            <Button variant="contained" onClick={(e)=>handleClickOpenInfo(dataList.id)} style={{fontWeight:'bold',width:'95px'}}>
                                                 <div>ดู</div>
                                             </Button>
-                                        </StyledTableCell>
-                                        
+                                        </StyledTableCell>                               
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer> 
                 </div>
-               {/*  <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                <Dialog fullScreen open={openInfo} onClose={handleCloseInfo} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
-                                <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                                <IconButton edge="start" color="inherit" onClick={handleCloseInfo} aria-label="close">
                                     <CloseIcon />
                                 </IconButton>
                                 <Typography variant="h6" className={classes.title}>                          
-                                    รายละเอียดข้อมูลแจ้งความผิด
+                                    ตารางการลงชื่อทำงาน
                                 </Typography>
                             </Toolbar>
                         </AppBar>
-                        <div style={{marginTop:'50px'}}>
-                            
+                        <div className="containFormDialog" style={{marginTop:'50px'}}>
+                            <InfoStudent id={idInfo} />
                         </div> 
-                </Dialog> */}
+                </Dialog>
                 <Dialog fullScreen  open={open} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>

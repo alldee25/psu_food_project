@@ -181,7 +181,7 @@ export default function InterView() {
                   </Typography>
                 </Toolbar>
               </AppBar>
-              <div style={{marginTop:'50px'}}>
+              <div style={{marginTop:'50px',backgroundColor:'cyan'}}>
                 <InterViewForm active={id} id_locations={idLocation} open={open}/>
               </div> 
             </Dialog>
@@ -196,7 +196,7 @@ export default function InterView() {
                   </Typography>
                 </Toolbar>
               </AppBar>
-              <div style={{marginTop:'50px'}}>
+              <div style={{marginTop:'50px',backgroundColor:'cyan'}}>
                 <InterViewDetial active={id} open={openDetil}/>
               </div> 
             </Dialog>

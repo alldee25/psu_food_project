@@ -218,7 +218,7 @@ function StudentScholarships() {
               disabled={!scholarshipId}
               onClick={handleClickOpenForm}
             >
-              เพิ่มนักสึกษาทุน
+              เพิ่มนักศึกษาทุน
             </Button>
           </div>
           <div

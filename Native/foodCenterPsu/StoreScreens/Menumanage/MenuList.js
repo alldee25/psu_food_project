@@ -86,7 +86,7 @@ const  MenuManage =({navigation})=> {
         }
         })
     }
-    const deleteSOption =(id)=>{
+ /*    const deleteSOption =(id)=>{
         axios.post('http://192.168.1.102:3001/deleteSpOption',{
             sOption:id
         }).then((res)=>{
@@ -104,7 +104,7 @@ const  MenuManage =({navigation})=> {
              setEffect(!effect)
         }
         })
-    }
+    } */
     const deletePayment =(id)=>{
         axios.post('http://192.168.1.102:3001/deletePayment',{
             paymentId:id
@@ -145,7 +145,6 @@ const  MenuManage =({navigation})=> {
     }
 
     useEffect(()=>{
-        console.log('1');
         let isMounted = true;
         navigation.setOptions({
             headerRight: () => (
@@ -186,17 +185,14 @@ const  MenuManage =({navigation})=> {
             <FormAddOption 
                 ref={childRef}
                 isClose={onClose} 
-                userEffect={setEffect}
             />
             <FormAddSpecialOption 
                 ref={childRefOpSp}
-                isClose={onClose}
-                userEffect={setEffect} 
+                isClose={onClose} 
             />    
             <Payment 
                 ref={childRefPayment}
                 isClose={onClose}
-                userEffect={setEffect}
             />
             <Actionsheet isOpen={isOpen} onClose={onClose}>
                 <Actionsheet.Content>

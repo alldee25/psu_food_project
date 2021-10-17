@@ -192,7 +192,7 @@ function ComplaintList() {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <div style={{marginTop:'50px'}}>
+                    <div style={{marginTop:'50px',backgroundColor:'cyan'}}>
                         <ComplaintFormCheck open={open} count={complaintList.length} active={id} />
                     </div> 
             </Dialog>
@@ -207,7 +207,7 @@ function ComplaintList() {
                             </Typography>
                         </Toolbar>
                     </AppBar>
-                    <div style={{marginTop:'50px'}}>
+                    <div style={{marginTop:'50px',backgroundColor:'cyan'}}>
                         <ComplaintForm open={openForm} count={complaintList.length} active={id} />
                     </div> 
             </Dialog> 

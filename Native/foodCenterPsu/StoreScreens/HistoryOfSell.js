@@ -10,6 +10,7 @@ import {
 import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, StyleSheet } from 'react-native';
 import { AuthContext } from '../App'
+import Moment from 'moment';
 
 export default function HistoryOfSell() {
 
@@ -27,7 +28,7 @@ export default function HistoryOfSell() {
     return (
         <View
             mt={1}
-            h={H}
+            h={'99.9%'}
             w={{
             base: "100%",
             md: "25%",
@@ -35,6 +36,7 @@ export default function HistoryOfSell() {
         >
             <FlatList
             data={data}
+            
             renderItem={({ item }) => (
               <Box
                 bgColor='#ffff'
@@ -57,7 +59,16 @@ export default function HistoryOfSell() {
                             bold
                             >
                             {item.food_name}
-                            </Text>                       
+                            </Text> 
+                            <Text
+                            _dark={{
+                                color: "warmGray.50",
+                            }}
+                            color="coolGray.800"
+                            bold
+                            >
+                            {Moment(item.date).format('YYYY-MM-DD')}
+                            </Text>                      
                         </View>
                         <View
                     
@@ -84,12 +95,12 @@ export default function HistoryOfSell() {
             <View
                     position='absolute'
                     alignItems='center'
-                    bottom='19%'
+                    bottom='1%'
                     right={0}
                     mr={4}
                     w='40%'
                     flexDirection='column'
-                    backgroundColor="#FFFF"
+                    backgroundColor="#7FE1F4"
                     borderRadius={15}
                 >
                   <Text>รวมทั้งหมด {data.reduce((sum,data) => sum+data.num_of_price,0)} บาท</Text>

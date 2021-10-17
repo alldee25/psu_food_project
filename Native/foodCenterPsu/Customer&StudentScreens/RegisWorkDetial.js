@@ -3,7 +3,6 @@ import { Box, Container, FlatList, Heading, HStack, Spacer, Text, Toast, useToas
 import { Alert, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App'
 import React, { useContext, useEffect, useState } from 'react'
-import { Icon } from '@ui-kitten/components'
 import Moment from 'moment';
 
 export default function RegisWorkDetial({route,navigation}) {
@@ -65,13 +64,11 @@ export default function RegisWorkDetial({route,navigation}) {
 
     useEffect(()=> {
       
-        
             axios.post('http://192.168.1.102:3001/getCheckWorkTableByStudent',{
             scId:route.params.scId,
-            date:Moment(date).format('YYYY-MM-DD'),
             studentId:userData.usersData[0].id
         }).then((res) =>{
-            if (res.data.length >0) {
+            if (res.data.length > 0) {
                 setStatus(res.data)
             } else {
                

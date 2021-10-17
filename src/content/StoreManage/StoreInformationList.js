@@ -148,20 +148,20 @@ function StoreInformation() {
                   
             </div>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              รายละเอียดข้อมูลร้านค้า
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <div style={{marginTop:'50px'}}>
-          <StoreInfornationDetial active={id} />
-          </div> 
-      </Dialog> 
+              <AppBar className={classes.appBar}>
+                <Toolbar>
+                  <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    รายละเอียดข้อมูลร้านค้า
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <div  style={{marginTop:'50px',backgroundColor:'cyan',height:'1050px',position:'absolute'}}>
+                <StoreInfornationDetial active={id} />
+              </div> 
+            </Dialog> 
       </animated.div>)
     )
 }

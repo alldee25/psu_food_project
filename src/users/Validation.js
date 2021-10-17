@@ -25,7 +25,8 @@ export const adminSchema = yup.object().shape({
         score1:yup.number().max(70).required(),
         score2:yup.number().max(15).required(),
         score3:yup.number().max(15).required(),
-        bordOpenion:yup.string().required()  
+        bordOpenion:yup.string().required(),
+        storeLock:yup.string().required() 
 })
 export const adminSchemaAttendant = yup.object().shape({
         topic:yup.string().required(),

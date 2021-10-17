@@ -1,14 +1,14 @@
 
 import { Icon } from '@ui-kitten/components';
 import axios from 'axios';
-import { Heading, Image, Container, View, Input, Button } from 'native-base'
+import { Heading, Image, Container, View, Input, Button,  useToast } from 'native-base'
 import React, { useContext, useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../App';
 import Moment from 'moment';
 
 
-export default function SaveHourDetial() {
+export default function SaveHourDetial({navigation}) {
 
     const W = Dimensions.get('window').width;
     const H = Dimensions.get('window').height
@@ -16,7 +16,8 @@ export default function SaveHourDetial() {
     const today = new Date();
     const [studentId, setStudentId] = useState('')
     const [studentData, setStudentData] = useState([])
-    const [isLoad,setIsload] = useState(false)  
+    const [isLoad,setIsload] = useState(false)
+    const toast = useToast()  
     Moment.locale('en')
     let date = new Date();
 
@@ -27,6 +28,7 @@ export default function SaveHourDetial() {
         storeId:userData.usersData[0].store_id
       }).then(
           (res) => {
+            console.log(res.data);
             setStudentData(res.data)
           }
       )      
@@ -36,6 +38,17 @@ export default function SaveHourDetial() {
                 tid:e,
                 hourQuantity:3,
                 date:Moment(today).format('YYYY-MM-DD'),
+        }).then(res => {
+            if (res.data.err) {
+                console.log(err);
+            } else {
+                toast.show({
+                    title: "Account verified",
+                    status: "success",
+                    description: "Thanks for signing up with us.",
+                  })
+                navigation.goBack()
+            }
         })
     }
     
@@ -123,7 +136,20 @@ export default function SaveHourDetial() {
                             >
                                 คุณได้ทำการบันทึกทำงานเก็บชั่วโมงแล้ว                           
                             </Heading>
-                      </Container> : <Container                          
+                      </Container> : data.id ==null ? 
+                      <Container                          
+                            key={i}
+                            m={4}
+                            w="100%"
+                            height='75%'
+                            alignItems='center'
+                                                    
+                        >
+                            <Heading size="lg">
+                               ไม่พบข้อมูลนักศึกษา                             
+                            </Heading>                         
+                      </Container>
+                      : <Container                          
                             key={i}
                             m={4}
                             w="100%"

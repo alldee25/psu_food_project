@@ -226,7 +226,7 @@ function CleanlinessLevel() {
                 </Typography>
               </Toolbar>
             </AppBar>
-            <div style={{marginTop:'50px'}}>
+            <div style={{marginTop:'50px',backgroundColor:'cyan'}} >
               <CleanlinessLevelForm active={id} forDate={yearToday+'-'+monthT+'-'+'01'} open={open}/>
             </div> 
           </Dialog> 
@@ -241,7 +241,7 @@ function CleanlinessLevel() {
                 </Typography>
               </Toolbar>
             </AppBar>
-            <div style={{marginTop:'50px'}}>
+            <div style={{marginTop:'50px',backgroundColor:'cyan'}} >
               <CleanlinessLevelInfo active={id} cleanId={cleanId}  open={openInfo}/>
             </div> 
           </Dialog>

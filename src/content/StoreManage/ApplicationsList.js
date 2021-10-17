@@ -159,7 +159,7 @@ export default function CheckApplication(props) {
                   </Typography>
                 </Toolbar>
               </AppBar>
-              <div style={{marginTop:'50px'}}>
+              <div style={{marginTop:'50px',backgroundColor:'cyan'}}>
                   <ApplicationDetial active={id}/>
                 </div> 
             </Dialog>

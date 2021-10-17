@@ -135,13 +135,32 @@ function TableWorkForm(props) {
                 style={{
                     display:'flex',
                     flexDirection:'row',
-                    width:'420px',
+                    width:'450px',
                     height:'100px',
                     justifyContent:'space-between',
-                    alignItems:'center'
-                    }}
+                    alignItems:'center',
+                    borderStyle:'solid',
+                    padding:'10px',
+                    borderWidth:0.5,
+                    position:'relative',
+                    borderRadius:'5px'
+                }}
+            >
+                <div
+                  style={{
+                    position:'absolute',
+                    top:-14,
+                    backgroundColor:'#FFFF',
+                    fontWeight:'bold',
+                    width:'80px',
+                    display:'flex',
+                    justifyContent:'center',
+                    alignItems:'center',
+                  }}
                 >
-                        
+                  <span>ลงทะเบียน</span>
+                </div>
+                  
                 <div >
                     <TextField 
                         variant='outlined' 
@@ -154,7 +173,8 @@ function TableWorkForm(props) {
                         InputLabelProps={{ shrink: true, }}  
                     />
                 </div>  
-                <div >
+                <div 
+                >
                     <TextField 
                     variant='outlined' 
                     disabled={dateInput == ''} 
@@ -169,7 +189,9 @@ function TableWorkForm(props) {
                 />
                 </div>  
             </div> 
-            <div >
+            <div            
+              style={{marginTop:'20px'}}         
+            >
                 <TextField 
                     variant='outlined' 
                     disabled={dateStart == ''} 

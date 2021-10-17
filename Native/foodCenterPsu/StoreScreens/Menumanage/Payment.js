@@ -38,11 +38,9 @@ const Payment = forwardRef((props,ref)=> {
                 ],
                 { cancelable: false }
               ); 
+              
             }
-        }).catch((error)=>{
-            console.log("Api call error");
-            alert("Api call error");
-         })
+        })
     } 
     useImperativeHandle(
         ref,

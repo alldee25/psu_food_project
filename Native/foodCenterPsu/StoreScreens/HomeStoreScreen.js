@@ -68,9 +68,11 @@ const HomeStore =({navigation})=> {
                     <Heading fontFamily='SanFranciscoDisplayBold' color="emerald.400" pl={4} >
                         Hi                 
                     </Heading>
-                    <Heading fontFamily='SanFranciscoDisplayUltralight' color="#1D1F20" pl={4}>
-                            {userData.usersData[0].name}
-                    </Heading>
+                    
+                        <Heading fontFamily='SanFranciscoDisplayUltralight' color="#1D1F20" pl={4}>
+                                {userData.usersData[0].name}
+                        </Heading>
+
                     <View
                         w='100%'
                         alignItems='flex-end'
@@ -102,30 +104,32 @@ const HomeStore =({navigation})=> {
                         mr={2}
                         >                                             
                         <TouchableOpacity 
-                        onPress={()=>navigation.navigate('PopularMenu')}                      
+                            onPress={()=>navigation.navigate('PopularMenu')}                      
                             style={{
                                 flex:1,
                                 alignItems:'center',
                                 width:'100%',
-                                height:'100%',
-                                                            
-                            }}>
-                                <Heading fontFamily='IBMPlexSansThai-Bold' size="md" m={3} >
-                                เมนูยอดนิยม    
-                            </Heading>
-                            <Text mt={2} fontFamily='IBMPlexSansThai-Regular' fontSize="md">
-                                {sellInfo.map((data)=>(
-                                    data.food_name
-                                ))}
-                            </Text>
-                            <Heading fontFamily='IBMPlexSansThai-Regular' mt={2}>
-                                {sellInfo.map((data)=>(
-                                    data.quantity
-                                ))}
-                            </Heading>
-                            <Text fontFamily='IBMPlexSansThai-Regular' mt={2} fontSize="md">
-                                จาน/ห่อ
-                            </Text> 
+                                height:'100%',                            
+                            }}
+                        >
+                                <Heading fontFamily='IBMPlexSansThai-Bold' size="md" mt={3} >
+                                    เมนูยอดนิยม    
+                                </Heading>
+                                <Text mt={2} fontFamily='IBMPlexSansThai-Regular' fontSize="md">
+                                    {sellInfo.map((data)=>(
+                                        data.food_name
+                                    ))}
+                                </Text>
+                              
+                                   <Heading fontFamily='IBMPlexSansThai-Regular' >
+                                   
+                                        {sellInfo.map((data)=>(
+                                            data.quantity
+                                        ))}
+                                    </Heading> 
+                                <Text fontFamily='IBMPlexSansThai-Regular' mt={7} fontSize="md">
+                                    จาน/ห่อ
+                                </Text> 
                                
                         </TouchableOpacity>                                              
                     </Container> 

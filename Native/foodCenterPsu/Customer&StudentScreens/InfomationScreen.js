@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react'
-import { Text, View, Image, Divider, Button, Heading } from 'native-base';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { View, Button, } from 'native-base';
 import axios from 'axios';
-import { useEffect } from 'react';
 import {  SafeAreaView, StyleSheet } from 'react-native'
 import { Icon, MenuItem } from '@ui-kitten/components';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +11,7 @@ import RegisWork from './RegisWork';
 import RegisWorkDetial from './RegisWorkDetial';
 import ScholarList from './ScholarList';
 import WorkHour from './WorkHour';
+import RegisTableList from './RegisTableList';
 
 const ForwardIcon = (props) => (
     <Icon {...props} name='arrow-ios-forward'/>
@@ -27,8 +26,9 @@ export default function InfomationScreen() {
             <ManageStack.Screen name='History' component={History} />
             <ManageStack.Screen name='Cart' component={CartScreen} />
             <ManageStack.Screen name='RegisWork' component={RegisWork} />
-            <ManageStack.Screen name='RegisWorkDetial' component={RegisWorkDetial} />
             <ManageStack.Screen name='ScholarList' component={ScholarList} />
+            <ManageStack.Screen name='RegisTableList' component={RegisTableList} />
+            <ManageStack.Screen name='RegisWorkDetial' component={RegisWorkDetial} />
             <ManageStack.Screen name='WorkHour' component={WorkHour} />
         </ManageStack.Navigator>
     )

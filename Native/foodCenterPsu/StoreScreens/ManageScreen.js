@@ -1,8 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import { Icon, MenuItem,Layout,Tab,TabView } from '@ui-kitten/components';
+import { Icon, MenuItem } from '@ui-kitten/components';
 import axios from 'axios';
-import { View,Button,Text} from 'native-base';
-import React, { createRef, useContext, useEffect, useRef, useState } from 'react'
+import { View,Button} from 'native-base';
+import React, {  useContext, useState } from 'react'
 import { StyleSheet, SafeAreaView,  ImageBackground } from 'react-native'
 import { AuthContext } from '../App';
 import imagBack from '../assets/img/v748-toon-106.jpg'
@@ -35,7 +35,13 @@ export default function ManageScreen() {
             <stackManage.Screen name='รายละเอียดการแจ้งเตือน' component={ComplaintListDetial} />           
             <stackManage.Screen name='เพิ่มลาพักจำหน่ายอาหาร' component={LeaveScreen} />           
             <stackManage.Screen name='ประวัติการขาย' component={HistoryOfSell} />           
-            <stackManage.Screen name='บันทึกชัวโมง' component={SaveHour} />           
+            <stackManage.Screen 
+                options={{
+                    headerShown:false
+                }}          
+                name='ทุนการศึกษา' 
+                component={SaveHour} 
+            />           
             <stackManage.Screen name='SaveHourDetial' component={SaveHourDetial} />           
         </stackManage.Navigator>
     )
@@ -64,7 +70,7 @@ const stackScreen =({navigation})=>{
                 <MenuItem style={styles.MenuItem} title='ระดับคุณภาพความสะอาด' onPress={()=> navigation.navigate('ระดับคุณภาพความสะอาด')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการชำระค่าเช่า' onPress={()=> navigation.navigate('รายการชำระค่าเช่า')} accessoryRight={ForwardIcon} />
                 <MenuItem style={styles.MenuItem} title='รายการการแจ้งเตือนความผิด' onPress={()=> navigation.navigate('การแจ้งเตือนความผิด')} accessoryRight={ForwardIcon} />
-                <MenuItem style={styles.MenuItem} title='บันทึกชั่วโมงทำงาน' onPress={()=> navigation.navigate('บันทึกชัวโมง')} accessoryRight={ForwardIcon} /> 
+                <MenuItem style={styles.MenuItem} title='ทุนการศึกษา' onPress={()=> navigation.navigate('ทุนการศึกษา')} accessoryRight={ForwardIcon} /> 
                 <MenuItem style={styles.MenuItem} title='ประวัติการขาย' onPress={()=> navigation.navigate('ประวัติการขาย')} accessoryRight={ForwardIcon} /> 
                          
             </SafeAreaView>

@@ -1257,4 +1257,81 @@ adminRouter.post('/insertDataTableWork',(req,res)=>{
                 }
     })
 })
+adminRouter.post('/getStoreScListbyAdmin',(req,res)=>{
+    const tableId = req.body.tableId
+    db.query(`SELECT store.store_name,store.id
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work.id = ?
+    GROUP BY table_work_detial.store_id`,[tableId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+adminRouter.post('/getWorkTableByAdmin',(req,res)=>{
+    const tableId = req.body.tableId
+    db.query(`SELECT table_rage.rage_name,store.store_name,store.id AS sid,table_rage.id
+    FROM table_student_regis 
+    RIGHT JOIN  table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN store ON store.id = table_work_detial.store_id
+    WHERE table_work.id = ?
+   GROUP BY table_rage.id`,[tableId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+adminRouter.post('/getWorkStudentTableByAdmin',(req,res)=>{
+    const tableId = req.body.tableId
+    db.query(`SELECT table_rage.id,student_scholarship.student_id,student.name,student.lastname
+    FROM table_student_regis 
+    RIGHT JOIN table_rage ON table_rage.id = table_student_regis.table_rage_id 
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id 
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id 
+    INNER JOIN store ON store.id = table_work_detial.store_id 
+    INNER JOIN student_scholarship ON student_scholarship.student_id = table_student_regis.student_sc_id
+    INNER JOIN student ON student.id = student_scholarship.student_id
+    WHERE table_work.id = ?`,[tableId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
+adminRouter.post('/getStudentSCList',(req,res)=>{
+    const ScholarshipsId = req.body.ScholarshipsId
+    db.query(`SELECT student.id,student.name,student.lastname 
+    FROM table_hour
+    RIGHT JOIN table_student_regis ON table_hour.table_student_regis_id  = table_student_regis.id
+    INNER JOIN table_rage ON table_rage.id = table_student_regis.table_rage_id
+    INNER JOIN table_work_detial ON table_work_detial.id = table_rage.table_work_detial_id
+    INNER JOIN table_work ON table_work.id = table_work_detial.table_work_id
+    INNER JOIN scholarship ON scholarship.id = table_work.scholarship_id
+    INNER JOIN student_scholarship ON student_scholarship.scholarship_id = scholarship.id
+ 	RIGHT JOIN student ON student_scholarship.student_id = student.id
+    WHERE scholarship.id = ?
+    GROUP BY student.id
+    `,[ScholarshipsId],(err,results)=>{
+        if (err) {
+            console.log(err);
+            res.send({err:err});
+        } else {
+            res.send(results);   
+        }
+    })
+})
 module.exports = adminRouter

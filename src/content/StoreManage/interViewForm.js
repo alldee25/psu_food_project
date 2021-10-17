@@ -20,7 +20,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { animated, useTransition } from 'react-spring';
-import { useLocation } from 'react-router-dom';
+
 
 
 
@@ -63,12 +63,14 @@ function InterViewForm(props) {
       enter: { opacity: 1, y: 0 },
       leave:  { opacity: 0,y: 800}
     })
-
+    console.log(typeof(storeLock));
     let formScore = {
       score1:score1,
       score2:score2,
       score3:score3,
-      bordOpenion:bordOpenion
+      bordOpenion:bordOpenion,
+      storeLock:storeLock
+      
     }
     const handleChange =(e)=>{
       setBoreOpenion(e.target.value) 
